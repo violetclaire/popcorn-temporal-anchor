@@ -1,0 +1,20 @@
+{
+  "name": "popcorn-x402-client-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@x402/evm": "2.24.0",
+    "@x402/fetch": "2.24.0",
+    "viem": "2.56.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.4.0",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2"
+  }
+}

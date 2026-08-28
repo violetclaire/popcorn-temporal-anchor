@@ -1,0 +1,31 @@
+name: Integration report
+description: Report a POPCORN client or framework interoperability result.
+title: "[integration]: "
+labels:
+  - integration
+body:
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - Successful paid request and verified receipt
+        - Challenge parsed but payment failed
+        - Payment settled but receipt verification failed
+        - Discovery or framework integration issue
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client or framework
+      placeholder: "@x402/fetch 2.x, AgentKit, OpenClaw, ElizaOS..."
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Reproduction details
+      description: Never include private keys, payment signatures, credentials, or private task data.
+    validations:
+      required: true
