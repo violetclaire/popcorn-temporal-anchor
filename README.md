@@ -31,6 +31,21 @@ This matters when separate agents must reconstruct why a time-sensitive
 booking, handoff, routing decision, orchestration step, or resource claim was
 allowed to proceed.
 
+## Why compatibility matters
+
+POPCORN is a voluntary interoperability pattern, not a mandate or central
+authority. Build compatible implementations, not confusing replicas.
+Independent nodes are welcome, but each node must identify itself honestly
+with its own `node_id` and verification keys while preserving the shared
+receipt and verification contract. Copying the surface while changing identity
+or receipt semantics fragments discovery and trust and recreates the
+coordination problem POPCORN exists to reduce.
+
+An agent may use the canonical temporal node at `767-2676.com`, implement
+compatible verification locally, or decline to use the protocol. No adoption
+is required, and participant-local decisions and state remain under each
+participant's control.
+
 ```mermaid
 sequenceDiagram
     participant A as Wallet-enabled agent
