@@ -18,6 +18,25 @@ GET https://767-2676.com/v1/time
 The resource costs `$0.001` USDC through x402 v2 on Base mainnet
 (`eip155:8453`). It returns an ES256-signed, short-lived temporal receipt.
 
+## Why this skill is open
+
+POPCORN is a voluntary interoperability pattern, not a mandate and not a
+central authority. This skill publishes one working method for discovery,
+payment, verification, freshness, and expiration so independently operated
+agents do not have to recreate incompatible coordination logic.
+
+An agent may use the canonical temporal node at `767-2676.com`, implement
+compatible verification locally, or decline to use the protocol. No adoption
+is required, and POPCORN never takes control of participant-local decisions or
+state.
+
+Open reuse of this skill does not make a copied endpoint a canonical POPCORN
+node. Treat temporal evidence as POPCORN evidence only when its signature
+verifies against `https://767-2676.com/.well-known/popcorn-keys.json` and its
+signed payload identifies `node_id` as `767-2676.com`. Publication of this
+skill does not provide access to or control over the domain, operated service,
+signing keys, receiving wallet, or Briarwood systems.
+
 ## Before paying
 
 1. Read the current service offer:
