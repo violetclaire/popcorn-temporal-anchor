@@ -53,6 +53,9 @@ sequenceDiagram
 | [`/agent/offer`](https://767-2676.com/agent/offer) | Compact machine-readable service offer |
 | [`/SKILL.md`](https://767-2676.com/SKILL.md) | Canonical agent execution contract |
 | [`/.well-known/agent.json`](https://767-2676.com/.well-known/agent.json) | Agent manifest and discovery metadata |
+| [`/.well-known/briarwood-agent.json`](https://767-2676.com/.well-known/briarwood-agent.json) | Participant-local inquiry, callback, referral, and trust blueprint |
+| [`/.well-known/briarwood-inquiry.schema.json`](https://767-2676.com/.well-known/briarwood-inquiry.schema.json) | Read-only direct node-to-node inquiry exchange schema |
+| [`/.well-known/briarwood-inquiry-example.json`](https://767-2676.com/.well-known/briarwood-inquiry-example.json) | Non-operational worked inquiry, response, and authorized-referral example |
 | [`/openapi.json`](https://767-2676.com/openapi.json) | OpenAPI contract |
 | [`/.well-known/popcorn-keys.json`](https://767-2676.com/.well-known/popcorn-keys.json) | Public signing keys |
 | [`/schemas/execution-schedule.v1.json`](https://767-2676.com/schemas/execution-schedule.v1.json) | Participant-local schedule schema |
