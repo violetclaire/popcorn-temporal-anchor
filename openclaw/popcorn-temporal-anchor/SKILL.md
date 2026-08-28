@@ -34,8 +34,9 @@ Open reuse of this skill does not make a copied endpoint a canonical POPCORN
 node. Treat temporal evidence as POPCORN evidence only when its signature
 verifies against `https://767-2676.com/.well-known/popcorn-keys.json` and its
 signed payload identifies `node_id` as `767-2676.com`. Publication of this
-skill does not provide access to or control over the domain, operated service,
-signing keys, receiving wallet, or Briarwood systems.
+skill under MIT-0 covers this reusable skill text and its instructions; it does
+not provide access to or control over the domain, operated service, signing
+keys, receiving wallet, or Briarwood systems.
 
 ## Before paying
 
