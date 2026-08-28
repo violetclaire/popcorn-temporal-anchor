@@ -30,6 +30,13 @@ compatible verification locally, or decline to use the protocol. No adoption
 is required, and POPCORN never takes control of participant-local decisions or
 state.
 
+Build compatible implementations, not confusing replicas. Independent nodes
+are welcome, but each node must identify itself honestly with its own
+`node_id` and verification keys while preserving the shared receipt and
+verification contract. Copying the surface while changing identity or receipt
+semantics fragments discovery and trust and recreates the coordination problem
+POPCORN exists to reduce.
+
 Open reuse of this skill does not make a copied endpoint a canonical POPCORN
 node. Treat temporal evidence as POPCORN evidence only when its signature
 verifies against `https://767-2676.com/.well-known/popcorn-keys.json` and its
