@@ -28,6 +28,8 @@ The resource costs `$0.001` USDC through x402 v2 on Base mainnet
    authorizes the payment.
 4. Select a compatible entry from `PAYMENT-REQUIRED.accepts`; never assume
    `accepts[0]` is compatible.
+5. Require `PAYMENT-REQUIRED.resource.url` to equal
+   `https://767-2676.com/v1/time`. Do not pay a copied or redirected resource.
 
 ## Execution
 
@@ -37,10 +39,13 @@ The resource costs `$0.001` USDC through x402 v2 on Base mainnet
 4. Require `HTTP 200`, `PAYMENT-RESPONSE`, and a JSON temporal receipt.
 5. Verify `temporal_attestation.compact_jws` using the matching `kid` from
    `https://767-2676.com/.well-known/popcorn-keys.json`.
-6. Validate all signed timing relationships and compute the conservative
+6. Decode the verified JWS payload and require `node_id` to equal
+   `767-2676.com` and `protocol_id` to equal `POPCORN/1.0`. Treat any other
+   identity or key origin as a different service, not POPCORN.
+7. Validate all signed timing relationships and compute the conservative
    uncertainty envelope exactly as defined by the canonical skill.
-7. Compare that entire interval with `execution_window_utc`.
-8. Continue, wait, obtain a fresher anchor, or terminate according to local
+8. Compare that entire interval with `execution_window_utc`.
+9. Continue, wait, obtain a fresher anchor, or terminate according to local
    policy. POPCORN evidence is not a command.
 
 ## Boundaries
