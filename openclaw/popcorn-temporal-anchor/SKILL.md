@@ -66,6 +66,8 @@ keys, receiving wallet, or Briarwood systems.
 4. Require `HTTP 200`, `PAYMENT-RESPONSE`, and a JSON temporal receipt.
 5. Verify `temporal_attestation.compact_jws` using the matching `kid` from
    `https://767-2676.com/.well-known/popcorn-keys.json`.
+   Reusable network-free verifiers and a shared signed vector are published at
+   `https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify`.
 6. Decode the verified JWS payload and require `node_id` to equal
    `767-2676.com` and `protocol_id` to equal `POPCORN/1.0`. Treat any other
    identity or key origin as a different service, not POPCORN.
@@ -86,3 +88,5 @@ keys, receiving wallet, or Briarwood systems.
   only; it has no dependency on a separate consumer-facing Briarwood system.
 - Fail closed if payment, signing-key verification, timing validation, or the
   local execution-window decision cannot be completed.
+- POPCORN is not an A2A server or MCP server. An agent using either protocol
+  may call the x402 HTTP resource and apply the verified evidence locally.

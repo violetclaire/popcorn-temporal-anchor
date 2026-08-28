@@ -1,0 +1,77 @@
+{
+  "vector_version": "POPCORN-VERIFY-V1",
+  "description": "Public, offline ES256 receipt-verification vector. It contains no wallet, payment proof, private key, or participant task data.",
+  "jwks": {
+    "keys": [
+      {
+        "key_ops": ["verify"],
+        "ext": true,
+        "kty": "EC",
+        "x": "Op1iKwiY670Bro3FIA6JjkHnUuUND_5xdsz9pxSS19w",
+        "y": "fvFcYSJrbC4Y94HcjZIvHBt1RAO-Ut9ztwdi0NUZFrA",
+        "crv": "P-256",
+        "use": "sig",
+        "alg": "ES256",
+        "kid": "popcorn-reference-vector-001"
+      }
+    ]
+  },
+  "response": {
+    "temporal_receipt": {
+      "anchor_id": "pca_reference_vector_001",
+      "node_id": "767-2676.com",
+      "protocol_id": "POPCORN/1.0",
+      "request_received_at_utc": "2026-08-28T11:59:59.900Z",
+      "observed_at_utc": "2026-08-28T12:00:00.000Z",
+      "measurement_at_utc": "2026-08-28T12:00:00.050Z",
+      "unix_time_milliseconds": 1787918400000,
+      "valid_until_utc": "2026-08-28T12:00:30.000Z",
+      "freshness_window_ms": 30000,
+      "server_processing_duration_ms": 150,
+      "post_anchor_processing_duration_ms": 50,
+      "validity_at_measurement_ms": 29950,
+      "payment_identifier": "eip3009_reference_vector_001",
+      "payment_transaction": "0xreferencevector001",
+      "evidence_scope": {
+        "type": "bearer_temporal_evidence",
+        "caller_bound": false,
+        "task_bound": false,
+        "authorization_granted": false
+      }
+    },
+    "temporal_attestation": {
+      "format": "JWS",
+      "algorithm": "ES256",
+      "key_id": "popcorn-reference-vector-001",
+      "compact_jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InBvcGNvcm4tcmVmZXJlbmNlLXZlY3Rvci0wMDEiLCJ0eXAiOiJKV1QifQ.eyJhbmNob3JfaWQiOiJwY2FfcmVmZXJlbmNlX3ZlY3Rvcl8wMDEiLCJub2RlX2lkIjoiNzY3LTI2NzYuY29tIiwicHJvdG9jb2xfaWQiOiJQT1BDT1JOLzEuMCIsInJlcXVlc3RfcmVjZWl2ZWRfYXRfdXRjIjoiMjAyNi0wOC0yOFQxMTo1OTo1OS45MDBaIiwib2JzZXJ2ZWRfYXRfdXRjIjoiMjAyNi0wOC0yOFQxMjowMDowMC4wMDBaIiwibWVhc3VyZW1lbnRfYXRfdXRjIjoiMjAyNi0wOC0yOFQxMjowMDowMC4wNTBaIiwidW5peF90aW1lX21pbGxpc2Vjb25kcyI6MTc4NzkxODQwMDAwMCwidmFsaWRfdW50aWxfdXRjIjoiMjAyNi0wOC0yOFQxMjowMDozMC4wMDBaIiwiZnJlc2huZXNzX3dpbmRvd19tcyI6MzAwMDAsInNlcnZlcl9wcm9jZXNzaW5nX2R1cmF0aW9uX21zIjoxNTAsInBvc3RfYW5jaG9yX3Byb2Nlc3NpbmdfZHVyYXRpb25fbXMiOjUwLCJ2YWxpZGl0eV9hdF9tZWFzdXJlbWVudF9tcyI6Mjk5NTAsInBheW1lbnRfaWRlbnRpZmllciI6ImVpcDMwMDlfcmVmZXJlbmNlX3ZlY3Rvcl8wMDEiLCJwYXltZW50X3RyYW5zYWN0aW9uIjoiMHhyZWZlcmVuY2V2ZWN0b3IwMDEiLCJldmlkZW5jZV9zY29wZSI6eyJ0eXBlIjoiYmVhcmVyX3RlbXBvcmFsX2V2aWRlbmNlIiwiY2FsbGVyX2JvdW5kIjpmYWxzZSwidGFza19ib3VuZCI6ZmFsc2UsImF1dGhvcml6YXRpb25fZ3JhbnRlZCI6ZmFsc2V9fQ.zaN8N3i0ItcylsHNQ6OIqtPiwsPAox0lwGOup2PPG98v4UwlVDOeRm4uLEFT01AiK4IqzOZaR4xE2Em9IYbEgw"
+    }
+  },
+  "client_observation": {
+    "paid_request_start_monotonic_ms": 1000,
+    "paid_response_receive_monotonic_ms": 1200,
+    "decision_monotonic_ms": 1300
+  },
+  "execution_window_utc": {
+    "opens_at_utc": "2026-08-28T12:00:00.100Z",
+    "closes_at_utc": "2026-08-28T12:00:20.000Z"
+  },
+  "expected": {
+    "key_id": "popcorn-reference-vector-001",
+    "paid_request_rtt_ms": 200,
+    "network_uncertainty_ms": 50,
+    "remaining_validity_at_receipt_ms": 29900,
+    "remaining_validity_now_ms": 29800,
+    "earliest_server_time_now_utc": "2026-08-28T12:00:00.150Z",
+    "latest_server_time_now_utc": "2026-08-28T12:00:00.200Z",
+    "execution_window_eligible": true
+  },
+  "negative_cases": {
+    "tampered_receipt_field": "node_id",
+    "unknown_key_id": "not-present",
+    "expired_decision_monotonic_ms": 32000,
+    "closed_execution_window_utc": {
+      "opens_at_utc": "2026-08-28T11:59:00.000Z",
+      "closes_at_utc": "2026-08-28T12:00:00.200Z"
+    }
+  }
+}

@@ -47,7 +47,7 @@ ClawHub:
 ```bash
 npm install --global clawhub
 clawhub login
-clawhub skill publish ./openclaw/popcorn-temporal-anchor --version 1.0.0
+clawhub skill publish ./openclaw/popcorn-temporal-anchor --version 1.0.3
 ```
 
 Publishing is a public representational action. Review the final ClawHub owner,

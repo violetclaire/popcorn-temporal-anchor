@@ -3,130 +3,14 @@ import { x402Client, wrapFetchWithPayment } from "@x402/fetch";
 import { ExactEvmScheme } from "@x402/evm/exact/client";
 import { privateKeyToAccount } from "viem/accounts";
 
+import {
+  verifyPopcornTemporalEvidence,
+  type JsonWebKeySet,
+  type PopcornResponse,
+} from "../../../verify/typescript/src/index.js";
+
 const RESOURCE = "https://767-2676.com/v1/time?freshness_ms=30000";
 const JWKS_URL = "https://767-2676.com/.well-known/popcorn-keys.json";
-
-type TemporalReceipt = {
-  anchor_id: string;
-  measurement_at_utc: string;
-  request_received_at_utc: string;
-  observed_at_utc: string;
-  valid_until_utc: string;
-  server_processing_duration_ms: number;
-  post_anchor_processing_duration_ms: number;
-  validity_at_measurement_ms: number;
-  evidence_scope: {
-    type: string;
-    authorization_granted: boolean;
-  };
-};
-
-type PopcornResponse = {
-  temporal_receipt: TemporalReceipt;
-  temporal_attestation: {
-    compact_jws: string;
-  };
-};
-
-function decodeBase64Url(value: string): ArrayBuffer {
-  const decoded = Buffer.from(value, "base64url");
-  const copy = new Uint8Array(new ArrayBuffer(decoded.length));
-  copy.set(decoded);
-  return copy.buffer;
-}
-
-function requireEqual(actual: number, expected: number, label: string): void {
-  if (actual !== expected) {
-    throw new Error(`${label} relationship is invalid`);
-  }
-}
-
-async function verifyTemporalReceipt(body: PopcornResponse): Promise<void> {
-  const compact = body.temporal_attestation.compact_jws;
-  const [encodedHeader, encodedPayload, encodedSignature] = compact.split(".");
-  if (!encodedHeader || !encodedPayload || !encodedSignature) {
-    throw new Error("temporal_attestation.compact_jws is malformed");
-  }
-
-  const header = JSON.parse(Buffer.from(encodedHeader, "base64url").toString("utf8")) as {
-    alg?: string;
-    kid?: string;
-  };
-  if (header.alg !== "ES256" || !header.kid) {
-    throw new Error("unsupported or missing JWS protected header");
-  }
-
-  const jwksResponse = await fetch(JWKS_URL, { cache: "no-store" });
-  if (!jwksResponse.ok) {
-    throw new Error(`JWKS request failed with HTTP ${jwksResponse.status}`);
-  }
-  const jwks = (await jwksResponse.json()) as {
-    keys?: Array<JsonWebKey & { kid?: string }>;
-  };
-  const jwk = jwks.keys?.find((candidate) => candidate.kid === header.kid);
-  if (!jwk) {
-    throw new Error(`signing key ${header.kid} is not present in the JWKS`);
-  }
-
-  const publicKey = await crypto.subtle.importKey(
-    "jwk",
-    jwk,
-    { name: "ECDSA", namedCurve: "P-256" },
-    false,
-    ["verify"],
-  );
-  const verified = await crypto.subtle.verify(
-    { name: "ECDSA", hash: "SHA-256" },
-    publicKey,
-    decodeBase64Url(encodedSignature),
-    new TextEncoder().encode(`${encodedHeader}.${encodedPayload}`),
-  );
-  if (!verified) {
-    throw new Error("ES256 temporal receipt signature is invalid");
-  }
-
-  const signedReceipt = JSON.parse(
-    Buffer.from(encodedPayload, "base64url").toString("utf8"),
-  ) as TemporalReceipt;
-  if (JSON.stringify(signedReceipt) !== JSON.stringify(body.temporal_receipt)) {
-    throw new Error("response temporal_receipt does not match the signed payload");
-  }
-
-  const measurement = Date.parse(signedReceipt.measurement_at_utc);
-  const requestReceived = Date.parse(signedReceipt.request_received_at_utc);
-  const observed = Date.parse(signedReceipt.observed_at_utc);
-  const validUntil = Date.parse(signedReceipt.valid_until_utc);
-  for (const [label, value] of Object.entries({
-    measurement,
-    requestReceived,
-    observed,
-    validUntil,
-  })) {
-    if (!Number.isFinite(value)) throw new Error(`${label} is not valid UTC`);
-  }
-
-  requireEqual(
-    measurement - requestReceived,
-    signedReceipt.server_processing_duration_ms,
-    "server_processing_duration_ms",
-  );
-  requireEqual(
-    measurement - observed,
-    signedReceipt.post_anchor_processing_duration_ms,
-    "post_anchor_processing_duration_ms",
-  );
-  requireEqual(
-    validUntil - measurement,
-    signedReceipt.validity_at_measurement_ms,
-    "validity_at_measurement_ms",
-  );
-  if (
-    signedReceipt.evidence_scope.type !== "bearer_temporal_evidence" ||
-    signedReceipt.evidence_scope.authorization_granted !== false
-  ) {
-    throw new Error("unexpected temporal evidence scope");
-  }
-}
 
 async function main(): Promise<void> {
   const privateKey = process.env.EVM_PRIVATE_KEY;
@@ -150,37 +34,30 @@ async function main(): Promise<void> {
   }
 
   const body = (await response.json()) as PopcornResponse;
-  await verifyTemporalReceipt(body);
-
-  const operationRttUpperBoundMs = Math.max(0, received - started);
-  const signedServerMs = body.temporal_receipt.server_processing_duration_ms;
-  const uncertaintyMs = Math.max(
-    0,
-    operationRttUpperBoundMs - Math.min(signedServerMs, operationRttUpperBoundMs),
-  );
-  const conservativeRemainingValidityMs = Math.max(
-    0,
-    body.temporal_receipt.validity_at_measurement_ms - uncertaintyMs,
-  );
-  const earliestUtc = body.temporal_receipt.measurement_at_utc;
-  const latestUtc = new Date(
-    Date.parse(earliestUtc) + uncertaintyMs,
-  ).toISOString();
+  const jwksResponse = await fetch(JWKS_URL, { cache: "no-store" });
+  if (!jwksResponse.ok) {
+    throw new Error(`JWKS request failed with HTTP ${jwksResponse.status}`);
+  }
+  const jwks = (await jwksResponse.json()) as JsonWebKeySet;
+  const verified = await verifyPopcornTemporalEvidence(body, jwks, {
+    // wrapFetchWithPayment does not expose the exact paid-retry start. Timing
+    // the whole operation is a safe, deliberately conservative upper bound.
+    paid_request_start_monotonic_ms: started,
+    paid_response_receive_monotonic_ms: received,
+    decision_monotonic_ms: received,
+  });
 
   console.log(
     JSON.stringify(
       {
-        anchor_id: body.temporal_receipt.anchor_id,
-        signature_verified: true,
-        temporal_interval_utc: {
-          earliest: earliestUtc,
-          latest: latestUtc,
-        },
-        uncertainty_upper_bound_ms: Math.ceil(uncertaintyMs),
+        anchor_id: verified.temporal_receipt.anchor_id,
+        signature_verified: verified.signature_verified,
+        temporal_interval_utc: verified.temporal_interval_now_utc,
+        uncertainty_upper_bound_ms: Math.ceil(verified.network_uncertainty_ms),
         conservative_remaining_validity_ms: Math.floor(
-          conservativeRemainingValidityMs,
+          verified.remaining_validity_now_ms,
         ),
-        evidence_scope: body.temporal_receipt.evidence_scope,
+        evidence_scope: verified.temporal_receipt.evidence_scope,
       },
       null,
       2,

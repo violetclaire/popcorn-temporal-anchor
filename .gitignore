@@ -8,3 +8,5 @@ node_modules/
 *.jwk
 *.key
 .DS_Store
+__pycache__/
+*.py[cod]

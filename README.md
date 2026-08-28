@@ -74,6 +74,9 @@ sequenceDiagram
 | [`/openapi.json`](https://767-2676.com/openapi.json) | OpenAPI contract |
 | [`/.well-known/popcorn-keys.json`](https://767-2676.com/.well-known/popcorn-keys.json) | Public signing keys |
 | [`/schemas/execution-schedule.v1.json`](https://767-2676.com/schemas/execution-schedule.v1.json) | Participant-local schedule schema |
+| [`verify/typescript`](verify/typescript) | Reusable network-free TypeScript verifier |
+| [`verify/python`](verify/python) | Independent network-free Python verifier |
+| [`verify/test-vectors`](verify/test-vectors) | Shared public signed verification vectors |
 
 ### Inspect the unpaid challenge
 
@@ -101,6 +104,36 @@ npm start
 The example makes a real `$0.001` USDC mainnet payment. Its 30-second freshness
 window is deliberately generous for a first integration. Tighten the window
 only after the client measures the paid retry separately.
+
+## Verify before integrating
+
+The payment client and receipt verifier are deliberately separate. A verifier
+does not need a wallet, payment credential, network connection, or private
+`task_payload`. It consumes a response, a JWKS selected by participant-local
+policy, and values from one monotonic timer.
+
+- [`verify/typescript`](verify/typescript) validates ES256, exact signed-payload
+  equality, all signed timing relationships, the non-authorizing evidence
+  scope, conservative network uncertainty, and an optional
+  `execution_window_utc`.
+- [`verify/python`](verify/python) independently implements the same behavior
+  with Python `cryptography`.
+- [`popcorn-receipt-v1.json`](verify/test-vectors/popcorn-receipt-v1.json) is a
+  fixed public vector consumed by both suites. It contains no private signing
+  key or payment proof.
+- [`examples/stale-action`](examples/stale-action) demonstrates the circuit
+  breaker: stale evidence returns `request_new_temporal_anchor`; it does not
+  authorize or execute the action.
+
+```bash
+cd verify/typescript
+npm install
+npm run check
+
+cd ../python
+python -m pip install -r requirements.txt
+python -m unittest -v test_popcorn_verify.py
+```
 
 ## Receipt semantics
 
@@ -158,6 +191,11 @@ consumer-facing Briarwood system.
 `767-2676.com` is not a central database. Private `task_payload`, availability,
 pricing, schedules, callbacks, trust state, and final decisions remain with the
 participating nodes.
+
+POPCORN is not an A2A server or MCP server. Agents using those protocols can
+call the narrow x402 HTTP resource and verify its receipt locally; publishing
+a fake agent card or MCP identity would blur the contract instead of improving
+interoperability.
 
 ## Ecosystem distribution
 

@@ -1,0 +1,17 @@
+{
+  "name": "@popcorn-temporal-anchor/verify",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Network-free POPCORN temporal receipt verifier",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "check": "tsc --noEmit && tsx --test test/*.test.ts",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,0 +1,321 @@
+export type PopcornJsonWebKey = JsonWebKey & { kid?: string };
+export type JsonWebKeySet = { keys: PopcornJsonWebKey[] };
+
+export type TemporalReceipt = {
+  anchor_id: string;
+  node_id: string;
+  protocol_id: string;
+  request_received_at_utc: string;
+  observed_at_utc: string;
+  measurement_at_utc: string;
+  unix_time_milliseconds: number;
+  valid_until_utc: string;
+  freshness_window_ms: number;
+  server_processing_duration_ms: number;
+  post_anchor_processing_duration_ms: number;
+  validity_at_measurement_ms: number;
+  payment_identifier: string;
+  payment_transaction: string | null;
+  evidence_scope: {
+    type: string;
+    caller_bound: boolean;
+    task_bound: boolean;
+    authorization_granted: boolean;
+  };
+};
+
+export type PopcornResponse = {
+  temporal_receipt: TemporalReceipt;
+  temporal_attestation: {
+    format?: string;
+    algorithm?: string;
+    key_id?: string;
+    compact_jws: string;
+  };
+};
+
+export type MonotonicObservation = {
+  paid_request_start_monotonic_ms: number;
+  paid_response_receive_monotonic_ms: number;
+  decision_monotonic_ms?: number;
+};
+
+export type ExecutionWindowUtc = {
+  opens_at_utc: string;
+  closes_at_utc: string;
+};
+
+export type VerifiedTemporalEvidence = {
+  signature_verified: true;
+  key_id: string;
+  temporal_receipt: TemporalReceipt;
+  paid_request_rtt_ms: number;
+  network_uncertainty_ms: number;
+  remaining_validity_at_receipt_ms: number;
+  remaining_validity_now_ms: number;
+  temporal_interval_now_utc: {
+    earliest: string;
+    latest: string;
+  };
+  execution_window?: {
+    eligible: boolean;
+    next_action: "continue_task" | "request_new_temporal_anchor";
+    reason:
+      | "verified_interval_within_execution_window"
+      | "temporal_evidence_expired"
+      | "verified_interval_not_within_execution_window";
+  };
+};
+
+const encoder = new TextEncoder();
+
+function decodeBase64Url(value: string): Uint8Array<ArrayBuffer> {
+  if (!/^[A-Za-z0-9_-]+$/.test(value)) {
+    throw new Error("compact JWS contains invalid base64url");
+  }
+  const decoded = Buffer.from(value, "base64url");
+  const copy = new Uint8Array(new ArrayBuffer(decoded.length));
+  copy.set(decoded);
+  return copy;
+}
+
+function parseJsonPart(value: string, label: string): unknown {
+  try {
+    return JSON.parse(Buffer.from(value, "base64url").toString("utf8"));
+  } catch {
+    throw new Error(`${label} is not valid base64url JSON`);
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (isRecord(value)) {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function requireFinite(value: number, label: string): void {
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error(`${label} must be a finite non-negative number`);
+  }
+}
+
+function parseUtc(value: string, label: string): number {
+  if (typeof value !== "string" || !value.endsWith("Z")) {
+    throw new Error(`${label} must be an explicit UTC timestamp`);
+  }
+  const parsed = Date.parse(value);
+  if (!Number.isFinite(parsed)) throw new Error(`${label} is invalid`);
+  return parsed;
+}
+
+function requireIntegerRelationship(
+  actual: number,
+  expected: number,
+  label: string,
+): void {
+  if (!Number.isSafeInteger(expected) || expected < 0 || actual !== expected) {
+    throw new Error(`${label} signed relationship is invalid`);
+  }
+}
+
+function validateReceiptSemantics(
+  receipt: TemporalReceipt,
+  expectedNodeId: string,
+): { measurementMs: number; validUntilMs: number } {
+  if (receipt.node_id !== expectedNodeId) throw new Error("unexpected node_id");
+  if (receipt.protocol_id !== "POPCORN/1.0") throw new Error("unexpected protocol_id");
+  if (!receipt.anchor_id || !receipt.payment_identifier) {
+    throw new Error("receipt identifiers are missing");
+  }
+
+  const requestReceivedMs = parseUtc(
+    receipt.request_received_at_utc,
+    "request_received_at_utc",
+  );
+  const observedMs = parseUtc(receipt.observed_at_utc, "observed_at_utc");
+  const measurementMs = parseUtc(
+    receipt.measurement_at_utc,
+    "measurement_at_utc",
+  );
+  const validUntilMs = parseUtc(receipt.valid_until_utc, "valid_until_utc");
+
+  requireIntegerRelationship(
+    measurementMs - requestReceivedMs,
+    receipt.server_processing_duration_ms,
+    "server_processing_duration_ms",
+  );
+  requireIntegerRelationship(
+    measurementMs - observedMs,
+    receipt.post_anchor_processing_duration_ms,
+    "post_anchor_processing_duration_ms",
+  );
+  requireIntegerRelationship(
+    validUntilMs - measurementMs,
+    receipt.validity_at_measurement_ms,
+    "validity_at_measurement_ms",
+  );
+  requireIntegerRelationship(
+    validUntilMs - observedMs,
+    receipt.freshness_window_ms,
+    "freshness_window_ms",
+  );
+  if (receipt.unix_time_milliseconds !== observedMs) {
+    throw new Error("unix_time_milliseconds signed relationship is invalid");
+  }
+  if (
+    receipt.evidence_scope?.type !== "bearer_temporal_evidence" ||
+    receipt.evidence_scope.caller_bound !== false ||
+    receipt.evidence_scope.task_bound !== false ||
+    receipt.evidence_scope.authorization_granted !== false
+  ) {
+    throw new Error("temporal evidence must be bearer, non-authorizing, and unbound");
+  }
+  return { measurementMs, validUntilMs };
+}
+
+export async function verifyPopcornTemporalEvidence(
+  response: PopcornResponse,
+  jwks: JsonWebKeySet,
+  monotonic: MonotonicObservation,
+  options: { expected_node_id?: string; execution_window_utc?: ExecutionWindowUtc } = {},
+): Promise<VerifiedTemporalEvidence> {
+  if (!isRecord(response) || !isRecord(response.temporal_receipt)) {
+    throw new Error("response is missing temporal_receipt");
+  }
+  if (!isRecord(response.temporal_attestation)) {
+    throw new Error("response is missing temporal_attestation");
+  }
+
+  const compact = response.temporal_attestation.compact_jws;
+  if (typeof compact !== "string") throw new Error("compact_jws is missing");
+  const parts = compact.split(".");
+  if (parts.length !== 3 || parts.some((part) => part.length === 0)) {
+    throw new Error("compact_jws must contain exactly three parts");
+  }
+  const [encodedHeader, encodedPayload, encodedSignature] = parts;
+  const header = parseJsonPart(encodedHeader, "protected header");
+  if (!isRecord(header) || header.alg !== "ES256" || typeof header.kid !== "string") {
+    throw new Error("protected header must contain alg=ES256 and kid");
+  }
+  if (
+    response.temporal_attestation.algorithm !== undefined &&
+    response.temporal_attestation.algorithm !== "ES256"
+  ) {
+    throw new Error("attestation algorithm does not match ES256");
+  }
+  if (
+    response.temporal_attestation.key_id !== undefined &&
+    response.temporal_attestation.key_id !== header.kid
+  ) {
+    throw new Error("attestation key_id does not match protected kid");
+  }
+
+  const key = jwks?.keys?.find((candidate) => candidate.kid === header.kid);
+  if (!key) throw new Error(`kid ${header.kid} is absent from JWKS`);
+  if (
+    key.kty !== "EC" ||
+    key.crv !== "P-256" ||
+    (key.alg !== undefined && key.alg !== "ES256") ||
+    (key.use !== undefined && key.use !== "sig")
+  ) {
+    throw new Error("JWKS key is not an ES256 P-256 signature key");
+  }
+
+  const signature = decodeBase64Url(encodedSignature);
+  if (signature.byteLength !== 64) throw new Error("ES256 signature must be 64 bytes");
+  const publicKey = await crypto.subtle.importKey(
+    "jwk",
+    key,
+    { name: "ECDSA", namedCurve: "P-256" },
+    false,
+    ["verify"],
+  );
+  const signatureVerified = await crypto.subtle.verify(
+    { name: "ECDSA", hash: "SHA-256" },
+    publicKey,
+    signature,
+    encoder.encode(`${encodedHeader}.${encodedPayload}`),
+  );
+  if (!signatureVerified) throw new Error("ES256 temporal receipt signature is invalid");
+
+  const signedReceipt = parseJsonPart(encodedPayload, "signed payload");
+  if (canonicalJson(signedReceipt) !== canonicalJson(response.temporal_receipt)) {
+    throw new Error("response temporal_receipt does not equal the signed payload");
+  }
+  const receipt = signedReceipt as TemporalReceipt;
+  const { measurementMs } = validateReceiptSemantics(
+    receipt,
+    options.expected_node_id ?? "767-2676.com",
+  );
+
+  requireFinite(monotonic.paid_request_start_monotonic_ms, "paid request start");
+  requireFinite(monotonic.paid_response_receive_monotonic_ms, "paid response receive");
+  const decisionMonotonicMs =
+    monotonic.decision_monotonic_ms ?? monotonic.paid_response_receive_monotonic_ms;
+  requireFinite(decisionMonotonicMs, "decision time");
+  if (
+    monotonic.paid_response_receive_monotonic_ms <
+      monotonic.paid_request_start_monotonic_ms ||
+    decisionMonotonicMs < monotonic.paid_response_receive_monotonic_ms
+  ) {
+    throw new Error("monotonic observations are out of order");
+  }
+
+  const rttMs =
+    monotonic.paid_response_receive_monotonic_ms -
+    monotonic.paid_request_start_monotonic_ms;
+  const uncertaintyMs = Math.max(
+    0,
+    rttMs - Math.min(receipt.server_processing_duration_ms, rttMs),
+  );
+  const remainingAtReceiptMs = Math.max(
+    0,
+    receipt.validity_at_measurement_ms - uncertaintyMs,
+  );
+  const elapsedSinceReceiptMs =
+    decisionMonotonicMs - monotonic.paid_response_receive_monotonic_ms;
+  const remainingNowMs = Math.max(0, remainingAtReceiptMs - elapsedSinceReceiptMs);
+  const earliestNowMs = measurementMs + elapsedSinceReceiptMs;
+  const latestNowMs = earliestNowMs + uncertaintyMs;
+
+  const result: VerifiedTemporalEvidence = {
+    signature_verified: true,
+    key_id: header.kid,
+    temporal_receipt: receipt,
+    paid_request_rtt_ms: rttMs,
+    network_uncertainty_ms: uncertaintyMs,
+    remaining_validity_at_receipt_ms: remainingAtReceiptMs,
+    remaining_validity_now_ms: remainingNowMs,
+    temporal_interval_now_utc: {
+      earliest: new Date(earliestNowMs).toISOString(),
+      latest: new Date(latestNowMs).toISOString(),
+    },
+  };
+
+  if (options.execution_window_utc) {
+    const opensMs = parseUtc(options.execution_window_utc.opens_at_utc, "opens_at_utc");
+    const closesMs = parseUtc(options.execution_window_utc.closes_at_utc, "closes_at_utc");
+    if (opensMs >= closesMs) throw new Error("execution_window_utc is not ordered");
+    const eligible =
+      remainingNowMs > 0 && earliestNowMs >= opensMs && latestNowMs < closesMs;
+    result.execution_window = {
+      eligible,
+      next_action: eligible ? "continue_task" : "request_new_temporal_anchor",
+      reason: eligible
+        ? "verified_interval_within_execution_window"
+        : remainingNowMs === 0
+          ? "temporal_evidence_expired"
+          : "verified_interval_not_within_execution_window",
+    };
+  }
+  return result;
+}

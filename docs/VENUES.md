@@ -11,9 +11,11 @@ Status date: 2026-08-28.
 | Venue | Why it matters | POPCORN action | Status |
 | --- | --- | --- | --- |
 | [Coinbase x402 Bazaar](https://docs.cdp.coinbase.com/x402/buyer/discover-services) / [Agentic Market](https://agentic.market) | Agents semantically search for payable x402 resources | Keep Bazaar extension metadata on `/v1/time`; confirm indexing after successful settlement | Live metadata; public search confirmation pending |
+| [Agent402](https://agent402.tools) | Independent index that probes x402 origins and also ingests Bazaar resources | Register the canonical origin `https://767-2676.com`; keep the live challenge standards-compliant | Registration attempted after each material discovery release; see release notes |
+| [402 Index](https://402index.io) | Independently reviewed directory and endpoint probe | Submit the canonical `GET /v1/time` resource with Base/USDC metadata | Registration attempted after each material discovery release; see release notes |
 | [x402-list](https://x402-list.com) | Manually reviewed directory of endpoints that return valid x402 challenges | Submit `/v1/time` for review | Probe passed; manual approval pending |
 | [x402scan](https://x402scan.com) | Explorer for x402 activity and ecosystem resources | Verify the production settlement and resource appear | Verification pending |
-| [OpenClaw ClawHub](https://clawhub.ai) | Searchable skill registry used directly by independent OpenClaw installations | Publish `openclaw/popcorn-temporal-anchor` | Package ready; publisher login required |
+| [OpenClaw ClawHub](https://clawhub.ai) | Searchable skill registry used directly by independent OpenClaw installations | Publish `openclaw/popcorn-temporal-anchor` | v1.0.2 previously published; v1.0.3 adds the independent verifier kit |
 
 ## Tier 2 — respected builder ecosystems
 
