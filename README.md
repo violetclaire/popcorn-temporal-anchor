@@ -17,6 +17,19 @@ store an agent's private task state.
 - **Protocol:** x402 v2, exact scheme
 - **Receipt:** ES256 compact JWS with public JWKS verification
 
+## Available service
+
+| Service | Use when | Method and resource | Price | Returns | Storage |
+| --- | --- | --- | --- | --- | --- |
+| Signed portable time | A task has a deadline, expiration, execution window, or handoff | `GET https://767-2676.com/v1/time` | `$0.001` USDC on Base through x402 v2 | Signed time another system can verify | The task and schedule stay with the agent |
+
+POPCORN says what time it is. The agent carries that measurement in its own
+schedule. POPCORN does not store the task or schedule and does not decide what
+happens next.
+
+Agents can read the [repository service catalog](service-catalog.json) or the
+[canonical live service offer](https://767-2676.com/agent/offer) before paying.
+
 ## Why this exists
 
 A local clock can tell an agent what time it believes it is. POPCORN provides a

@@ -1,0 +1,42 @@
+{
+  "catalog_version": "1.0.0",
+  "canonical_origin": "https://767-2676.com",
+  "canonical_live_offer": "https://767-2676.com/agent/offer",
+  "service_count": 1,
+  "services": [
+    {
+      "service_id": "signed_portable_time",
+      "service_name": "Signed portable time",
+      "service_state": "available",
+      "description": "POPCORN says what time it is. The agent carries that measurement in its own schedule so another system can verify it before deciding whether to proceed.",
+      "use_when": [
+        "task_has_deadline",
+        "task_has_expiration",
+        "task_has_execution_window",
+        "task_is_handed_off_between_agents_or_systems"
+      ],
+      "purchase": {
+        "method": "GET",
+        "resource": "https://767-2676.com/v1/time",
+        "unpaid_response_status": 402,
+        "paid_response_status": 200,
+        "payment_protocol": "x402-v2",
+        "price": {
+          "amount": "0.001",
+          "currency": "USDC",
+          "network": "eip155:8453"
+        }
+      },
+      "result": {
+        "type": "signed_temporal_anchor",
+        "portable": true,
+        "receiving_system_can_verify_independently": true
+      },
+      "storage": {
+        "task_stored_by_popcorn": false,
+        "schedule_stored_by_popcorn": false,
+        "time_returned_to_agent": true
+      }
+    }
+  ]
+}
