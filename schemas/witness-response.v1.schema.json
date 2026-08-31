@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://767-2676.com/schemas/witness-response.v1.json",
+  "title": "POPCORN Witness Response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "witness_receipt",
+    "witness_attestation"
+  ],
+  "properties": {
+    "witness_receipt": {
+      "$ref": "#/$defs/witnessReceipt"
+    },
+    "witness_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "algorithm",
+        "key_id",
+        "compact_jws"
+      ],
+      "properties": {
+        "format": {
+          "const": "JWS"
+        },
+        "algorithm": {
+          "const": "ES256"
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compact_jws": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256Digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    },
+    "witnessReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id",
+        "node_id",
+        "protocol_id",
+        "request_received_at_utc",
+        "witnessed_at_utc",
+        "statement_created_at_utc",
+        "unix_time_milliseconds",
+        "clock_accuracy_radius_ms",
+        "witness_window_utc",
+        "server_processing_duration_ms",
+        "post_witness_processing_duration_ms",
+        "commitment",
+        "payment_identifier",
+        "payment_transaction",
+        "evidence_scope"
+      ],
+      "properties": {
+        "receipt_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "protocol_id": {
+          "const": "POPCORN-WITNESS/1.0"
+        },
+        "request_received_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "witnessed_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "statement_created_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "unix_time_milliseconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "clock_accuracy_radius_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "witness_window_utc": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "earliest",
+            "latest"
+          ],
+          "properties": {
+            "earliest": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "latest": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "server_processing_duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "post_witness_processing_duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "commitment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "payload_digest",
+            "nonce",
+            "previous_attestation_digest"
+          ],
+          "properties": {
+            "payload_digest": {
+              "$ref": "#/$defs/sha256Digest"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            },
+            "previous_attestation_digest": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/sha256Digest"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "payment_identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payment_transaction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "payload_disclosed",
+            "caller_identity_proven",
+            "recipient_delivery_proven",
+            "action_execution_proven",
+            "nonce_uniqueness_enforced",
+            "replay_prevented",
+            "authorization_granted"
+          ],
+          "properties": {
+            "type": {
+              "const": "payload_commitment_witness"
+            },
+            "payload_disclosed": {
+              "const": false
+            },
+            "caller_identity_proven": {
+              "const": false
+            },
+            "recipient_delivery_proven": {
+              "const": false
+            },
+            "action_execution_proven": {
+              "const": false
+            },
+            "nonce_uniqueness_enforced": {
+              "const": false
+            },
+            "replay_prevented": {
+              "const": false
+            },
+            "authorization_granted": {
+              "const": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-# Python verifier
+# Python verifiers
 
 `popcorn_verify.py` verifies POPCORN/1.0 ES256 temporal evidence without any
 network call. The caller supplies the response, a JWKS selected by local
@@ -12,3 +12,21 @@ python -m unittest -v test_popcorn_verify.py
 ```
 
 The tests consume the exact same public vector as the TypeScript verifier.
+
+`verify_popcorn_witness_evidence` additionally verifies a
+`POPCORN-WITNESS/1.0` memory checkpoint against the exact original payload,
+nonce, and optional previous compact JWS:
+
+```python
+verified = verify_popcorn_witness_evidence(
+    response,
+    jwks,
+    expected_payload=exact_payload_bytes,
+    expected_nonce=original_nonce,
+    expected_previous_attestation=previous_compact_jws,
+)
+replay_key = verified["replay_key"]
+```
+
+The verifier returns the replay key; the participant remains responsible for
+remembering accepted keys and applying its own idempotency policy.

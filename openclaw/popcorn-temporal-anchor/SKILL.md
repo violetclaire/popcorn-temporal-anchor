@@ -90,3 +90,17 @@ keys, receiving wallet, or Briarwood systems.
   local execution-window decision cannot be completed.
 - POPCORN is not an A2A server or MCP server. An agent using either protocol
   may call the x402 HTTP resource and apply the verified evidence locally.
+
+## Payload-bound checkpoint contract
+
+The public repository also contains the implementation-ready
+`POPCORN-WITNESS/1.0` contract for portable, verifiable memory checkpoints.
+It binds a SHA-256 payload digest, a client nonce, an optional predecessor JWS
+digest, and a signed witness interval while the original payload remains
+participant-local.
+
+Do not call `POST /v1/receipt` until the canonical live offer advertises it.
+When it becomes live, keep the original payload and nonce locally, verify both
+against the returned receipt, and retain the verifier's `replay_key` under
+participant-local idempotency policy. The receipt itself neither stores memory
+nor proves identity, delivery, execution, replay prevention, or authorization.

@@ -7,6 +7,12 @@ POPCORN is a live, machine-payable temporal evidence service at
 USDC over x402 v2 and receives a signed, short-lived temporal receipt that
 another node can verify independently.
 
+The repository now also contains the implementation-ready
+`POPCORN-WITNESS/1.0` contract for a payload-bound receipt: a lightweight way
+for an autonomous agent to carry a **portable, verifiable memory checkpoint**
+without putting its actual memory in a shared database. That additive endpoint
+is not advertised as live until it is deployed and independently tested.
+
 The service is intentionally narrow. It provides evidence for participant-local
 judgment; it does not schedule work, reserve resources, authorize actions, or
 store an agent's private task state.
@@ -26,6 +32,46 @@ store an agent's private task state.
 POPCORN says what time it is. The agent carries that measurement in its own
 schedule. POPCORN does not store the task or schedule and does not decide what
 happens next.
+
+## Portable, verifiable memory checkpoints
+
+> Your agent already has memory. What it lacks is portable proof that one exact
+> version of that memory existed by a particular time.
+
+The proposed paid resource is:
+
+```text
+POST https://767-2676.com/v1/receipt
+```
+
+The agent hashes the exact payload bytes locally and sends only:
+
+- the SHA-256 payload digest;
+- a fresh 32-byte nonce;
+- optionally, the SHA-256 digest of the preceding compact JWS.
+
+POPCORN signs those values with a bounded witness interval. The agent carries
+the original payload and signed receipt together. A later session or another
+system can verify that the payload has not changed, when the node witnessed its
+commitment, and whether the receipt commits to a specific predecessor.
+
+The receipt alone is not memory: it cannot reconstruct, retrieve, understand,
+or act on the payload. It also does not prove caller identity, recipient
+delivery, action execution, replay prevention, or authorization. Read the full
+[`POPCORN-WITNESS/1.0` contract](docs/WITNESS_RECEIPT.md).
+
+Implementation resources:
+
+| Resource | Purpose |
+| --- | --- |
+| [`schemas/witness-request.v1.schema.json`](schemas/witness-request.v1.schema.json) | Digest-only request contract |
+| [`schemas/witness-response.v1.schema.json`](schemas/witness-response.v1.schema.json) | Signed receipt response contract |
+| [`reference/issuer/typescript`](reference/issuer/typescript) | Platform-neutral ES256 issuance core |
+| [`reference/deployment/POPCORN-WITNESS-DEPLOYMENT.md`](reference/deployment/POPCORN-WITNESS-DEPLOYMENT.md) | Production route, discovery, privacy, and acceptance gate |
+| [`verify/typescript`](verify/typescript) | Offline TypeScript verification for temporal and witness receipts |
+| [`verify/python`](verify/python) | Independent offline Python verification |
+| [`popcorn-witness-receipt-v1.json`](verify/test-vectors/popcorn-witness-receipt-v1.json) | Shared signed payload-bound vector |
+| [`examples/typescript-x402-witness-client`](examples/typescript-x402-witness-client) | x402 client and local checkpoint flow |
 
 Agents can read the [repository service catalog](service-catalog.json) or the
 [canonical live service offer](https://767-2676.com/agent/offer) before paying.
@@ -87,6 +133,7 @@ sequenceDiagram
 | [`/openapi.json`](https://767-2676.com/openapi.json) | OpenAPI contract |
 | [`/.well-known/popcorn-keys.json`](https://767-2676.com/.well-known/popcorn-keys.json) | Public signing keys |
 | [`/schemas/execution-schedule.v1.json`](https://767-2676.com/schemas/execution-schedule.v1.json) | Participant-local schedule schema |
+| [`docs/WITNESS_RECEIPT.md`](docs/WITNESS_RECEIPT.md) | Payload-bound checkpoint semantics and proof boundary |
 | [`verify/typescript`](verify/typescript) | Reusable network-free TypeScript verifier |
 | [`verify/python`](verify/python) | Independent network-free Python verifier |
 | [`verify/test-vectors`](verify/test-vectors) | Shared public signed verification vectors |
@@ -134,6 +181,9 @@ policy, and values from one monotonic timer.
 - [`popcorn-receipt-v1.json`](verify/test-vectors/popcorn-receipt-v1.json) is a
   fixed public vector consumed by both suites. It contains no private signing
   key or payment proof.
+- [`popcorn-witness-receipt-v1.json`](verify/test-vectors/popcorn-witness-receipt-v1.json)
+  independently exercises payload matching, nonce binding, predecessor
+  digest binding, signed clock accuracy, and fail-closed scope validation.
 - [`examples/stale-action`](examples/stale-action) demonstrates the circuit
   breaker: stale evidence returns `request_new_temporal_anchor`; it does not
   authorize or execute the action.
@@ -173,6 +223,13 @@ Read the canonical [`SKILL.md`](https://767-2676.com/SKILL.md) before production
 integration. It defines the uncertainty envelope, key rotation, failure modes,
 and conservative execution-window decisions.
 
+`POPCORN-WITNESS/1.0` is intentionally separate. Its durable payload-bound
+receipt carries a digest and nonce rather than private task data. When the
+prior attestation is independently verified and the new receipt includes
+`H(previous compact JWS)`, the new receipt is bound to those exact prior signed
+bytes. This does not prove either real-world action executed. Application-level
+replay rejection still requires participant-local state.
+
 ## OpenClaw
 
 The folder [`openclaw/popcorn-temporal-anchor`](openclaw/popcorn-temporal-anchor)
@@ -204,6 +261,10 @@ consumer-facing Briarwood system.
 `767-2676.com` is not a central database. Private `task_payload`, availability,
 pricing, schedules, callbacks, trust state, and final decisions remain with the
 participating nodes.
+
+For memory checkpoints, the original payload also remains participant-local.
+POPCORN signs its commitment; the agent remains responsible for storing and
+transporting the memory itself.
 
 POPCORN is not an A2A server or MCP server. Agents using those protocols can
 call the narrow x402 HTTP resource and verify its receipt locally; publishing

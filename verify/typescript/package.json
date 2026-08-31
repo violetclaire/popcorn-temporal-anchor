@@ -2,7 +2,7 @@
   "name": "@popcorn-temporal-anchor/verify",
   "version": "1.0.0",
   "private": true,
-  "description": "Network-free POPCORN temporal receipt verifier",
+  "description": "Network-free POPCORN temporal and payload-bound witness receipt verifiers",
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {

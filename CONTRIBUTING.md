@@ -9,6 +9,7 @@ Useful contributions include:
 - client examples for additional x402-compatible languages and frameworks;
 - independent receipt-verification implementations;
 - conformance fixtures and interoperability tests;
+- payload-bound checkpoint adapters that keep original memory participant-local;
 - integrations for wallet-enabled agent runtimes;
 - documentation corrections backed by a reproducible public response.
 
@@ -20,6 +21,8 @@ Before opening a pull request:
    `execution_window_utc`.
 4. State whether an example makes a real mainnet payment.
 5. Include a concise test or verification procedure.
+6. Do not describe nonce binding as replay prevention or receipt chaining as
+   proof that a real-world action executed.
 
 Security reports belong in private email, not public issues. See
 [`SECURITY.md`](SECURITY.md).

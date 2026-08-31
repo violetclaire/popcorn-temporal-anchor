@@ -1,8 +1,9 @@
-"""Network-free POPCORN/1.0 ES256 temporal evidence verification."""
+"""Network-free POPCORN temporal and payload-bound witness verification."""
 
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 from datetime import datetime, timezone
 from typing import Any
@@ -43,8 +44,46 @@ def _b64int(value: str) -> int:
 
 
 def _validate_relationship(actual: int, expected: Any, label: str) -> None:
-    if not isinstance(expected, int) or expected < 0 or actual != expected:
+    if (
+        not isinstance(expected, int)
+        or isinstance(expected, bool)
+        or expected < 0
+        or actual != expected
+    ):
         raise ValueError(f"{label} signed relationship is invalid")
+
+
+def _sha256_base64url(value: bytes | str) -> str:
+    if not isinstance(value, (bytes, str)):
+        raise ValueError("value to hash must be bytes or a string")
+    data = value.encode() if isinstance(value, str) else value
+    return base64.urlsafe_b64encode(hashlib.sha256(data).digest()).decode().rstrip("=")
+
+
+def _require_exact_keys(value: dict[str, Any], expected: set[str], label: str) -> None:
+    if set(value) != expected:
+        raise ValueError(f"{label} contains missing or unsupported fields")
+
+
+def _require_sha256_digest(value: Any, label: str) -> None:
+    if (
+        not isinstance(value, dict)
+        or value.get("algorithm") != "sha-256"
+        or not isinstance(value.get("value"), str)
+        or len(value["value"]) != 43
+        or any(c not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" for c in value["value"])
+    ):
+        raise ValueError(f"{label} must be an unpadded base64url SHA-256 digest")
+    _require_exact_keys(value, {"algorithm", "value"}, label)
+
+
+def _require_nonce(value: Any) -> None:
+    if (
+        not isinstance(value, str)
+        or len(value) != 43
+        or any(c not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" for c in value)
+    ):
+        raise ValueError("nonce must be 32 unpadded base64url bytes")
 
 
 def verify_popcorn_temporal_evidence(
@@ -175,3 +214,210 @@ def verify_popcorn_temporal_evidence(
             ),
         }
     return result
+
+
+def verify_popcorn_witness_evidence(
+    response: dict[str, Any],
+    jwks: dict[str, Any],
+    *,
+    expected_nonce: str,
+    expected_payload: bytes | str | None = None,
+    expected_payload_digest: str | None = None,
+    expected_previous_attestation: str | None = None,
+    expected_node_id: str = "767-2676.com",
+) -> dict[str, Any]:
+    receipt = response.get("witness_receipt")
+    attestation = response.get("witness_attestation")
+    if not isinstance(receipt, dict) or not isinstance(attestation, dict):
+        raise ValueError("response is missing witness receipt or attestation")
+    _require_exact_keys(response, {"witness_receipt", "witness_attestation"}, "response")
+    _require_exact_keys(
+        attestation,
+        {"format", "algorithm", "key_id", "compact_jws"},
+        "witness_attestation",
+    )
+    compact = attestation.get("compact_jws")
+    if not isinstance(compact, str):
+        raise ValueError("compact_jws is missing")
+    parts = compact.split(".")
+    if len(parts) != 3 or any(not part for part in parts):
+        raise ValueError("compact_jws must contain exactly three parts")
+    encoded_header, encoded_payload, encoded_signature = parts
+    header = _json_part(encoded_header, "protected header")
+    if (
+        not isinstance(header, dict)
+        or header.get("alg") != "ES256"
+        or not isinstance(header.get("kid"), str)
+        or header.get("typ") != "popcorn-witness+jws"
+    ):
+        raise ValueError("protected header must contain alg=ES256, kid, and typ=popcorn-witness+jws")
+    kid = header["kid"]
+    if attestation.get("format") != "JWS":
+        raise ValueError("attestation format does not match JWS")
+    if attestation.get("algorithm") != "ES256":
+        raise ValueError("attestation algorithm does not match ES256")
+    if attestation.get("key_id") != kid:
+        raise ValueError("attestation key_id does not match protected kid")
+
+    keys = jwks.get("keys") if isinstance(jwks, dict) else None
+    key = next((candidate for candidate in keys or [] if candidate.get("kid") == kid), None)
+    if key is None:
+        raise ValueError(f"kid {kid} is absent from JWKS")
+    if key.get("kty") != "EC" or key.get("crv") != "P-256" or key.get("alg", "ES256") != "ES256" or key.get("use", "sig") != "sig":
+        raise ValueError("JWKS key is not an ES256 P-256 signature key")
+
+    signature = _decode_base64url(encoded_signature)
+    if len(signature) != 64:
+        raise ValueError("ES256 signature must be 64 bytes")
+    public_key = ec.EllipticCurvePublicNumbers(
+        _b64int(key["x"]), _b64int(key["y"]), ec.SECP256R1()
+    ).public_key()
+    der_signature = encode_dss_signature(
+        int.from_bytes(signature[:32], "big"),
+        int.from_bytes(signature[32:], "big"),
+    )
+    try:
+        public_key.verify(
+            der_signature,
+            f"{encoded_header}.{encoded_payload}".encode(),
+            ec.ECDSA(hashes.SHA256()),
+        )
+    except InvalidSignature as exc:
+        raise ValueError("ES256 witness receipt signature is invalid") from exc
+
+    signed_receipt = _json_part(encoded_payload, "signed payload")
+    if signed_receipt != receipt:
+        raise ValueError("response witness_receipt does not equal the signed payload")
+    _require_exact_keys(
+        receipt,
+        {
+            "receipt_id",
+            "node_id",
+            "protocol_id",
+            "request_received_at_utc",
+            "witnessed_at_utc",
+            "statement_created_at_utc",
+            "unix_time_milliseconds",
+            "clock_accuracy_radius_ms",
+            "witness_window_utc",
+            "server_processing_duration_ms",
+            "post_witness_processing_duration_ms",
+            "commitment",
+            "payment_identifier",
+            "payment_transaction",
+            "evidence_scope",
+        },
+        "witness_receipt",
+    )
+    if receipt.get("node_id") != expected_node_id:
+        raise ValueError("unexpected node_id")
+    if receipt.get("protocol_id") != "POPCORN-WITNESS/1.0":
+        raise ValueError("unexpected protocol_id")
+    if (
+        not isinstance(receipt.get("receipt_id"), str)
+        or not receipt["receipt_id"]
+        or not isinstance(receipt.get("payment_identifier"), str)
+        or not receipt["payment_identifier"]
+        or not (
+            receipt.get("payment_transaction") is None
+            or isinstance(receipt.get("payment_transaction"), str)
+        )
+    ):
+        raise ValueError("receipt identifiers are missing")
+
+    request_received_ms = _utc_ms(receipt["request_received_at_utc"], "request_received_at_utc")
+    witnessed_ms = _utc_ms(receipt["witnessed_at_utc"], "witnessed_at_utc")
+    statement_created_ms = _utc_ms(receipt["statement_created_at_utc"], "statement_created_at_utc")
+    if request_received_ms > witnessed_ms or witnessed_ms > statement_created_ms:
+        raise ValueError("witness receipt timestamps are out of order")
+    _validate_relationship(
+        statement_created_ms - request_received_ms,
+        receipt.get("server_processing_duration_ms"),
+        "server_processing_duration_ms",
+    )
+    _validate_relationship(
+        statement_created_ms - witnessed_ms,
+        receipt.get("post_witness_processing_duration_ms"),
+        "post_witness_processing_duration_ms",
+    )
+    if receipt.get("unix_time_milliseconds") != witnessed_ms:
+        raise ValueError("unix_time_milliseconds signed relationship is invalid")
+    radius_ms = receipt.get("clock_accuracy_radius_ms")
+    if not isinstance(radius_ms, int) or isinstance(radius_ms, bool) or radius_ms < 0:
+        raise ValueError("clock_accuracy_radius_ms must be a non-negative integer")
+
+    def iso(ms: int) -> str:
+        return datetime.fromtimestamp(ms / 1000, timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+    earliest = iso(witnessed_ms - radius_ms)
+    latest = iso(witnessed_ms + radius_ms)
+    witness_window = receipt.get("witness_window_utc")
+    if not isinstance(witness_window, dict):
+        raise ValueError("witness_window_utc is missing")
+    _require_exact_keys(witness_window, {"earliest", "latest"}, "witness_window_utc")
+    if witness_window != {"earliest": earliest, "latest": latest}:
+        raise ValueError("witness_window_utc signed relationship is invalid")
+
+    commitment = receipt.get("commitment")
+    if not isinstance(commitment, dict):
+        raise ValueError("commitment is missing")
+    _require_exact_keys(
+        commitment,
+        {"payload_digest", "nonce", "previous_attestation_digest"},
+        "commitment",
+    )
+    _require_sha256_digest(commitment.get("payload_digest"), "payload_digest")
+    _require_nonce(commitment.get("nonce"))
+    previous_digest = commitment.get("previous_attestation_digest")
+    if previous_digest is not None:
+        _require_sha256_digest(previous_digest, "previous_attestation_digest")
+
+    expected_scope = {
+        "type": "payload_commitment_witness",
+        "payload_disclosed": False,
+        "caller_identity_proven": False,
+        "recipient_delivery_proven": False,
+        "action_execution_proven": False,
+        "nonce_uniqueness_enforced": False,
+        "replay_prevented": False,
+        "authorization_granted": False,
+    }
+    if receipt.get("evidence_scope") != expected_scope:
+        raise ValueError("witness evidence scope is invalid")
+
+    _require_nonce(expected_nonce)
+    if commitment["nonce"] != expected_nonce:
+        raise ValueError("receipt nonce does not match the expected request nonce")
+    if (expected_payload is None) == (expected_payload_digest is None):
+        raise ValueError("provide exactly one expected_payload or expected_payload_digest")
+    digest = (
+        _sha256_base64url(expected_payload)
+        if expected_payload is not None
+        else expected_payload_digest
+    )
+    if not isinstance(digest, str):
+        raise ValueError("expected payload digest is missing")
+    _require_sha256_digest({"algorithm": "sha-256", "value": digest}, "expected_payload_digest")
+    if commitment["payload_digest"]["value"] != digest:
+        raise ValueError("receipt payload digest does not match the expected payload")
+
+    previous_attestation_digest_matched = False
+    if previous_digest is not None:
+        if expected_previous_attestation is None:
+            raise ValueError("previous attestation is required to verify the claimed chain")
+        if previous_digest["value"] != _sha256_base64url(expected_previous_attestation):
+            raise ValueError("previous attestation digest does not match the claimed chain")
+        previous_attestation_digest_matched = True
+    elif expected_previous_attestation is not None:
+        raise ValueError("receipt does not contain a previous attestation commitment")
+
+    return {
+        "signature_verified": True,
+        "key_id": kid,
+        "witness_receipt": receipt,
+        "payload_digest_verified": True,
+        "nonce_verified": True,
+        "previous_attestation_digest_matched": previous_attestation_digest_matched,
+        "replay_key": f'{receipt["node_id"]}:{receipt["receipt_id"]}:{commitment["nonce"]}',
+        "witness_window_utc": {"earliest": earliest, "latest": latest},
+    }

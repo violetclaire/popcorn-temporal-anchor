@@ -23,6 +23,7 @@ This repository must never contain:
 - Cloudflare API tokens;
 - x402 payment signatures or reusable authorization material;
 - private `task_payload`, schedules, availability, pricing, or trust state.
+- original payloads used to create `POPCORN-WITNESS/1.0` commitments.
 
 Examples read secrets only from local environment variables. `.env` files and
 private-key formats are ignored by Git.
@@ -32,3 +33,10 @@ private-key formats are ignored by Git.
 A POPCORN receipt is evidence, not authorization. Verifiers must validate the
 JWS, signing key, signed timing relationships, freshness deadline, network
 uncertainty, and their own participant-local execution policy.
+
+A payload-bound witness receipt additionally requires exact payload-digest and
+nonce matching. When it claims a predecessor, verify the digest of the exact
+previous compact JWS. The signed clock-accuracy radius must be supported by the
+issuer's published operational policy; decimal timestamp precision is not an
+accuracy guarantee. Consuming applications—not POPCORN—must retain replay keys
+and enforce idempotency.

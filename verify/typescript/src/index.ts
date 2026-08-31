@@ -67,6 +67,79 @@ export type VerifiedTemporalEvidence = {
   };
 };
 
+export type Sha256Digest = {
+  algorithm: "sha-256";
+  value: string;
+};
+
+export type WitnessCommitment = {
+  payload_digest: Sha256Digest;
+  nonce: string;
+  previous_attestation_digest: Sha256Digest | null;
+};
+
+export type WitnessReceipt = {
+  receipt_id: string;
+  node_id: string;
+  protocol_id: string;
+  request_received_at_utc: string;
+  witnessed_at_utc: string;
+  statement_created_at_utc: string;
+  unix_time_milliseconds: number;
+  clock_accuracy_radius_ms: number;
+  witness_window_utc: {
+    earliest: string;
+    latest: string;
+  };
+  server_processing_duration_ms: number;
+  post_witness_processing_duration_ms: number;
+  commitment: WitnessCommitment;
+  payment_identifier: string;
+  payment_transaction: string | null;
+  evidence_scope: {
+    type: string;
+    payload_disclosed: boolean;
+    caller_identity_proven: boolean;
+    recipient_delivery_proven: boolean;
+    action_execution_proven: boolean;
+    nonce_uniqueness_enforced: boolean;
+    replay_prevented: boolean;
+    authorization_granted: boolean;
+  };
+};
+
+export type PopcornWitnessResponse = {
+  witness_receipt: WitnessReceipt;
+  witness_attestation: {
+    format?: string;
+    algorithm?: string;
+    key_id?: string;
+    compact_jws: string;
+  };
+};
+
+export type WitnessVerificationOptions = {
+  expected_node_id?: string;
+  expected_nonce: string;
+  expected_payload?: string | Uint8Array;
+  expected_payload_digest?: string;
+  expected_previous_attestation?: string;
+};
+
+export type VerifiedWitnessEvidence = {
+  signature_verified: true;
+  key_id: string;
+  witness_receipt: WitnessReceipt;
+  payload_digest_verified: true;
+  nonce_verified: true;
+  previous_attestation_digest_matched: boolean;
+  replay_key: string;
+  witness_window_utc: {
+    earliest: string;
+    latest: string;
+  };
+};
+
 const encoder = new TextEncoder();
 
 function decodeBase64Url(value: string): Uint8Array<ArrayBuffer> {
@@ -91,6 +164,21 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function requireExactKeys(
+  value: Record<string, unknown>,
+  expected: string[],
+  label: string,
+): void {
+  const actualKeys = Object.keys(value).sort();
+  const expectedKeys = [...expected].sort();
+  if (
+    actualKeys.length !== expectedKeys.length ||
+    actualKeys.some((key, index) => key !== expectedKeys[index])
+  ) {
+    throw new Error(`${label} contains missing or unsupported fields`);
+  }
+}
+
 function canonicalJson(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
   if (isRecord(value)) {
@@ -100,6 +188,35 @@ function canonicalJson(value: unknown): string {
       .join(",")}}`;
   }
   return JSON.stringify(value);
+}
+
+function encodeBase64Url(value: ArrayBuffer): string {
+  return Buffer.from(value).toString("base64url");
+}
+
+async function sha256Base64Url(value: string | Uint8Array): Promise<string> {
+  const input = typeof value === "string" ? encoder.encode(value) : value;
+  const bytes = new Uint8Array(new ArrayBuffer(input.byteLength));
+  bytes.set(input);
+  return encodeBase64Url(await crypto.subtle.digest("SHA-256", bytes));
+}
+
+function requireSha256Digest(value: unknown, label: string): asserts value is Sha256Digest {
+  if (
+    !isRecord(value) ||
+    value.algorithm !== "sha-256" ||
+    typeof value.value !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(value.value)
+  ) {
+    throw new Error(`${label} must be an unpadded base64url SHA-256 digest`);
+  }
+  requireExactKeys(value, ["algorithm", "value"], label);
+}
+
+function requireNonce(value: unknown): asserts value is string {
+  if (typeof value !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(value)) {
+    throw new Error("nonce must be 32 unpadded base64url bytes");
+  }
 }
 
 function requireFinite(value: number, label: string): void {
@@ -318,4 +435,250 @@ export async function verifyPopcornTemporalEvidence(
     };
   }
   return result;
+}
+
+export async function verifyPopcornWitnessEvidence(
+  response: PopcornWitnessResponse,
+  jwks: JsonWebKeySet,
+  options: WitnessVerificationOptions,
+): Promise<VerifiedWitnessEvidence> {
+  if (!isRecord(response) || !isRecord(response.witness_receipt)) {
+    throw new Error("response is missing witness_receipt");
+  }
+  if (!isRecord(response.witness_attestation)) {
+    throw new Error("response is missing witness_attestation");
+  }
+  requireExactKeys(response, ["witness_receipt", "witness_attestation"], "response");
+  requireExactKeys(
+    response.witness_attestation,
+    ["format", "algorithm", "key_id", "compact_jws"],
+    "witness_attestation",
+  );
+
+  const compact = response.witness_attestation.compact_jws;
+  if (typeof compact !== "string") throw new Error("compact_jws is missing");
+  const parts = compact.split(".");
+  if (parts.length !== 3 || parts.some((part) => part.length === 0)) {
+    throw new Error("compact_jws must contain exactly three parts");
+  }
+  const [encodedHeader, encodedPayload, encodedSignature] = parts;
+  const header = parseJsonPart(encodedHeader, "protected header");
+  if (
+    !isRecord(header) ||
+    header.alg !== "ES256" ||
+    typeof header.kid !== "string" ||
+    header.typ !== "popcorn-witness+jws"
+  ) {
+    throw new Error(
+      "protected header must contain alg=ES256, kid, and typ=popcorn-witness+jws",
+    );
+  }
+  if (response.witness_attestation.format !== "JWS") {
+    throw new Error("attestation format does not match JWS");
+  }
+  if (response.witness_attestation.algorithm !== "ES256") {
+    throw new Error("attestation algorithm does not match ES256");
+  }
+  if (response.witness_attestation.key_id !== header.kid) {
+    throw new Error("attestation key_id does not match protected kid");
+  }
+
+  const key = jwks?.keys?.find((candidate) => candidate.kid === header.kid);
+  if (!key) throw new Error(`kid ${header.kid} is absent from JWKS`);
+  if (
+    key.kty !== "EC" ||
+    key.crv !== "P-256" ||
+    (key.alg !== undefined && key.alg !== "ES256") ||
+    (key.use !== undefined && key.use !== "sig")
+  ) {
+    throw new Error("JWKS key is not an ES256 P-256 signature key");
+  }
+
+  const signature = decodeBase64Url(encodedSignature);
+  if (signature.byteLength !== 64) throw new Error("ES256 signature must be 64 bytes");
+  const publicKey = await crypto.subtle.importKey(
+    "jwk",
+    key,
+    { name: "ECDSA", namedCurve: "P-256" },
+    false,
+    ["verify"],
+  );
+  const signatureVerified = await crypto.subtle.verify(
+    { name: "ECDSA", hash: "SHA-256" },
+    publicKey,
+    signature,
+    encoder.encode(`${encodedHeader}.${encodedPayload}`),
+  );
+  if (!signatureVerified) throw new Error("ES256 witness receipt signature is invalid");
+
+  const signedReceipt = parseJsonPart(encodedPayload, "signed payload");
+  if (canonicalJson(signedReceipt) !== canonicalJson(response.witness_receipt)) {
+    throw new Error("response witness_receipt does not equal the signed payload");
+  }
+  const receipt = signedReceipt as WitnessReceipt;
+  requireExactKeys(
+    receipt as unknown as Record<string, unknown>,
+    [
+      "receipt_id",
+      "node_id",
+      "protocol_id",
+      "request_received_at_utc",
+      "witnessed_at_utc",
+      "statement_created_at_utc",
+      "unix_time_milliseconds",
+      "clock_accuracy_radius_ms",
+      "witness_window_utc",
+      "server_processing_duration_ms",
+      "post_witness_processing_duration_ms",
+      "commitment",
+      "payment_identifier",
+      "payment_transaction",
+      "evidence_scope",
+    ],
+    "witness_receipt",
+  );
+  if (receipt.node_id !== (options.expected_node_id ?? "767-2676.com")) {
+    throw new Error("unexpected node_id");
+  }
+  if (receipt.protocol_id !== "POPCORN-WITNESS/1.0") {
+    throw new Error("unexpected protocol_id");
+  }
+  if (
+    typeof receipt.receipt_id !== "string" ||
+    receipt.receipt_id.length === 0 ||
+    typeof receipt.payment_identifier !== "string" ||
+    receipt.payment_identifier.length === 0 ||
+    !(
+      receipt.payment_transaction === null ||
+      typeof receipt.payment_transaction === "string"
+    )
+  ) {
+    throw new Error("receipt identifiers are missing");
+  }
+
+  const requestReceivedMs = parseUtc(
+    receipt.request_received_at_utc,
+    "request_received_at_utc",
+  );
+  const witnessedMs = parseUtc(receipt.witnessed_at_utc, "witnessed_at_utc");
+  const statementCreatedMs = parseUtc(
+    receipt.statement_created_at_utc,
+    "statement_created_at_utc",
+  );
+  if (requestReceivedMs > witnessedMs || witnessedMs > statementCreatedMs) {
+    throw new Error("witness receipt timestamps are out of order");
+  }
+  requireIntegerRelationship(
+    statementCreatedMs - requestReceivedMs,
+    receipt.server_processing_duration_ms,
+    "server_processing_duration_ms",
+  );
+  requireIntegerRelationship(
+    statementCreatedMs - witnessedMs,
+    receipt.post_witness_processing_duration_ms,
+    "post_witness_processing_duration_ms",
+  );
+  if (receipt.unix_time_milliseconds !== witnessedMs) {
+    throw new Error("unix_time_milliseconds signed relationship is invalid");
+  }
+  if (
+    !Number.isSafeInteger(receipt.clock_accuracy_radius_ms) ||
+    receipt.clock_accuracy_radius_ms < 0
+  ) {
+    throw new Error("clock_accuracy_radius_ms must be a non-negative safe integer");
+  }
+  const earliest = new Date(witnessedMs - receipt.clock_accuracy_radius_ms).toISOString();
+  const latest = new Date(witnessedMs + receipt.clock_accuracy_radius_ms).toISOString();
+  if (!isRecord(receipt.witness_window_utc)) {
+    throw new Error("witness_window_utc is missing");
+  }
+  requireExactKeys(
+    receipt.witness_window_utc,
+    ["earliest", "latest"],
+    "witness_window_utc",
+  );
+  if (
+    receipt.witness_window_utc?.earliest !== earliest ||
+    receipt.witness_window_utc?.latest !== latest
+  ) {
+    throw new Error("witness_window_utc signed relationship is invalid");
+  }
+
+  if (!isRecord(receipt.commitment)) throw new Error("commitment is missing");
+  requireExactKeys(
+    receipt.commitment,
+    ["payload_digest", "nonce", "previous_attestation_digest"],
+    "commitment",
+  );
+  requireSha256Digest(receipt.commitment.payload_digest, "payload_digest");
+  requireNonce(receipt.commitment.nonce);
+  if (receipt.commitment.previous_attestation_digest !== null) {
+    requireSha256Digest(
+      receipt.commitment.previous_attestation_digest,
+      "previous_attestation_digest",
+    );
+  }
+
+  const scope = receipt.evidence_scope;
+  const expectedScope = {
+    type: "payload_commitment_witness",
+    payload_disclosed: false,
+    caller_identity_proven: false,
+    recipient_delivery_proven: false,
+    action_execution_proven: false,
+    nonce_uniqueness_enforced: false,
+    replay_prevented: false,
+    authorization_granted: false,
+  };
+  if (canonicalJson(scope) !== canonicalJson(expectedScope)) {
+    throw new Error("witness evidence scope is invalid");
+  }
+
+  requireNonce(options.expected_nonce);
+  if (receipt.commitment.nonce !== options.expected_nonce) {
+    throw new Error("receipt nonce does not match the expected request nonce");
+  }
+  const hasPayload = options.expected_payload !== undefined;
+  const hasDigest = options.expected_payload_digest !== undefined;
+  if (hasPayload === hasDigest) {
+    throw new Error("provide exactly one expected_payload or expected_payload_digest");
+  }
+  const expectedPayloadDigest = hasPayload
+    ? await sha256Base64Url(options.expected_payload as string | Uint8Array)
+    : (options.expected_payload_digest as string);
+  if (!/^[A-Za-z0-9_-]{43}$/.test(expectedPayloadDigest)) {
+    throw new Error("expected_payload_digest must be an unpadded base64url SHA-256 digest");
+  }
+  if (receipt.commitment.payload_digest.value !== expectedPayloadDigest) {
+    throw new Error("receipt payload digest does not match the expected payload");
+  }
+
+  let previousAttestationDigestMatched = false;
+  if (receipt.commitment.previous_attestation_digest !== null) {
+    if (options.expected_previous_attestation === undefined) {
+      throw new Error("previous attestation is required to verify the claimed chain");
+    }
+    const expectedPreviousDigest = await sha256Base64Url(
+      options.expected_previous_attestation,
+    );
+    if (
+      receipt.commitment.previous_attestation_digest.value !== expectedPreviousDigest
+    ) {
+      throw new Error("previous attestation digest does not match the claimed chain");
+    }
+    previousAttestationDigestMatched = true;
+  } else if (options.expected_previous_attestation !== undefined) {
+    throw new Error("receipt does not contain a previous attestation commitment");
+  }
+
+  return {
+    signature_verified: true,
+    key_id: header.kid,
+    witness_receipt: receipt,
+    payload_digest_verified: true,
+    nonce_verified: true,
+    previous_attestation_digest_matched: previousAttestationDigestMatched,
+    replay_key: `${receipt.node_id}:${receipt.receipt_id}:${receipt.commitment.nonce}`,
+    witness_window_utc: { earliest, latest },
+  };
 }

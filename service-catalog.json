@@ -3,6 +3,7 @@
   "canonical_origin": "https://767-2676.com",
   "canonical_live_offer": "https://767-2676.com/agent/offer",
   "service_count": 1,
+  "implementation_ready_service_count": 1,
   "services": [
     {
       "service_id": "signed_portable_time",
@@ -37,6 +38,57 @@
         "schedule_stored_by_popcorn": false,
         "time_returned_to_agent": true
       }
+    }
+  ],
+  "implementation_ready_services": [
+    {
+      "service_id": "payload_bound_memory_checkpoint",
+      "service_name": "Payload-bound memory checkpoint",
+      "service_state": "implementation_ready_not_live",
+      "protocol_id": "POPCORN-WITNESS/1.0",
+      "description": "POPCORN signs a payload digest, client nonce, optional predecessor-attestation digest, and bounded observation interval so an agent can carry one verifiable version of participant-local memory across sessions or systems.",
+      "intended_use_when": [
+        "agent_needs_portable_verifiable_memory_checkpoint",
+        "agent_needs_tamper_evident_payload_version",
+        "agent_needs_predecessor_attestation_binding_between_checkpoints",
+        "participant_needs_evidence_commitment_reached_witness_by_time"
+      ],
+      "intended_purchase": {
+        "method": "POST",
+        "resource": "https://767-2676.com/v1/receipt",
+        "payment_protocol": "x402-v2",
+        "price": {
+          "amount": "0.001",
+          "currency": "USDC",
+          "network": "eip155:8453"
+        }
+      },
+      "input": {
+        "payload_digest": "sha-256",
+        "nonce_bytes": 32,
+        "previous_attestation_digest": "optional_sha-256",
+        "original_payload_sent_to_popcorn": false
+      },
+      "result": {
+        "type": "signed_payload_commitment_witness",
+        "portable": true,
+        "receiving_system_can_verify_independently": true,
+        "predecessor_attestation_digest_binding_supported": true
+      },
+      "storage": {
+        "payload_stored_by_popcorn": false,
+        "memory_stored_by_popcorn": false,
+        "payload_and_receipt_carried_by_agent": true
+      },
+      "does_not_prove": [
+        "caller_identity",
+        "recipient_delivery",
+        "action_execution",
+        "nonce_uniqueness",
+        "replay_prevention",
+        "authorization"
+      ],
+      "specification": "docs/WITNESS_RECEIPT.md"
     }
   ]
 }

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://767-2676.com/schemas/witness-request.v1.json",
+  "title": "POPCORN Witness Request v1",
+  "description": "A privacy-preserving commitment request. POPCORN receives the digest, nonce, and optional predecessor digest; it does not receive the underlying payload.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "payload_digest",
+    "nonce",
+    "previous_attestation_digest"
+  ],
+  "properties": {
+    "payload_digest": {
+      "$ref": "#/$defs/sha256Digest"
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$",
+      "description": "Exactly 32 client-generated random bytes encoded as unpadded base64url. The client is responsible for uniqueness."
+    },
+    "previous_attestation_digest": {
+      "description": "SHA-256 of the exact previous compact JWS UTF-8 bytes, or null when this checkpoint has no predecessor.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256Digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "sha256Digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha-256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    }
+  }
+}
