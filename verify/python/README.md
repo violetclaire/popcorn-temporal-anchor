@@ -24,9 +24,14 @@ verified = verify_popcorn_witness_evidence(
     expected_payload=exact_payload_bytes,
     expected_nonce=original_nonce,
     expected_previous_attestation=previous_compact_jws,
+    max_clock_accuracy_radius_ms=10_000,
 )
 replay_key = verified["replay_key"]
 ```
 
 The verifier returns the replay key; the participant remains responsible for
 remembering accepted keys and applying its own idempotency policy.
+
+The witness tests use the settled production packet in
+`../test-vectors/popcorn-witness-receipt-v1.json` and independently reject its
+published one-byte tamper case.

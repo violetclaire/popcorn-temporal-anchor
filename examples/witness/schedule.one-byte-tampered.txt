@@ -1,0 +1,1 @@
+{"schedule_id":"popcorn-witness-evaluation-001","task":"verify a time-bound availability inquiry","owner":"evaluation-agent","execution_window_utc":{"opens_at":"2026-08-30T20:00:00.000Z","closes_at":"2026-08-30T20:05:00.000Z"}|

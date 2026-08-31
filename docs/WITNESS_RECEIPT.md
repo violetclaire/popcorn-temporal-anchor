@@ -33,7 +33,7 @@ The word **checkpoint** is essential. The original payload remains the memory.
 The receipt makes one exact version of that memory tamper-evident, time-bound,
 and portable across a trust boundary.
 
-## Proposed resource
+## Live resource
 
 ```text
 POST https://767-2676.com/v1/receipt
@@ -192,10 +192,11 @@ original memory, task content, schedule, identity, and receiving-party state
 remain participant-local. Operators must not add payload logging to the
 reference flow merely because an application happens to possess the payload.
 
-## Reference implementation status
+## Production status
 
 The schemas, issuer, offline verifiers, and shared signed vector in this
-repository define an implementation-ready contract. The production discovery
-documents must continue to advertise only `GET /v1/time` until the paid
-`POST /v1/receipt` route, clock policy, and verification key publication have
-been deployed and independently tested.
+repository define the contract. The paid `POST /v1/receipt` route, separate
+witness verification key, x402 settlement path, and declared clock policy are
+live. One real `$0.001` USDC mainnet payment produced the public evaluation
+packet in [`examples/witness`](../examples/witness), which independently passes
+the JavaScript and Python verifiers and rejects the one-byte tamper case.

@@ -1,63 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://767-2676.com/schemas/witness-response.v1.json",
-  "title": "POPCORN Witness Response v1",
+  "title": "POPCORN payload-bound witness response v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "witness_receipt",
-    "witness_attestation"
+    "witness_attestation",
+    "payment_status"
   ],
   "properties": {
     "witness_receipt": {
-      "$ref": "#/$defs/witnessReceipt"
-    },
-    "witness_attestation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "format",
-        "algorithm",
-        "key_id",
-        "compact_jws"
-      ],
-      "properties": {
-        "format": {
-          "const": "JWS"
-        },
-        "algorithm": {
-          "const": "ES256"
-        },
-        "key_id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "compact_jws": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$"
-        }
-      }
-    }
-  },
-  "$defs": {
-    "sha256Digest": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "algorithm",
-        "value"
-      ],
-      "properties": {
-        "algorithm": {
-          "const": "sha-256"
-        },
-        "value": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9_-]{43}$"
-        }
-      }
-    },
-    "witnessReceipt": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -80,13 +33,14 @@
       "properties": {
         "receipt_id": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^pwr_[0-9a-f]{32}$"
         },
         "node_id": {
           "type": "string",
-          "minLength": 1
+          "const": "767-2676.com"
         },
         "protocol_id": {
+          "type": "string",
           "const": "POPCORN-WITNESS/1.0"
         },
         "request_received_at_utc": {
@@ -107,7 +61,8 @@
         },
         "clock_accuracy_radius_ms": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 60000
         },
         "witness_window_utc": {
           "type": "object",
@@ -145,16 +100,48 @@
           ],
           "properties": {
             "payload_digest": {
-              "$ref": "#/$defs/sha256Digest"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "algorithm",
+                "value"
+              ],
+              "properties": {
+                "algorithm": {
+                  "type": "string",
+                  "const": "sha-256"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{43}$",
+                  "description": "Canonical unpadded base64url encoding of exactly 32 bytes."
+                }
+              }
             },
             "nonce": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]{43}$"
             },
             "previous_attestation_digest": {
-              "oneOf": [
+              "anyOf": [
                 {
-                  "$ref": "#/$defs/sha256Digest"
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "algorithm",
+                    "value"
+                  ],
+                  "properties": {
+                    "algorithm": {
+                      "type": "string",
+                      "const": "sha-256"
+                    },
+                    "value": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{43}$",
+                      "description": "Canonical unpadded base64url encoding of exactly 32 bytes."
+                    }
+                  }
                 },
                 {
                   "type": "null"
@@ -165,12 +152,19 @@
         },
         "payment_identifier": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "maxLength": 256
         },
         "payment_transaction": {
-          "type": [
-            "string",
-            "null"
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "evidence_scope": {
@@ -184,36 +178,97 @@
             "action_execution_proven",
             "nonce_uniqueness_enforced",
             "replay_prevented",
-            "authorization_granted"
+            "authorization_granted",
+            "external_atomic_clock_alignment_proven",
+            "clock_accuracy_independently_verified",
+            "payer_authorization_bound_to_commitment"
           ],
           "properties": {
             "type": {
+              "type": "string",
               "const": "payload_commitment_witness"
             },
             "payload_disclosed": {
+              "type": "boolean",
               "const": false
             },
             "caller_identity_proven": {
+              "type": "boolean",
               "const": false
             },
             "recipient_delivery_proven": {
+              "type": "boolean",
               "const": false
             },
             "action_execution_proven": {
+              "type": "boolean",
               "const": false
             },
             "nonce_uniqueness_enforced": {
+              "type": "boolean",
               "const": false
             },
             "replay_prevented": {
+              "type": "boolean",
               "const": false
             },
             "authorization_granted": {
+              "type": "boolean",
+              "const": false
+            },
+            "external_atomic_clock_alignment_proven": {
+              "type": "boolean",
+              "const": false
+            },
+            "clock_accuracy_independently_verified": {
+              "type": "boolean",
+              "const": false
+            },
+            "payer_authorization_bound_to_commitment": {
+              "type": "boolean",
               "const": false
             }
           }
         }
       }
+    },
+    "witness_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "algorithm",
+        "key_id",
+        "key_set",
+        "compact_jws"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "JWS"
+        },
+        "algorithm": {
+          "type": "string",
+          "const": "ES256"
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "key_set": {
+          "type": "string",
+          "const": "/.well-known/popcorn-keys.json"
+        },
+        "compact_jws": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "payment_status": {
+      "type": "string",
+      "const": "settled"
     }
   }
 }

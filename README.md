@@ -7,11 +7,12 @@ POPCORN is a live, machine-payable temporal evidence service at
 USDC over x402 v2 and receives a signed, short-lived temporal receipt that
 another node can verify independently.
 
-The repository now also contains the implementation-ready
+The live node also provides the tested
 `POPCORN-WITNESS/1.0` contract for a payload-bound receipt: a lightweight way
 for an autonomous agent to carry a **portable, verifiable memory checkpoint**
 without putting its actual memory in a shared database. That additive endpoint
-is not advertised as live until it is deployed and independently tested.
+is deployed, paid through x402 on Base mainnet, and independently verified in
+both JavaScript and Python.
 
 The service is intentionally narrow. It provides evidence for participant-local
 judgment; it does not schedule work, reserve resources, authorize actions, or
@@ -19,6 +20,7 @@ store an agent's private task state.
 
 - **Production node:** `767-2676.com`
 - **Paid resource:** `GET https://767-2676.com/v1/time`
+- **Paid witness:** `POST https://767-2676.com/v1/receipt`
 - **Payment:** `$0.001` USDC on Base mainnet (`eip155:8453`)
 - **Protocol:** x402 v2, exact scheme
 - **Receipt:** ES256 compact JWS with public JWKS verification
@@ -28,6 +30,7 @@ store an agent's private task state.
 | Service | Use when | Method and resource | Price | Returns | Storage |
 | --- | --- | --- | --- | --- | --- |
 | Signed portable time | A task has a deadline, expiration, execution window, or handoff | `GET https://767-2676.com/v1/time` | `$0.001` USDC on Base through x402 v2 | Signed time another system can verify | The task and schedule stay with the agent |
+| Paid schedule checkpoint | An agent needs portable proof that one exact schedule or task digest was presented at a particular time | `POST https://767-2676.com/v1/receipt` | `$0.001` USDC on Base through x402 v2 | Signed digest commitment another system can verify | The raw task and schedule stay with the agent |
 
 POPCORN says what time it is. The agent carries that measurement in its own
 schedule. POPCORN does not store the task or schedule and does not decide what
@@ -38,7 +41,7 @@ happens next.
 > Your agent already has memory. What it lacks is portable proof that one exact
 > version of that memory existed by a particular time.
 
-The proposed paid resource is:
+The live paid resource is:
 
 ```text
 POST https://767-2676.com/v1/receipt
@@ -60,6 +63,24 @@ or act on the payload. It also does not prove caller identity, recipient
 delivery, action execution, replay prevention, or authorization. Read the full
 [`POPCORN-WITNESS/1.0` contract](docs/WITNESS_RECEIPT.md).
 
+### Try the production proof free
+
+The checked-in [`evaluation-packet.production.json`](examples/witness/evaluation-packet.production.json)
+contains the exact schedule bytes, SHA-256 digest, nonce, settled production
+response, public key, expected successful result, and a one-byte tamper case
+that must fail. It contains no private key, CDP credential, wallet secret,
+reusable payment proof, or private customer data. `evaluation_only: true` is
+outside the signed payload, so the production JWS remains unchanged.
+
+The reusable [`verify/typescript`](verify/typescript) and
+[`verify/python`](verify/python) packages independently implement the witness
+contract. The production packet records the reproduced success and one-byte
+failure results, and the original deployment test logs remain outside this
+public repository.
+
+The exact production payment settled on Base in transaction
+[`0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c`](https://basescan.org/tx/0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c).
+
 Implementation resources:
 
 | Resource | Purpose |
@@ -72,6 +93,7 @@ Implementation resources:
 | [`verify/python`](verify/python) | Independent offline Python verification |
 | [`popcorn-witness-receipt-v1.json`](verify/test-vectors/popcorn-witness-receipt-v1.json) | Shared signed payload-bound vector |
 | [`examples/typescript-x402-witness-client`](examples/typescript-x402-witness-client) | x402 client and local checkpoint flow |
+| [`examples/witness`](examples/witness) | Real settled production proof and one-byte tamper demonstration |
 
 Agents can read the [repository service catalog](service-catalog.json) or the
 [canonical live service offer](https://767-2676.com/agent/offer) before paying.
@@ -137,6 +159,7 @@ sequenceDiagram
 | [`verify/typescript`](verify/typescript) | Reusable network-free TypeScript verifier |
 | [`verify/python`](verify/python) | Independent network-free Python verifier |
 | [`verify/test-vectors`](verify/test-vectors) | Shared public signed verification vectors |
+| [`examples/witness/evaluation-packet.production.json`](examples/witness/evaluation-packet.production.json) | Free, settled production witness evaluation packet |
 
 ### Inspect the unpaid challenge
 

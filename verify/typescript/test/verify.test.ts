@@ -23,6 +23,9 @@ const witnessVector = JSON.parse(
     "utf8",
   ),
 );
+const witnessResponse = witnessVector.paid_evidence;
+const witnessJwks = { keys: [witnessVector.public_verification_key] };
+const witnessPayload = Buffer.from(witnessVector.exact_schedule.bytes, "base64url");
 
 test("verifies the shared positive vector and computes the conservative interval", async () => {
   const result = await verifyPopcornTemporalEvidence(
@@ -99,43 +102,42 @@ test("fails closed when the uncertainty interval reaches the exclusive close", a
   assert.equal(result.execution_window?.next_action, "request_new_temporal_anchor");
 });
 
-test("verifies a payload-bound witness receipt and predecessor digest binding", async () => {
-  const predecessor = await verifyPopcornTemporalEvidence(
-    vector.response,
-    vector.jwks,
-    vector.client_observation,
-  );
-  assert.equal(predecessor.signature_verified, true);
-  assert.equal(
-    witnessVector.previous_attestation,
-    vector.response.temporal_attestation.compact_jws,
-  );
+test("verifies the settled production payload-bound witness receipt", async () => {
   const result = await verifyPopcornWitnessEvidence(
-    witnessVector.response,
-    witnessVector.jwks,
+    witnessResponse,
+    witnessJwks,
     {
-      expected_payload: witnessVector.payload_utf8,
-      expected_nonce: witnessVector.request.nonce,
-      expected_previous_attestation: witnessVector.previous_attestation,
+      expected_payload: witnessPayload,
+      expected_nonce: witnessVector.submitted_request.nonce,
+      max_clock_accuracy_radius_ms: 10_000,
     },
   );
-  assert.equal(result.key_id, witnessVector.expected.key_id);
+  assert.equal(result.key_id, witnessVector.public_verification_key.kid);
   assert.equal(result.payload_digest_verified, true);
   assert.equal(result.nonce_verified, true);
-  assert.equal(result.previous_attestation_digest_matched, true);
-  assert.equal(result.replay_key, witnessVector.expected.replay_key);
+  assert.equal(result.previous_attestation_digest_matched, false);
+  assert.equal(
+    result.replay_key,
+    witnessVector.expected_verification.exact_schedule.replay_key,
+  );
+  assert.equal(
+    result.payment_replay_key,
+    witnessVector.expected_verification.exact_schedule.payment_replay_key,
+  );
   assert.deepEqual(
     result.witness_window_utc,
-    witnessVector.expected.witness_window_utc,
+    witnessResponse.witness_receipt.witness_window_utc,
   );
 });
 
 test("rejects a witness receipt presented with different payload bytes", async () => {
   await assert.rejects(
-    verifyPopcornWitnessEvidence(witnessVector.response, witnessVector.jwks, {
-      expected_payload: witnessVector.negative_cases.wrong_payload_utf8,
-      expected_nonce: witnessVector.request.nonce,
-      expected_previous_attestation: witnessVector.previous_attestation,
+    verifyPopcornWitnessEvidence(witnessResponse, witnessJwks, {
+      expected_payload: Buffer.from(
+        witnessVector.expected_verification.one_byte_tamper.tampered_bytes,
+        "base64url",
+      ),
+      expected_nonce: witnessVector.submitted_request.nonce,
     }),
     /payload digest does not match/,
   );
@@ -143,10 +145,9 @@ test("rejects a witness receipt presented with different payload bytes", async (
 
 test("rejects a witness receipt presented with a different nonce", async () => {
   await assert.rejects(
-    verifyPopcornWitnessEvidence(witnessVector.response, witnessVector.jwks, {
-      expected_payload: witnessVector.payload_utf8,
-      expected_nonce: witnessVector.negative_cases.wrong_nonce,
-      expected_previous_attestation: witnessVector.previous_attestation,
+    verifyPopcornWitnessEvidence(witnessResponse, witnessJwks, {
+      expected_payload: witnessPayload,
+      expected_nonce: "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
     }),
     /nonce does not match/,
   );
@@ -154,26 +155,24 @@ test("rejects a witness receipt presented with a different nonce", async () => {
 
 test("rejects a witness receipt with the wrong claimed predecessor", async () => {
   await assert.rejects(
-    verifyPopcornWitnessEvidence(witnessVector.response, witnessVector.jwks, {
-      expected_payload: witnessVector.payload_utf8,
-      expected_nonce: witnessVector.request.nonce,
-      expected_previous_attestation:
-        witnessVector.negative_cases.wrong_previous_attestation,
+    verifyPopcornWitnessEvidence(witnessResponse, witnessJwks, {
+      expected_payload: witnessPayload,
+      expected_nonce: witnessVector.submitted_request.nonce,
+      expected_previous_attestation: "not-the-previous-attestation",
     }),
-    /previous attestation digest does not match/,
+    /does not contain a previous attestation commitment/,
   );
 });
 
 test("rejects altered witness scope after signing", async () => {
   const tampered = structuredClone(
-    witnessVector.response,
+    witnessResponse,
   ) as PopcornWitnessResponse;
   tampered.witness_receipt.evidence_scope.replay_prevented = true;
   await assert.rejects(
-    verifyPopcornWitnessEvidence(tampered, witnessVector.jwks, {
-      expected_payload: witnessVector.payload_utf8,
-      expected_nonce: witnessVector.request.nonce,
-      expected_previous_attestation: witnessVector.previous_attestation,
+    verifyPopcornWitnessEvidence(tampered, witnessJwks, {
+      expected_payload: witnessPayload,
+      expected_nonce: witnessVector.submitted_request.nonce,
     }),
     /does not equal the signed payload/,
   );

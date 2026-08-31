@@ -1,4 +1,5 @@
 import copy
+import base64
 import json
 import unittest
 from pathlib import Path
@@ -15,6 +16,11 @@ VECTOR = json.loads(
 
 WITNESS_VECTOR = json.loads(
     (Path(__file__).parents[1] / "test-vectors" / "popcorn-witness-receipt-v1.json").read_text()
+)
+WITNESS_RESPONSE = WITNESS_VECTOR["paid_evidence"]
+WITNESS_JWKS = {"keys": [WITNESS_VECTOR["public_verification_key"]]}
+WITNESS_PAYLOAD = base64.urlsafe_b64decode(
+    WITNESS_VECTOR["exact_schedule"]["bytes"] + "="
 )
 
 
@@ -62,72 +68,65 @@ class PopcornVerifierTests(unittest.TestCase):
         )
         self.assertFalse(result["execution_window"]["eligible"])
 
-    def test_payload_bound_witness_and_predecessor_digest_binding(self):
-        predecessor = verify_popcorn_temporal_evidence(
-            VECTOR["response"],
-            VECTOR["jwks"],
-            VECTOR["client_observation"],
-        )
-        self.assertTrue(predecessor["signature_verified"])
-        self.assertEqual(
-            WITNESS_VECTOR["previous_attestation"],
-            VECTOR["response"]["temporal_attestation"]["compact_jws"],
-        )
+    def test_settled_production_payload_bound_witness(self):
         result = verify_popcorn_witness_evidence(
-            WITNESS_VECTOR["response"],
-            WITNESS_VECTOR["jwks"],
-            expected_payload=WITNESS_VECTOR["payload_utf8"],
-            expected_nonce=WITNESS_VECTOR["request"]["nonce"],
-            expected_previous_attestation=WITNESS_VECTOR["previous_attestation"],
+            WITNESS_RESPONSE,
+            WITNESS_JWKS,
+            expected_payload=WITNESS_PAYLOAD,
+            expected_nonce=WITNESS_VECTOR["submitted_request"]["nonce"],
+            max_clock_accuracy_radius_ms=10_000,
         )
-        expected = WITNESS_VECTOR["expected"]
-        self.assertEqual(result["key_id"], expected["key_id"])
+        expected = WITNESS_VECTOR["expected_verification"]["exact_schedule"]
+        self.assertEqual(result["key_id"], WITNESS_VECTOR["public_verification_key"]["kid"])
         self.assertTrue(result["payload_digest_verified"])
         self.assertTrue(result["nonce_verified"])
-        self.assertTrue(result["previous_attestation_digest_matched"])
+        self.assertFalse(result["previous_attestation_digest_matched"])
         self.assertEqual(result["replay_key"], expected["replay_key"])
-        self.assertEqual(result["witness_window_utc"], expected["witness_window_utc"])
+        self.assertEqual(result["payment_replay_key"], expected["payment_replay_key"])
+        self.assertEqual(
+            result["witness_window_utc"],
+            WITNESS_RESPONSE["witness_receipt"]["witness_window_utc"],
+        )
 
     def test_witness_rejects_different_payload(self):
         with self.assertRaisesRegex(ValueError, "payload digest does not match"):
             verify_popcorn_witness_evidence(
-                WITNESS_VECTOR["response"],
-                WITNESS_VECTOR["jwks"],
-                expected_payload=WITNESS_VECTOR["negative_cases"]["wrong_payload_utf8"],
-                expected_nonce=WITNESS_VECTOR["request"]["nonce"],
-                expected_previous_attestation=WITNESS_VECTOR["previous_attestation"],
+                WITNESS_RESPONSE,
+                WITNESS_JWKS,
+                expected_payload=base64.urlsafe_b64decode(
+                    WITNESS_VECTOR["expected_verification"]["one_byte_tamper"]["tampered_bytes"] + "="
+                ),
+                expected_nonce=WITNESS_VECTOR["submitted_request"]["nonce"],
             )
 
     def test_witness_rejects_different_nonce(self):
         with self.assertRaisesRegex(ValueError, "nonce does not match"):
             verify_popcorn_witness_evidence(
-                WITNESS_VECTOR["response"],
-                WITNESS_VECTOR["jwks"],
-                expected_payload=WITNESS_VECTOR["payload_utf8"],
-                expected_nonce=WITNESS_VECTOR["negative_cases"]["wrong_nonce"],
-                expected_previous_attestation=WITNESS_VECTOR["previous_attestation"],
+                WITNESS_RESPONSE,
+                WITNESS_JWKS,
+                expected_payload=WITNESS_PAYLOAD,
+                expected_nonce="CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
             )
 
     def test_witness_rejects_wrong_predecessor(self):
-        with self.assertRaisesRegex(ValueError, "previous attestation digest does not match"):
+        with self.assertRaisesRegex(ValueError, "does not contain a previous attestation commitment"):
             verify_popcorn_witness_evidence(
-                WITNESS_VECTOR["response"],
-                WITNESS_VECTOR["jwks"],
-                expected_payload=WITNESS_VECTOR["payload_utf8"],
-                expected_nonce=WITNESS_VECTOR["request"]["nonce"],
-                expected_previous_attestation=WITNESS_VECTOR["negative_cases"]["wrong_previous_attestation"],
+                WITNESS_RESPONSE,
+                WITNESS_JWKS,
+                expected_payload=WITNESS_PAYLOAD,
+                expected_nonce=WITNESS_VECTOR["submitted_request"]["nonce"],
+                expected_previous_attestation="not-the-previous-attestation",
             )
 
     def test_witness_rejects_altered_scope(self):
-        response = copy.deepcopy(WITNESS_VECTOR["response"])
+        response = copy.deepcopy(WITNESS_RESPONSE)
         response["witness_receipt"]["evidence_scope"]["replay_prevented"] = True
         with self.assertRaisesRegex(ValueError, "does not equal the signed payload"):
             verify_popcorn_witness_evidence(
                 response,
-                WITNESS_VECTOR["jwks"],
-                expected_payload=WITNESS_VECTOR["payload_utf8"],
-                expected_nonce=WITNESS_VECTOR["request"]["nonce"],
-                expected_previous_attestation=WITNESS_VECTOR["previous_attestation"],
+                WITNESS_JWKS,
+                expected_payload=WITNESS_PAYLOAD,
+                expected_nonce=WITNESS_VECTOR["submitted_request"]["nonce"],
             )
 
 

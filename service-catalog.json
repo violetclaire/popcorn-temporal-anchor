@@ -2,8 +2,8 @@
   "catalog_version": "1.0.0",
   "canonical_origin": "https://767-2676.com",
   "canonical_live_offer": "https://767-2676.com/agent/offer",
-  "service_count": 1,
-  "implementation_ready_service_count": 1,
+  "service_count": 2,
+  "implementation_ready_service_count": 0,
   "services": [
     {
       "service_id": "signed_portable_time",
@@ -38,24 +38,26 @@
         "schedule_stored_by_popcorn": false,
         "time_returned_to_agent": true
       }
-    }
-  ],
-  "implementation_ready_services": [
+    },
     {
-      "service_id": "payload_bound_memory_checkpoint",
-      "service_name": "Payload-bound memory checkpoint",
-      "service_state": "implementation_ready_not_live",
+      "service_id": "payload_commitment_witness",
+      "service_name": "Paid schedule checkpoint",
+      "service_state": "available",
       "protocol_id": "POPCORN-WITNESS/1.0",
-      "description": "POPCORN signs a payload digest, client nonce, optional predecessor-attestation digest, and bounded observation interval so an agent can carry one verifiable version of participant-local memory across sessions or systems.",
-      "intended_use_when": [
+      "description": "POPCORN signs when a SHA-256 commitment to agent-carried schedule or task bytes was presented. The raw bytes stay with the agent.",
+      "use_when": [
         "agent_needs_portable_verifiable_memory_checkpoint",
         "agent_needs_tamper_evident_payload_version",
         "agent_needs_predecessor_attestation_binding_between_checkpoints",
         "participant_needs_evidence_commitment_reached_witness_by_time"
       ],
-      "intended_purchase": {
+      "purchase": {
         "method": "POST",
         "resource": "https://767-2676.com/v1/receipt",
+        "content_type": "application/json",
+        "request_schema": "https://767-2676.com/schemas/witness-request.v1.json",
+        "unpaid_response_status": 402,
+        "paid_response_status": 200,
         "payment_protocol": "x402-v2",
         "price": {
           "amount": "0.001",
@@ -73,7 +75,8 @@
         "type": "signed_payload_commitment_witness",
         "portable": true,
         "receiving_system_can_verify_independently": true,
-        "predecessor_attestation_digest_binding_supported": true
+        "predecessor_attestation_digest_binding_supported": true,
+        "free_evaluation_packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json"
       },
       "storage": {
         "payload_stored_by_popcorn": false,
@@ -88,7 +91,10 @@
         "replay_prevention",
         "authorization"
       ],
-      "specification": "docs/WITNESS_RECEIPT.md"
+      "specification": "docs/WITNESS_RECEIPT.md",
+      "production_evidence": "examples/witness/evidence.production.json",
+      "production_transaction": "0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c"
     }
-  ]
+  ],
+  "implementation_ready_services": []
 }

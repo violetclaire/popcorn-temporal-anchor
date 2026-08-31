@@ -105,6 +105,9 @@ export type WitnessReceipt = {
     nonce_uniqueness_enforced: boolean;
     replay_prevented: boolean;
     authorization_granted: boolean;
+    external_atomic_clock_alignment_proven: boolean;
+    clock_accuracy_independently_verified: boolean;
+    payer_authorization_bound_to_commitment: boolean;
   };
 };
 
@@ -114,8 +117,10 @@ export type PopcornWitnessResponse = {
     format?: string;
     algorithm?: string;
     key_id?: string;
+    key_set?: string;
     compact_jws: string;
   };
+  payment_status: "settled";
 };
 
 export type WitnessVerificationOptions = {
@@ -124,6 +129,7 @@ export type WitnessVerificationOptions = {
   expected_payload?: string | Uint8Array;
   expected_payload_digest?: string;
   expected_previous_attestation?: string;
+  max_clock_accuracy_radius_ms?: number;
 };
 
 export type VerifiedWitnessEvidence = {
@@ -134,6 +140,7 @@ export type VerifiedWitnessEvidence = {
   nonce_verified: true;
   previous_attestation_digest_matched: boolean;
   replay_key: string;
+  payment_replay_key: string;
   witness_window_utc: {
     earliest: string;
     latest: string;
@@ -448,10 +455,14 @@ export async function verifyPopcornWitnessEvidence(
   if (!isRecord(response.witness_attestation)) {
     throw new Error("response is missing witness_attestation");
   }
-  requireExactKeys(response, ["witness_receipt", "witness_attestation"], "response");
+  requireExactKeys(
+    response,
+    ["witness_receipt", "witness_attestation", "payment_status"],
+    "response",
+  );
   requireExactKeys(
     response.witness_attestation,
-    ["format", "algorithm", "key_id", "compact_jws"],
+    ["format", "algorithm", "key_id", "key_set", "compact_jws"],
     "witness_attestation",
   );
 
@@ -481,6 +492,12 @@ export async function verifyPopcornWitnessEvidence(
   }
   if (response.witness_attestation.key_id !== header.kid) {
     throw new Error("attestation key_id does not match protected kid");
+  }
+  if (response.witness_attestation.key_set !== "/.well-known/popcorn-keys.json") {
+    throw new Error("attestation key_set is not canonical");
+  }
+  if (response.payment_status !== "settled") {
+    throw new Error("witness payment_status is not settled");
   }
 
   const key = jwks?.keys?.find((candidate) => candidate.kid === header.kid);
@@ -587,6 +604,13 @@ export async function verifyPopcornWitnessEvidence(
   ) {
     throw new Error("clock_accuracy_radius_ms must be a non-negative safe integer");
   }
+  const maxRadiusMs = options.max_clock_accuracy_radius_ms ?? 60_000;
+  if (!Number.isSafeInteger(maxRadiusMs) || maxRadiusMs < 0) {
+    throw new Error("max_clock_accuracy_radius_ms must be a non-negative safe integer");
+  }
+  if (receipt.clock_accuracy_radius_ms > maxRadiusMs) {
+    throw new Error("witness clock accuracy exceeds local policy");
+  }
   const earliest = new Date(witnessedMs - receipt.clock_accuracy_radius_ms).toISOString();
   const latest = new Date(witnessedMs + receipt.clock_accuracy_radius_ms).toISOString();
   if (!isRecord(receipt.witness_window_utc)) {
@@ -629,6 +653,9 @@ export async function verifyPopcornWitnessEvidence(
     nonce_uniqueness_enforced: false,
     replay_prevented: false,
     authorization_granted: false,
+    external_atomic_clock_alignment_proven: false,
+    clock_accuracy_independently_verified: false,
+    payer_authorization_bound_to_commitment: false,
   };
   if (canonicalJson(scope) !== canonicalJson(expectedScope)) {
     throw new Error("witness evidence scope is invalid");
@@ -678,7 +705,8 @@ export async function verifyPopcornWitnessEvidence(
     payload_digest_verified: true,
     nonce_verified: true,
     previous_attestation_digest_matched: previousAttestationDigestMatched,
-    replay_key: `${receipt.node_id}:${receipt.receipt_id}:${receipt.commitment.nonce}`,
+    replay_key: `${receipt.protocol_id}:${receipt.node_id}:${receipt.commitment.nonce}`,
+    payment_replay_key: `x402:${receipt.payment_identifier}`,
     witness_window_utc: { earliest, latest },
   };
 }

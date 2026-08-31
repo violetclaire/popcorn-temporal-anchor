@@ -27,6 +27,7 @@ const verified = await verifyPopcornWitnessEvidence(response, jwks, {
   expected_payload: exactPayloadBytes,
   expected_nonce: originalNonce,
   expected_previous_attestation: previousCompactJws,
+  max_clock_accuracy_radius_ms: 10000,
 });
 
 // Store this locally after accepting the checkpoint.
@@ -38,7 +39,8 @@ predecessor attestation independently before inferring an order between signed
 bytes. The verifier does not store the replay key or claim that an action was
 executed, delivered, or authorized.
 
-Run `npm install && npm run check`. The suite consumes the same public vector
+Run `npm install && npm run check`. The suite consumes the same settled
+production witness vector
 as the Python implementation and covers temporal tampering, unknown keys,
 expiry, closed execution windows, payload changes, nonce changes, predecessor
 changes, and altered proof scope.

@@ -225,15 +225,20 @@ def verify_popcorn_witness_evidence(
     expected_payload_digest: str | None = None,
     expected_previous_attestation: str | None = None,
     expected_node_id: str = "767-2676.com",
+    max_clock_accuracy_radius_ms: int = 60_000,
 ) -> dict[str, Any]:
     receipt = response.get("witness_receipt")
     attestation = response.get("witness_attestation")
     if not isinstance(receipt, dict) or not isinstance(attestation, dict):
         raise ValueError("response is missing witness receipt or attestation")
-    _require_exact_keys(response, {"witness_receipt", "witness_attestation"}, "response")
+    _require_exact_keys(
+        response,
+        {"witness_receipt", "witness_attestation", "payment_status"},
+        "response",
+    )
     _require_exact_keys(
         attestation,
-        {"format", "algorithm", "key_id", "compact_jws"},
+        {"format", "algorithm", "key_id", "key_set", "compact_jws"},
         "witness_attestation",
     )
     compact = attestation.get("compact_jws")
@@ -258,6 +263,10 @@ def verify_popcorn_witness_evidence(
         raise ValueError("attestation algorithm does not match ES256")
     if attestation.get("key_id") != kid:
         raise ValueError("attestation key_id does not match protected kid")
+    if attestation.get("key_set") != "/.well-known/popcorn-keys.json":
+        raise ValueError("attestation key_set is not canonical")
+    if response.get("payment_status") != "settled":
+        raise ValueError("witness payment_status is not settled")
 
     keys = jwks.get("keys") if isinstance(jwks, dict) else None
     key = next((candidate for candidate in keys or [] if candidate.get("kid") == kid), None)
@@ -345,6 +354,14 @@ def verify_popcorn_witness_evidence(
     radius_ms = receipt.get("clock_accuracy_radius_ms")
     if not isinstance(radius_ms, int) or isinstance(radius_ms, bool) or radius_ms < 0:
         raise ValueError("clock_accuracy_radius_ms must be a non-negative integer")
+    if (
+        not isinstance(max_clock_accuracy_radius_ms, int)
+        or isinstance(max_clock_accuracy_radius_ms, bool)
+        or max_clock_accuracy_radius_ms < 0
+    ):
+        raise ValueError("max_clock_accuracy_radius_ms must be a non-negative integer")
+    if radius_ms > max_clock_accuracy_radius_ms:
+        raise ValueError("witness clock accuracy exceeds local policy")
 
     def iso(ms: int) -> str:
         return datetime.fromtimestamp(ms / 1000, timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
@@ -381,6 +398,9 @@ def verify_popcorn_witness_evidence(
         "nonce_uniqueness_enforced": False,
         "replay_prevented": False,
         "authorization_granted": False,
+        "external_atomic_clock_alignment_proven": False,
+        "clock_accuracy_independently_verified": False,
+        "payer_authorization_bound_to_commitment": False,
     }
     if receipt.get("evidence_scope") != expected_scope:
         raise ValueError("witness evidence scope is invalid")
@@ -418,6 +438,7 @@ def verify_popcorn_witness_evidence(
         "payload_digest_verified": True,
         "nonce_verified": True,
         "previous_attestation_digest_matched": previous_attestation_digest_matched,
-        "replay_key": f'{receipt["node_id"]}:{receipt["receipt_id"]}:{commitment["nonce"]}',
+        "replay_key": f'{receipt["protocol_id"]}:{receipt["node_id"]}:{commitment["nonce"]}',
+        "payment_replay_key": f'x402:{receipt["payment_identifier"]}',
         "witness_window_utc": {"earliest": earliest, "latest": latest},
     }

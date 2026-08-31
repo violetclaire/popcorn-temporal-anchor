@@ -1,7 +1,18 @@
 # Production deployment gate for `POST /v1/receipt`
 
-The repository contract is implementation-ready. The canonical node must not
-advertise the route as available until every item below is complete.
+The repository contract is live on the canonical node. This document preserves
+the production gate that was completed before public discovery was enabled.
+
+## Production acceptance evidence
+
+- Controlled deployment returned the exact `$0.001` USDC Base x402 challenge.
+- One real paid request settled and returned HTTP `200`.
+- Base transaction: `0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c`.
+- Receipt ID: `pwr_24a140e0651c67375cdfb34bc1c38b47`.
+- JavaScript and independent Python verification passed for the exact bytes.
+- A one-byte payload change failed with
+  `witness_payload_digest_does_not_match_expected`.
+- Public evidence: `examples/witness/evaluation-packet.production.json`.
 
 ## Route and payment
 
