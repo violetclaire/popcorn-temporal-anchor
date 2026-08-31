@@ -1,6 +1,6 @@
 # x402 payload-bound witness client
 
-This example creates a portable, verifiable memory checkpoint:
+This example creates a portable, verifiable state checkpoint:
 
 1. serialize the exact checkpoint bytes locally;
 2. hash those bytes with SHA-256;

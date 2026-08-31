@@ -8,11 +8,12 @@ USDC over x402 v2 and receives a signed, short-lived temporal receipt that
 another node can verify independently.
 
 The live node also provides the tested
-`POPCORN-WITNESS/1.0` contract for a payload-bound receipt: a lightweight way
-for an autonomous agent to carry a **portable, verifiable memory checkpoint**
-without putting its actual memory in a shared database. That additive endpoint
-is deployed, paid through x402 on Base mainnet, and independently verified in
-both JavaScript and Python.
+`POPCORN-WITNESS/1.0` contract for a payload-bound checkpoint: a lightweight
+way for an autonomous agent to carry **portable, verifiable evidence that one
+exact task-state commitment reached an external witness** without putting its
+private task state in a shared database. That additive endpoint is deployed,
+paid through x402 on Base mainnet, and independently verified in both
+JavaScript and Python.
 
 The service is intentionally narrow. It provides evidence for participant-local
 judgment; it does not schedule work, reserve resources, authorize actions, or
@@ -30,16 +31,17 @@ store an agent's private task state.
 | Service | Use when | Method and resource | Price | Returns | Storage |
 | --- | --- | --- | --- | --- | --- |
 | Signed portable time | A task has a deadline, expiration, execution window, or handoff | `GET https://767-2676.com/v1/time` | `$0.001` USDC on Base through x402 v2 | Signed time another system can verify | The task and schedule stay with the agent |
-| Paid schedule checkpoint | An agent needs portable proof that one exact schedule or task digest was presented at a particular time | `POST https://767-2676.com/v1/receipt` | `$0.001` USDC on Base through x402 v2 | Signed digest commitment another system can verify | The raw task and schedule stay with the agent |
+| Paid schedule checkpoint | An agent needs portable evidence that one exact schedule or task digest was presented at a particular time | `POST https://767-2676.com/v1/receipt` | `$0.001` USDC on Base through x402 v2 | Signed digest commitment another system can verify | The raw task and schedule stay with the agent |
 
 POPCORN says what time it is. The agent carries that measurement in its own
 schedule. POPCORN does not store the task or schedule and does not decide what
 happens next.
 
-## Portable, verifiable memory checkpoints
+## Portable, verifiable state checkpoints
 
-> Your agent already has memory. What it lacks is portable proof that one exact
-> version of that memory existed by a particular time.
+> Your agent already carries task state. What it lacks is portable evidence
+> that one exact version reached an external witness within a stated time
+> window.
 
 The live paid resource is:
 
@@ -54,16 +56,16 @@ The agent hashes the exact payload bytes locally and sends only:
 - optionally, the SHA-256 digest of the preceding compact JWS.
 
 POPCORN signs those values with a bounded witness interval. The agent carries
-the original payload and signed receipt together. A later session or another
+the original payload and signed evidence together. A later session or another
 system can verify that the payload has not changed, when the node witnessed its
-commitment, and whether the receipt commits to a specific predecessor.
+commitment, and whether the evidence commits to a specific predecessor.
 
 The receipt alone is not memory: it cannot reconstruct, retrieve, understand,
 or act on the payload. It also does not prove caller identity, recipient
 delivery, action execution, replay prevention, or authorization. Read the full
 [`POPCORN-WITNESS/1.0` contract](docs/WITNESS_RECEIPT.md).
 
-### Try the production proof free
+### Verify a settled production checkpoint
 
 The checked-in [`evaluation-packet.production.json`](examples/witness/evaluation-packet.production.json)
 contains the exact schedule bytes, SHA-256 digest, nonce, settled production
@@ -285,9 +287,9 @@ consumer-facing Briarwood system.
 pricing, schedules, callbacks, trust state, and final decisions remain with the
 participating nodes.
 
-For memory checkpoints, the original payload also remains participant-local.
+For state checkpoints, the original payload also remains participant-local.
 POPCORN signs its commitment; the agent remains responsible for storing and
-transporting the memory itself.
+transporting the task state itself.
 
 POPCORN is not an A2A server or MCP server. Agents using those protocols can
 call the narrow x402 HTTP resource and verify its receipt locally; publishing

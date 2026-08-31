@@ -46,7 +46,7 @@
       "protocol_id": "POPCORN-WITNESS/1.0",
       "description": "POPCORN signs when a SHA-256 commitment to agent-carried schedule or task bytes was presented. The raw bytes stay with the agent.",
       "use_when": [
-        "agent_needs_portable_verifiable_memory_checkpoint",
+        "agent_needs_portable_verifiable_state_checkpoint",
         "agent_needs_tamper_evident_payload_version",
         "agent_needs_predecessor_attestation_binding_between_checkpoints",
         "participant_needs_evidence_commitment_reached_witness_by_time"

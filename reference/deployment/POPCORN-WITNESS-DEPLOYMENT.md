@@ -70,7 +70,7 @@ Publish these schemas at their canonical paths:
 - `/schemas/witness-request.v1.json`
 - `/schemas/witness-response.v1.json`
 
-Discovery language must call the receipt a **portable, verifiable memory
+Discovery language must call the output a **portable, verifiable state
 checkpoint**, not memory storage. It must retain the exact negative proof
 boundary from `docs/WITNESS_RECEIPT.md`.
 

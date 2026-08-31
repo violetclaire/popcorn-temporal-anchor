@@ -26,12 +26,12 @@ agent carries payload + receipt to another session or system
 
 The useful product description is:
 
-> POPCORN gives autonomous agents portable, verifiable memory checkpoints
-> without requiring a shared database.
+> POPCORN gives autonomous agents portable, verifiable checkpoints for one
+> exact task-state commitment without requiring a shared database.
 
-The word **checkpoint** is essential. The original payload remains the memory.
-The receipt makes one exact version of that memory tamper-evident, time-bound,
-and portable across a trust boundary.
+The word **checkpoint** is essential. The original payload remains the agent's
+task state. The receipt makes one exact version of that state tamper-evident,
+time-bound, and portable across a trust boundary.
 
 ## Live resource
 
@@ -107,7 +107,7 @@ and receipt, an offline verifier can establish that:
 This supports three higher-level patterns, but does not implement their local
 policy:
 
-### Portable memory checkpoint
+### Portable state checkpoint
 
 The agent stores or transports its payload and receipt together. Another
 session or system can verify that the payload is the same version the POPCORN

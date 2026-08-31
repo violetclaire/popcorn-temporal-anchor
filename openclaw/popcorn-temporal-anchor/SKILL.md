@@ -94,7 +94,7 @@ keys, receiving wallet, or Briarwood systems.
 ## Payload-bound checkpoint contract
 
 The canonical node provides the live
-`POPCORN-WITNESS/1.0` contract for portable, verifiable memory checkpoints.
+`POPCORN-WITNESS/1.0` contract for portable, verifiable state checkpoints.
 It binds a SHA-256 payload digest, a client nonce, an optional predecessor JWS
 digest, and a signed witness interval while the original payload remains
 participant-local.
@@ -105,5 +105,5 @@ against the returned receipt, and retain the verifier's `replay_key` under
 participant-local idempotency policy. The receipt itself neither stores memory
 nor proves identity, delivery, execution, replay prevention, or authorization.
 
-An agent can test the exact settled production proof without paying at
+An agent can verify the exact settled production checkpoint without paying at
 `https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json`.

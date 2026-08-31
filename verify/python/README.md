@@ -14,7 +14,7 @@ python -m unittest -v test_popcorn_verify.py
 The tests consume the exact same public vector as the TypeScript verifier.
 
 `verify_popcorn_witness_evidence` additionally verifies a
-`POPCORN-WITNESS/1.0` memory checkpoint against the exact original payload,
+`POPCORN-WITNESS/1.0` state checkpoint against the exact original payload,
 nonce, and optional previous compact JWS:
 
 ```python
