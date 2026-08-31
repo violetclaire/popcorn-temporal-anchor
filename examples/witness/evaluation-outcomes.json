@@ -1,0 +1,43 @@
+{
+  "evaluation_only": true,
+  "protocol_id": "POPCORN-WITNESS/1.0",
+  "local_policy_example": {
+    "rule": "witness_window_utc_must_overlap_execution_window_utc",
+    "popcorn_authorizes_or_schedules_the_task": false,
+    "consumer_decides": true
+  },
+  "examples": [
+    {
+      "schedule_id": "popcorn-witness-evaluation-001",
+      "packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json",
+      "execution_window_utc": {
+        "opens_at": "2026-08-30T20:00:00.000Z",
+        "closes_at": "2026-08-30T20:05:00.000Z"
+      },
+      "witness_window_utc": {
+        "earliest": "2026-08-31T05:02:06.007Z",
+        "latest": "2026-08-31T05:02:26.007Z"
+      },
+      "cryptographic_verification": "valid",
+      "schedule_overlap": false,
+      "local_policy_outcome": "stop",
+      "reason": "checkpoint_after_schedule_closed"
+    },
+    {
+      "schedule_id": "popcorn-witness-evaluation-002",
+      "packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.proceed-002.production.json",
+      "execution_window_utc": {
+        "opens_at": "2026-08-31T07:00:00.000Z",
+        "closes_at": "2026-08-31T23:59:59.000Z"
+      },
+      "witness_window_utc": {
+        "earliest": "2026-08-31T07:13:27.433Z",
+        "latest": "2026-08-31T07:13:47.433Z"
+      },
+      "cryptographic_verification": "valid",
+      "schedule_overlap": true,
+      "local_policy_outcome": "proceed",
+      "reason": "checkpoint_inside_schedule_window"
+    }
+  ]
+}

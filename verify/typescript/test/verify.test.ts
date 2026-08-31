@@ -27,6 +27,17 @@ const witnessResponse = witnessVector.paid_evidence;
 const witnessJwks = { keys: [witnessVector.public_verification_key] };
 const witnessPayload = Buffer.from(witnessVector.exact_schedule.bytes, "base64url");
 
+const proceedPacket = JSON.parse(
+  await readFile(
+    new URL(
+      "../../../examples/witness/evaluation-packet.proceed-002.production.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const proceedPayload = Buffer.from(proceedPacket.exact_schedule.bytes, "base64url");
+
 test("verifies the shared positive vector and computes the conservative interval", async () => {
   const result = await verifyPopcornTemporalEvidence(
     vector.response,
@@ -127,6 +138,30 @@ test("verifies the settled production payload-bound witness receipt", async () =
   assert.deepEqual(
     result.witness_window_utc,
     witnessResponse.witness_receipt.witness_window_utc,
+  );
+});
+
+test("verifies the settled PROCEED checkpoint inside its schedule window", async () => {
+  const result = await verifyPopcornWitnessEvidence(
+    proceedPacket.paid_evidence,
+    { keys: [proceedPacket.public_verification_key] },
+    {
+      expected_payload: proceedPayload,
+      expected_nonce: proceedPacket.submitted_request.nonce,
+      max_clock_accuracy_radius_ms: 10_000,
+    },
+  );
+  const schedule = JSON.parse(proceedPayload.toString("utf8"));
+  assert.equal(result.signature_verified, true);
+  assert.equal(result.payload_digest_verified, true);
+  assert.equal(result.nonce_verified, true);
+  assert.ok(
+    new Date(result.witness_window_utc.latest) >=
+      new Date(schedule.execution_window_utc.opens_at),
+  );
+  assert.ok(
+    new Date(result.witness_window_utc.earliest) <=
+      new Date(schedule.execution_window_utc.closes_at),
   );
 });
 

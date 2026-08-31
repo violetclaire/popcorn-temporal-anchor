@@ -1,13 +1,31 @@
 # Witness evaluation fixture
 
-`schedule.sample.json` is the exact 228-byte schedule used to create `request.sample.json`. Its SHA-256 digest is:
+The original `schedule.sample.json` is the exact 228-byte schedule used to
+create `request.sample.json`. Its SHA-256 digest is:
 
 ```text
 UKwdgKFq4m5a1Mm0qMSuhIJYnJ8jdmNd01uFdHaAE-M
 ```
 
-The request uses a visible evaluation nonce and no predecessor. Do not reuse this nonce for a real task.
+The request uses a visible evaluation nonce and no predecessor. Do not reuse
+this nonce for a real task. Its settled checkpoint is cryptographically valid,
+but it falls after the schedule closed. Under the example overlap policy in
+`evaluation-outcomes.json`, packet `001` therefore demonstrates **STOP**.
 
-The paid evidence, production JWKS snapshot, evaluation wrapper, and tampered-byte fixture are not fabricated. They were added after one real Base mainnet x402 payment settled against the production endpoint and both independent verifiers reproduced success for the exact bytes and failure after a one-byte change.
+`evaluation-packet.proceed-002.production.json` is the separate settled
+companion. Its exact 228-byte schedule digest is:
+
+```text
+kvYtty3Ifr6SMK8xU76uP0OowwGRCELi6nufb1hWh3M
+```
+
+Its signed witness interval falls inside its execution window. Under the same
+example policy, packet `002` therefore demonstrates **PROCEED**. Both packets
+also include a one-byte tamper case that fails verification.
+
+The paid evidence, production JWKS snapshot, evaluation wrappers, and
+tampered-byte fixtures are not fabricated. Each production packet follows a
+real Base mainnet x402 settlement against the production endpoint and
+independent verification of exact-byte success and one-byte failure.
 
 The free wrapper sets `evaluation_only: true` outside the signed evidence. It does not alter the compact JWS payload.

@@ -65,14 +65,24 @@ or act on the payload. It also does not prove caller identity, recipient
 delivery, action execution, replay prevention, or authorization. Read the full
 [`POPCORN-WITNESS/1.0` contract](docs/WITNESS_RECEIPT.md).
 
-### Verify a settled production checkpoint
+### Verify two settled production outcomes
 
-The checked-in [`evaluation-packet.production.json`](examples/witness/evaluation-packet.production.json)
-contains the exact schedule bytes, SHA-256 digest, nonce, settled production
-response, public key, expected successful result, and a one-byte tamper case
-that must fail. It contains no private key, CDP credential, wallet secret,
-reusable payment proof, or private customer data. `evaluation_only: true` is
-outside the signed payload, so the production JWS remains unchanged.
+The original checked-in [`evaluation-packet.production.json`](examples/witness/evaluation-packet.production.json)
+remains unchanged. Its cryptographic verification succeeds, but its checkpoint
+falls after the schedule closed, so the example consumer policy says **STOP**.
+The companion [`evaluation-packet.proceed-002.production.json`](examples/witness/evaluation-packet.proceed-002.production.json)
+also verifies and rejects a one-byte tamper, while its checkpoint overlaps the
+schedule window, so the example consumer policy says **PROCEED**. The
+machine-readable [`evaluation-outcomes.json`](examples/witness/evaluation-outcomes.json)
+states the local overlap rule and both expected decisions.
+
+Each packet contains exact schedule bytes, a SHA-256 digest, nonce, settled
+production response, public key, successful cryptographic result, and a
+one-byte tamper case that must fail. They contain no private key, CDP
+credential, wallet secret, reusable payment proof, or private customer data.
+`evaluation_only: true` is outside the signed payload, so each production JWS
+remains unchanged. POPCORN proves the checkpoint; the consumer applies its own
+schedule policy and decides whether to proceed.
 
 The reusable [`verify/typescript`](verify/typescript) and
 [`verify/python`](verify/python) packages independently implement the witness
@@ -80,8 +90,10 @@ contract. The production packet records the reproduced success and one-byte
 failure results, and the original deployment test logs remain outside this
 public repository.
 
-The exact production payment settled on Base in transaction
+The STOP example payment settled on Base in transaction
 [`0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c`](https://basescan.org/tx/0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c).
+The PROCEED example payment settled on Base in transaction
+[`0x477e726933c94ccad5682d03ecee4f3d5bb618387ac7437fc817bdd2fe946e5c`](https://basescan.org/tx/0x477e726933c94ccad5682d03ecee4f3d5bb618387ac7437fc817bdd2fe946e5c).
 
 Implementation resources:
 
@@ -162,6 +174,8 @@ sequenceDiagram
 | [`verify/python`](verify/python) | Independent network-free Python verifier |
 | [`verify/test-vectors`](verify/test-vectors) | Shared public signed verification vectors |
 | [`examples/witness/evaluation-packet.production.json`](examples/witness/evaluation-packet.production.json) | Free, settled production witness evaluation packet |
+| [`examples/witness/evaluation-packet.proceed-002.production.json`](examples/witness/evaluation-packet.proceed-002.production.json) | Free, settled production PROCEED evaluation packet |
+| [`examples/witness/evaluation-outcomes.json`](examples/witness/evaluation-outcomes.json) | Machine-readable STOP/PROCEED local-policy outcomes |
 
 ### Inspect the unpaid challenge
 

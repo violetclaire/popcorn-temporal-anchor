@@ -105,5 +105,13 @@ against the returned receipt, and retain the verifier's `replay_key` under
 participant-local idempotency policy. The receipt itself neither stores memory
 nor proves identity, delivery, execution, replay prevention, or authorization.
 
-An agent can verify the exact settled production checkpoint without paying at
-`https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json`.
+An agent can verify two exact settled production checkpoints without paying:
+
+- **STOP:** `https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json`
+- **PROCEED:** `https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.proceed-002.production.json`
+- **Outcome policy:** `https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-outcomes.json`
+
+Verify each signature and exact digest first. Then apply participant-local
+policy: compare `witness_window_utc` with the schedule's
+`execution_window_utc` and decide whether to proceed. POPCORN does not make
+that decision.

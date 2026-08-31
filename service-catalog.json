@@ -76,7 +76,10 @@
         "portable": true,
         "receiving_system_can_verify_independently": true,
         "predecessor_attestation_digest_binding_supported": true,
-        "free_evaluation_packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json"
+        "free_evaluation_packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json",
+        "stop_evaluation_packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json",
+        "proceed_evaluation_packet": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.proceed-002.production.json",
+        "evaluation_outcomes": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-outcomes.json"
       },
       "storage": {
         "payload_stored_by_popcorn": false,

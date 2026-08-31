@@ -23,6 +23,13 @@ WITNESS_PAYLOAD = base64.urlsafe_b64decode(
     WITNESS_VECTOR["exact_schedule"]["bytes"] + "="
 )
 
+PROCEED_PACKET = json.loads(
+    (Path(__file__).parents[2] / "examples" / "witness" / "evaluation-packet.proceed-002.production.json").read_text()
+)
+PROCEED_PAYLOAD = base64.urlsafe_b64decode(
+    PROCEED_PACKET["exact_schedule"]["bytes"] + "="
+)
+
 
 class PopcornVerifierTests(unittest.TestCase):
     def test_positive_vector(self):
@@ -86,6 +93,27 @@ class PopcornVerifierTests(unittest.TestCase):
         self.assertEqual(
             result["witness_window_utc"],
             WITNESS_RESPONSE["witness_receipt"]["witness_window_utc"],
+        )
+
+    def test_settled_proceed_checkpoint_is_inside_schedule_window(self):
+        result = verify_popcorn_witness_evidence(
+            PROCEED_PACKET["paid_evidence"],
+            {"keys": [PROCEED_PACKET["public_verification_key"]]},
+            expected_payload=PROCEED_PAYLOAD,
+            expected_nonce=PROCEED_PACKET["submitted_request"]["nonce"],
+            max_clock_accuracy_radius_ms=10_000,
+        )
+        schedule = json.loads(PROCEED_PAYLOAD)
+        self.assertTrue(result["signature_verified"])
+        self.assertTrue(result["payload_digest_verified"])
+        self.assertTrue(result["nonce_verified"])
+        self.assertGreaterEqual(
+            result["witness_window_utc"]["latest"],
+            schedule["execution_window_utc"]["opens_at"],
+        )
+        self.assertLessEqual(
+            result["witness_window_utc"]["earliest"],
+            schedule["execution_window_utc"]["closes_at"],
         )
 
     def test_witness_rejects_different_payload(self):
