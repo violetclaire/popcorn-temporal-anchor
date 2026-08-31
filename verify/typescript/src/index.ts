@@ -147,6 +147,26 @@ export type VerifiedWitnessEvidence = {
   };
 };
 
+export type PortableScheduleExecutionWindowUtc = {
+  opens_at: string;
+  closes_at: string;
+};
+
+export type WitnessScheduleDecision = {
+  decision: "STOP" | "TIME_CHECK_PASSED" | "RECHECK";
+  authorization_granted: false;
+  reason:
+    | "witness_window_entirely_before_execution_window"
+    | "witness_window_entirely_after_execution_window"
+    | "witness_window_entirely_inside_execution_window"
+    | "witness_uncertainty_crosses_execution_boundary";
+  witness_window_utc: {
+    earliest: string;
+    latest: string;
+  };
+  execution_window_utc: PortableScheduleExecutionWindowUtc;
+};
+
 const encoder = new TextEncoder();
 
 function decodeBase64Url(value: string): Uint8Array<ArrayBuffer> {
@@ -239,6 +259,65 @@ function parseUtc(value: string, label: string): number {
   const parsed = Date.parse(value);
   if (!Number.isFinite(parsed)) throw new Error(`${label} is invalid`);
   return parsed;
+}
+
+export function evaluateWitnessAgainstSchedule(
+  witnessWindowUtc: { earliest: string; latest: string },
+  executionWindowUtc: PortableScheduleExecutionWindowUtc,
+): WitnessScheduleDecision {
+  const witnessEarliestMs = parseUtc(
+    witnessWindowUtc.earliest,
+    "witness_window_utc.earliest",
+  );
+  const witnessLatestMs = parseUtc(
+    witnessWindowUtc.latest,
+    "witness_window_utc.latest",
+  );
+  if (witnessEarliestMs > witnessLatestMs) {
+    throw new Error("witness_window_utc is not ordered");
+  }
+
+  const opensMs = parseUtc(
+    executionWindowUtc.opens_at,
+    "execution_window_utc.opens_at",
+  );
+  const closesMs = parseUtc(
+    executionWindowUtc.closes_at,
+    "execution_window_utc.closes_at",
+  );
+  if (opensMs >= closesMs) {
+    throw new Error("execution_window_utc is not ordered");
+  }
+
+  let decision: WitnessScheduleDecision["decision"];
+  let reason: WitnessScheduleDecision["reason"];
+  if (witnessLatestMs < opensMs) {
+    decision = "STOP";
+    reason = "witness_window_entirely_before_execution_window";
+  } else if (witnessEarliestMs > closesMs) {
+    decision = "STOP";
+    reason = "witness_window_entirely_after_execution_window";
+  } else if (witnessEarliestMs >= opensMs && witnessLatestMs <= closesMs) {
+    decision = "TIME_CHECK_PASSED";
+    reason = "witness_window_entirely_inside_execution_window";
+  } else {
+    decision = "RECHECK";
+    reason = "witness_uncertainty_crosses_execution_boundary";
+  }
+
+  return {
+    decision,
+    authorization_granted: false,
+    reason,
+    witness_window_utc: {
+      earliest: witnessWindowUtc.earliest,
+      latest: witnessWindowUtc.latest,
+    },
+    execution_window_utc: {
+      opens_at: executionWindowUtc.opens_at,
+      closes_at: executionWindowUtc.closes_at,
+    },
+  };
 }
 
 function requireIntegerRelationship(

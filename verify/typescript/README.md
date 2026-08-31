@@ -32,6 +32,12 @@ const verified = await verifyPopcornWitnessEvidence(response, jwks, {
 
 // Store this locally after accepting the checkpoint.
 const replayKey = verified.replay_key;
+
+const judgment = evaluateWitnessAgainstSchedule(
+  verified.witness_window_utc,
+  schedule.execution_window_utc,
+);
+// STOP, TIME_CHECK_PASSED, or RECHECK. Never authorization.
 ```
 
 This verifies commitment integrity and predecessor digest binding. Verify the
@@ -39,8 +45,13 @@ predecessor attestation independently before inferring an order between signed
 bytes. The verifier does not store the replay key or claim that an action was
 executed, delivered, or authorized.
 
+`evaluateWitnessAgainstSchedule` requires the complete witness uncertainty
+interval to be inside the task window before returning `TIME_CHECK_PASSED`.
+An interval entirely outside returns `STOP`; one that crosses a boundary
+returns `RECHECK`. All three results set `authorization_granted: false`.
+
 Run `npm install && npm run check`. The suite consumes the same settled
 production witness vector
 as the Python implementation and covers temporal tampering, unknown keys,
 expiry, closed execution windows, payload changes, nonce changes, predecessor
-changes, and altered proof scope.
+changes, altered proof scope, and all three schedule judgments.

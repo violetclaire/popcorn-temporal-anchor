@@ -1,59 +1,120 @@
-import { createHash, randomBytes } from "node:crypto";
-import { x402Client, wrapFetchWithPayment } from "@x402/fetch";
+import { randomBytes } from "node:crypto";
+import { writeFile } from "node:fs/promises";
+
 import { ExactEvmScheme } from "@x402/evm/exact/client";
+import { x402Client, wrapFetchWithPayment } from "@x402/fetch";
 import { privateKeyToAccount } from "viem/accounts";
 
-import {
-  verifyPopcornWitnessEvidence,
-  type JsonWebKeySet,
-  type PopcornWitnessResponse,
+import type {
+  JsonWebKeySet,
+  PopcornWitnessResponse,
 } from "../../../verify/typescript/src/index.js";
+import {
+  buildPortableOutcome,
+  createWitnessRequest,
+  DEFAULT_JWKS_URL,
+  DEFAULT_SERVICE_URL,
+  parseScheduleWindow,
+  readExactBytes,
+  type PaymentExchange,
+} from "./carrier.js";
 
-const RESOURCE =
-  process.env.POPCORN_WITNESS_URL ?? "https://767-2676.com/v1/receipt";
-const JWKS_URL = "https://767-2676.com/.well-known/popcorn-keys.json";
+type Arguments = {
+  schedule?: string;
+  scheduleUrl?: string;
+  out?: string;
+  dryRun: boolean;
+};
 
-function sha256Base64Url(value: string | Uint8Array): string {
-  return createHash("sha256").update(value).digest("base64url");
+function parseArguments(argv: string[]): Arguments {
+  const result: Arguments = { dryRun: false };
+  for (let index = 0; index < argv.length; index += 1) {
+    const value = argv[index];
+    if (value === "--dry-run") {
+      result.dryRun = true;
+    } else if (
+      value === "--schedule" ||
+      value === "--schedule-url" ||
+      value === "--out"
+    ) {
+      const next = argv[index + 1];
+      if (!next) throw new Error(`${value} requires a value`);
+      if (value === "--schedule") result.schedule = next;
+      if (value === "--schedule-url") result.scheduleUrl = next;
+      if (value === "--out") result.out = next;
+      index += 1;
+    } else {
+      throw new Error(`unsupported argument: ${value}`);
+    }
+  }
+  if ((result.schedule ? 1 : 0) + (result.scheduleUrl ? 1 : 0) !== 1) {
+    throw new Error("provide exactly one --schedule FILE or --schedule-url HTTPS_URL");
+  }
+  if (!result.dryRun && !result.out) {
+    throw new Error("paid mode requires --out so the portable outcome is retained");
+  }
+  return result;
+}
+
+function mergedHeaders(input: RequestInfo | URL, init?: RequestInit): Headers {
+  const headers = new Headers(input instanceof Request ? input.headers : undefined);
+  new Headers(init?.headers).forEach((value, key) => headers.set(key, value));
+  return headers;
 }
 
 async function main(): Promise<void> {
+  const args = parseArguments(process.argv.slice(2));
+  const serviceUrl = process.env.POPCORN_WITNESS_URL ?? DEFAULT_SERVICE_URL;
+  const keySetUrl = process.env.POPCORN_JWKS_URL ?? DEFAULT_JWKS_URL;
+  const scheduleBytes = await readExactBytes(args.schedule ?? args.scheduleUrl!);
+  const executionWindowUtc = parseScheduleWindow(scheduleBytes);
+  const nonce = randomBytes(32).toString("base64url");
+  const previousAttestation = process.env.PREVIOUS_COMPACT_JWS || undefined;
+  const request = createWitnessRequest(scheduleBytes, nonce, previousAttestation);
+
+  if (args.dryRun) {
+    console.log(
+      JSON.stringify(
+        {
+          payment_sent: false,
+          service_url: serviceUrl,
+          schedule_byte_length: scheduleBytes.byteLength,
+          execution_window_utc: executionWindowUtc,
+          proposed_request: request,
+        },
+        null,
+        2,
+      ),
+    );
+    return;
+  }
+
   const privateKey = process.env.EVM_PRIVATE_KEY;
   if (!privateKey || !/^0x[0-9a-fA-F]{64}$/.test(privateKey)) {
     throw new Error("Set EVM_PRIVATE_KEY to a dedicated Base EVM private key");
   }
 
-  // These are the exact bytes the agent keeps locally as its memory checkpoint.
-  // POPCORN receives only their digest.
-  const payload = JSON.stringify({
-    checkpoint_id: crypto.randomUUID(),
-    action_id: "handoff-example",
-    state: "ready_for_handoff",
-    version: 1,
-  });
-  const payloadBytes = new TextEncoder().encode(payload);
-  const nonce = randomBytes(32).toString("base64url");
-  const previousAttestation = process.env.PREVIOUS_COMPACT_JWS || undefined;
-  const request = {
-    payload_digest: {
-      algorithm: "sha-256" as const,
-      value: sha256Base64Url(payloadBytes),
-    },
-    nonce,
-    previous_attestation_digest: previousAttestation
-      ? {
-          algorithm: "sha-256" as const,
-          value: sha256Base64Url(previousAttestation),
-        }
-      : null,
+  const observed: Partial<PaymentExchange> = {};
+  const recordingFetch: typeof fetch = async (input, init) => {
+    const requestHeaders = mergedHeaders(input, init);
+    const paymentSignature = requestHeaders.get("payment-signature");
+    const response = await fetch(input, init);
+    if (response.status === 402) {
+      const paymentRequired = response.headers.get("payment-required");
+      if (paymentRequired) observed.payment_required = paymentRequired;
+    }
+    if (paymentSignature) observed.payment_signature = paymentSignature;
+    const paymentResponse = response.headers.get("payment-response");
+    if (paymentResponse) observed.payment_response = paymentResponse;
+    return response;
   };
 
   const signer = privateKeyToAccount(privateKey as `0x${string}`);
   const client = new x402Client()
     .register("eip155:*", new ExactEvmScheme(signer))
     .setSpendControls({ maxAmountPerPayment: "$0.001" });
-  const fetchWithPayment = wrapFetchWithPayment(fetch, client);
-  const response = await fetchWithPayment(RESOURCE, {
+  const fetchWithPayment = wrapFetchWithPayment(recordingFetch, client);
+  const response = await fetchWithPayment(serviceUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -64,36 +125,42 @@ async function main(): Promise<void> {
   if (!response.ok) {
     throw new Error(`POPCORN witness request failed with HTTP ${response.status}`);
   }
-  if (!response.headers.get("payment-response")) {
-    throw new Error("successful response is missing PAYMENT-RESPONSE");
+  if (
+    !observed.payment_required ||
+    !observed.payment_signature ||
+    !observed.payment_response
+  ) {
+    throw new Error("x402 exchange did not expose a complete payment transcript");
   }
 
   const body = (await response.json()) as PopcornWitnessResponse;
-  const jwksResponse = await fetch(JWKS_URL, { cache: "no-store" });
+  const jwksResponse = await fetch(keySetUrl, { cache: "no-store" });
   if (!jwksResponse.ok) {
     throw new Error(`JWKS request failed with HTTP ${jwksResponse.status}`);
   }
   const jwks = (await jwksResponse.json()) as JsonWebKeySet;
-  const verified = await verifyPopcornWitnessEvidence(body, jwks, {
-    expected_payload: payloadBytes,
-    expected_nonce: nonce,
-    expected_previous_attestation: previousAttestation,
+  const outcome = await buildPortableOutcome({
+    serviceUrl,
+    keySetUrl,
+    scheduleBytes,
+    submittedRequest: request,
+    paidEvidence: body,
+    paymentExchange: observed as PaymentExchange,
+    jwks,
+    previousAttestation,
   });
-
-  // The consuming agent must store replay_key after accepting this checkpoint.
-  // POPCORN does not centrally enforce nonce uniqueness or action idempotency.
+  await writeFile(args.out!, `${JSON.stringify(outcome, null, 2)}\n`, {
+    encoding: "utf8",
+    flag: "wx",
+  });
   console.log(
     JSON.stringify(
       {
-        receipt_id: verified.witness_receipt.receipt_id,
-        signature_verified: verified.signature_verified,
-        payload_digest_verified: verified.payload_digest_verified,
-        nonce_verified: verified.nonce_verified,
-        previous_attestation_digest_matched:
-          verified.previous_attestation_digest_matched,
-        witness_window_utc: verified.witness_window_utc,
-        replay_key: verified.replay_key,
-        payload_remained_local: true,
+        outcome_file: args.out,
+        receipt_id: outcome.paid_evidence.witness_receipt.receipt_id,
+        payload_digest: outcome.schedule.payload_digest.value,
+        decision: outcome.reported_judgment.decision,
+        authorization_granted: false,
       },
       null,
       2,

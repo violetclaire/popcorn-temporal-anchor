@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 import {
+  evaluateWitnessAgainstSchedule,
   verifyPopcornTemporalEvidence,
   verifyPopcornWitnessEvidence,
   type JsonWebKeySet,
@@ -37,6 +38,17 @@ const proceedPacket = JSON.parse(
   ),
 );
 const proceedPayload = Buffer.from(proceedPacket.exact_schedule.bytes, "base64url");
+
+const stopPacket = JSON.parse(
+  await readFile(
+    new URL(
+      "../../../examples/witness/evaluation-packet.production.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const stopPayload = Buffer.from(stopPacket.exact_schedule.bytes, "base64url");
 
 test("verifies the shared positive vector and computes the conservative interval", async () => {
   const result = await verifyPopcornTemporalEvidence(
@@ -162,6 +174,66 @@ test("verifies the settled PROCEED checkpoint inside its schedule window", async
   assert.ok(
     new Date(result.witness_window_utc.earliest) <=
       new Date(schedule.execution_window_utc.closes_at),
+  );
+  assert.equal(
+    evaluateWitnessAgainstSchedule(
+      result.witness_window_utc,
+      schedule.execution_window_utc,
+    ).decision,
+    "TIME_CHECK_PASSED",
+  );
+});
+
+test("returns STOP when the verified witness window is entirely after the schedule", async () => {
+  const result = await verifyPopcornWitnessEvidence(
+    stopPacket.paid_evidence,
+    { keys: [stopPacket.public_verification_key] },
+    {
+      expected_payload: stopPayload,
+      expected_nonce: stopPacket.submitted_request.nonce,
+      max_clock_accuracy_radius_ms: 10_000,
+    },
+  );
+  const schedule = JSON.parse(stopPayload.toString("utf8"));
+  const judgment = evaluateWitnessAgainstSchedule(
+    result.witness_window_utc,
+    schedule.execution_window_utc,
+  );
+  assert.equal(judgment.decision, "STOP");
+  assert.equal(judgment.authorization_granted, false);
+  assert.equal(judgment.reason, "witness_window_entirely_after_execution_window");
+});
+
+test("returns RECHECK when clock uncertainty crosses a schedule boundary", () => {
+  const judgment = evaluateWitnessAgainstSchedule(
+    {
+      earliest: "2026-08-31T06:59:55.000Z",
+      latest: "2026-08-31T07:00:05.000Z",
+    },
+    {
+      opens_at: "2026-08-31T07:00:00.000Z",
+      closes_at: "2026-08-31T08:00:00.000Z",
+    },
+  );
+  assert.equal(judgment.decision, "RECHECK");
+  assert.equal(judgment.authorization_granted, false);
+  assert.equal(judgment.reason, "witness_uncertainty_crosses_execution_boundary");
+});
+
+test("fails closed on an invalid schedule window", () => {
+  assert.throws(
+    () =>
+      evaluateWitnessAgainstSchedule(
+        {
+          earliest: "2026-08-31T07:00:00.000Z",
+          latest: "2026-08-31T07:00:01.000Z",
+        },
+        {
+          opens_at: "2026-08-31T08:00:00.000Z",
+          closes_at: "2026-08-31T08:00:00.000Z",
+        },
+      ),
+    /execution_window_utc is not ordered/,
   );
 });
 

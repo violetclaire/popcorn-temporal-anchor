@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from popcorn_verify import (
+    evaluate_witness_against_schedule,
     verify_popcorn_temporal_evidence,
     verify_popcorn_witness_evidence,
 )
@@ -28,6 +29,13 @@ PROCEED_PACKET = json.loads(
 )
 PROCEED_PAYLOAD = base64.urlsafe_b64decode(
     PROCEED_PACKET["exact_schedule"]["bytes"] + "="
+)
+
+STOP_PACKET = json.loads(
+    (Path(__file__).parents[2] / "examples" / "witness" / "evaluation-packet.production.json").read_text()
+)
+STOP_PAYLOAD = base64.urlsafe_b64decode(
+    STOP_PACKET["exact_schedule"]["bytes"] + "="
 )
 
 
@@ -115,6 +123,56 @@ class PopcornVerifierTests(unittest.TestCase):
             result["witness_window_utc"]["earliest"],
             schedule["execution_window_utc"]["closes_at"],
         )
+        judgment = evaluate_witness_against_schedule(
+            result["witness_window_utc"], schedule["execution_window_utc"]
+        )
+        self.assertEqual(judgment["decision"], "TIME_CHECK_PASSED")
+        self.assertFalse(judgment["authorization_granted"])
+
+    def test_settled_stop_checkpoint_is_after_schedule_window(self):
+        result = verify_popcorn_witness_evidence(
+            STOP_PACKET["paid_evidence"],
+            {"keys": [STOP_PACKET["public_verification_key"]]},
+            expected_payload=STOP_PAYLOAD,
+            expected_nonce=STOP_PACKET["submitted_request"]["nonce"],
+            max_clock_accuracy_radius_ms=10_000,
+        )
+        schedule = json.loads(STOP_PAYLOAD)
+        judgment = evaluate_witness_against_schedule(
+            result["witness_window_utc"], schedule["execution_window_utc"]
+        )
+        self.assertEqual(judgment["decision"], "STOP")
+        self.assertEqual(
+            judgment["reason"], "witness_window_entirely_after_execution_window"
+        )
+        self.assertFalse(judgment["authorization_granted"])
+
+    def test_uncertainty_crossing_boundary_requires_recheck(self):
+        judgment = evaluate_witness_against_schedule(
+            {
+                "earliest": "2026-08-31T06:59:55.000Z",
+                "latest": "2026-08-31T07:00:05.000Z",
+            },
+            {
+                "opens_at": "2026-08-31T07:00:00.000Z",
+                "closes_at": "2026-08-31T08:00:00.000Z",
+            },
+        )
+        self.assertEqual(judgment["decision"], "RECHECK")
+        self.assertFalse(judgment["authorization_granted"])
+
+    def test_invalid_schedule_window_fails_closed(self):
+        with self.assertRaisesRegex(ValueError, "execution_window_utc is not ordered"):
+            evaluate_witness_against_schedule(
+                {
+                    "earliest": "2026-08-31T07:00:00.000Z",
+                    "latest": "2026-08-31T07:00:01.000Z",
+                },
+                {
+                    "opens_at": "2026-08-31T08:00:00.000Z",
+                    "closes_at": "2026-08-31T08:00:00.000Z",
+                },
+            )
 
     def test_witness_rejects_different_payload(self):
         with self.assertRaisesRegex(ValueError, "payload digest does not match"):

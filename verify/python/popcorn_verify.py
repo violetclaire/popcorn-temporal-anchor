@@ -86,6 +86,48 @@ def _require_nonce(value: Any) -> None:
         raise ValueError("nonce must be 32 unpadded base64url bytes")
 
 
+def evaluate_witness_against_schedule(
+    witness_window_utc: dict[str, str],
+    execution_window_utc: dict[str, str],
+) -> dict[str, Any]:
+    if not isinstance(witness_window_utc, dict):
+        raise ValueError("witness_window_utc is missing")
+    if not isinstance(execution_window_utc, dict):
+        raise ValueError("execution_window_utc is missing")
+    _require_exact_keys(witness_window_utc, {"earliest", "latest"}, "witness_window_utc")
+    _require_exact_keys(execution_window_utc, {"opens_at", "closes_at"}, "execution_window_utc")
+
+    earliest_ms = _utc_ms(witness_window_utc["earliest"], "witness_window_utc.earliest")
+    latest_ms = _utc_ms(witness_window_utc["latest"], "witness_window_utc.latest")
+    if earliest_ms > latest_ms:
+        raise ValueError("witness_window_utc is not ordered")
+    opens_ms = _utc_ms(execution_window_utc["opens_at"], "execution_window_utc.opens_at")
+    closes_ms = _utc_ms(execution_window_utc["closes_at"], "execution_window_utc.closes_at")
+    if opens_ms >= closes_ms:
+        raise ValueError("execution_window_utc is not ordered")
+
+    if latest_ms < opens_ms:
+        decision = "STOP"
+        reason = "witness_window_entirely_before_execution_window"
+    elif earliest_ms > closes_ms:
+        decision = "STOP"
+        reason = "witness_window_entirely_after_execution_window"
+    elif earliest_ms >= opens_ms and latest_ms <= closes_ms:
+        decision = "TIME_CHECK_PASSED"
+        reason = "witness_window_entirely_inside_execution_window"
+    else:
+        decision = "RECHECK"
+        reason = "witness_uncertainty_crosses_execution_boundary"
+
+    return {
+        "decision": decision,
+        "authorization_granted": False,
+        "reason": reason,
+        "witness_window_utc": dict(witness_window_utc),
+        "execution_window_utc": dict(execution_window_utc),
+    }
+
+
 def verify_popcorn_temporal_evidence(
     response: dict[str, Any],
     jwks: dict[str, Any],

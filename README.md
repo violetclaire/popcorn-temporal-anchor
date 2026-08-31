@@ -90,6 +90,30 @@ contract. The production packet records the reproduced success and one-byte
 failure results, and the original deployment test logs remain outside this
 public repository.
 
+### Carry a schedule between two computers
+
+The [`typescript-x402-witness-client`](examples/typescript-x402-witness-client)
+now accepts an exact schedule file or HTTPS URL instead of inventing a built-in
+example. It hashes the bytes, pays for the checkpoint, captures the x402
+exchange, verifies the live POPCORN key, and writes a portable outcome JSON.
+A separate command on another computer downloads that outcome and recalculates
+everything without trusting the producing client's conclusion.
+
+The deterministic result is one of:
+
+- `STOP` when the complete signed witness interval is outside the schedule;
+- `TIME_CHECK_PASSED` when the complete interval is inside the schedule;
+- `RECHECK` when clock uncertainty crosses a schedule boundary.
+
+Every result includes `authorization_granted: false`. Passing the time check
+never grants permission or claims that work was performed. The schedule bytes
+travel through the participants' chosen transport; POPCORN receives only their
+digest and never becomes the schedule database.
+
+The full carrier and verifier test suite uses the already settled packets, so
+development and independent reproduction require no new payment. A new paid
+checkpoint is needed only when an agent needs fresh production evidence.
+
 The STOP example payment settled on Base in transaction
 [`0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c`](https://basescan.org/tx/0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c).
 The PROCEED example payment settled on Base in transaction
@@ -106,7 +130,7 @@ Implementation resources:
 | [`verify/typescript`](verify/typescript) | Offline TypeScript verification for temporal and witness receipts |
 | [`verify/python`](verify/python) | Independent offline Python verification |
 | [`popcorn-witness-receipt-v1.json`](verify/test-vectors/popcorn-witness-receipt-v1.json) | Shared signed payload-bound vector |
-| [`examples/typescript-x402-witness-client`](examples/typescript-x402-witness-client) | x402 client and local checkpoint flow |
+| [`examples/typescript-x402-witness-client`](examples/typescript-x402-witness-client) | Automatic schedule carrier, x402 producer, and independent outcome verifier |
 | [`examples/witness`](examples/witness) | Real settled production proof and one-byte tamper demonstration |
 
 Agents can read the [repository service catalog](service-catalog.json) or the

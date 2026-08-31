@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "check": "tsc --noEmit"
+    "verify": "tsx src/verify-outcome.ts",
+    "check": "tsc --noEmit && tsx --test test/*.test.ts",
+    "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
     "@x402/evm": "2.24.0",
