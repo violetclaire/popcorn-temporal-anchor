@@ -1,0 +1,196 @@
+/* Append after the current homepage CSS. Keep the server clock and audio code unchanged. */
+:root {
+  --ground: #0b3d2e;
+  --paper: #f2efe3;
+  --soft-cream: #dcd6c5;
+  --phthalo-green: #f2efe3;
+  --courtyard-green: #0b3d2e;
+  --ink-green: #f2efe3;
+  font-family: Helvetica, "Neue Haas Grotesk", Univers, Arial, sans-serif;
+}
+
+body,
+main,
+h1,
+h2,
+button,
+.agent-proof {
+  font-family: Helvetica, "Neue Haas Grotesk", Univers, Arial, sans-serif;
+}
+
+body {
+  place-items: start center;
+  padding: 0 clamp(0.75rem, 2.5vw, 1.5rem);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(16.666vw - 1px),
+      rgba(242, 239, 227, 0.1) calc(16.666vw - 1px),
+      rgba(242, 239, 227, 0.1) 16.666vw
+    ),
+    var(--ground);
+  color: var(--ink-green);
+}
+
+main {
+  width: min(52rem, 100%);
+  min-height: 100vh;
+  padding: clamp(1rem, 4vw, 3rem);
+  border-block: 0;
+  border-inline: 1px solid var(--ink-green);
+  background: rgba(11, 61, 46, 0.96);
+  color: var(--ink-green);
+  text-align: left;
+}
+
+.report-header,
+.report-footer {
+  padding-block: 0 1rem;
+  border-bottom: 1px solid var(--ink-green);
+  color: var(--ink-green);
+  font-size: clamp(0.58rem, 1.5vw, 0.7rem);
+}
+
+.report-header .wordmark {
+  color: var(--ink-green);
+}
+
+.signal-stage {
+  width: min(100%, 34rem);
+  margin: clamp(2.5rem, 7vh, 5rem) auto clamp(1.5rem, 4vh, 2.5rem);
+  padding: 5%;
+  border: 1px solid var(--ink-green);
+  background: transparent;
+}
+
+.signal-frame {
+  padding: 8%;
+  border: 1px solid var(--ink-green);
+  background: transparent;
+}
+
+.signal-middle {
+  padding: 10%;
+  border: 1px solid var(--ink-green);
+  background: transparent;
+}
+
+.signal-core {
+  border: clamp(0.6rem, 1.8vw, 1rem) solid var(--phthalo-green);
+  background: var(--ground);
+  color: var(--ink-green);
+  text-align: center;
+}
+
+h1 {
+  color: var(--ink-green);
+  font-size: clamp(0.58rem, 1.6vw, 0.76rem);
+  letter-spacing: 0.16em;
+}
+
+time {
+  color: var(--ink-green);
+  font-family: Helvetica, "Neue Haas Grotesk", Univers, Arial, sans-serif;
+  font-size: clamp(1.55rem, 5.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+}
+
+.controls {
+  width: min(100%, 34rem);
+}
+
+.controls button {
+  border-color: var(--ink-green);
+  background: transparent;
+  color: var(--ink-green);
+  font-size: clamp(0.72rem, 1.8vw, 0.86rem);
+}
+
+.controls button:hover {
+  border-color: var(--phthalo-green);
+  background: var(--phthalo-green);
+  color: var(--ground);
+}
+
+.controls button:focus-visible,
+.cover-proof a:focus-visible,
+.agent-proof a:focus-visible,
+.report-footer a:focus-visible {
+  outline: 3px solid var(--phthalo-green);
+  outline-offset: 3px;
+}
+
+.cover-proof,
+.agent-proof {
+  width: min(100%, 34rem);
+  margin-inline: auto;
+}
+
+.cover-proof {
+  margin-top: 2.25rem;
+  padding-block: 1.25rem;
+  border-block: 1px solid var(--ink-green);
+}
+
+.cover-proof h2 {
+  margin: 0;
+  font-size: clamp(1.15rem, 3vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.18;
+}
+
+.cover-proof a {
+  display: inline;
+  padding-bottom: 0.12em;
+  border-bottom: 0.22em solid var(--phthalo-green);
+  color: var(--ink-green);
+  font: inherit;
+  text-decoration: none;
+}
+
+.agent-proof {
+  margin-top: 1.25rem;
+  padding: 1rem 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--ink-green);
+  color: var(--ink-green);
+}
+
+.agent-proof h2 {
+  font-size: 0.64rem;
+}
+
+.agent-proof p {
+  max-width: 31rem;
+  font-size: 0.78rem;
+}
+
+.agent-outcomes a {
+  border-color: var(--ink-green);
+}
+
+.agent-outcomes a,
+.agent-docs {
+  color: var(--ink-green);
+}
+
+.report-footer {
+  margin-top: auto;
+  padding-block: clamp(2rem, 6vh, 3.5rem) 0;
+  border-bottom: 0;
+}
+
+@media (max-width: 32rem) {
+  body {
+    padding: 0;
+    background: var(--ground);
+  }
+
+  main {
+    border: 0;
+  }
+
+}

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Verify a settled POPCORN checkpoint, compare its witness window, and break its digest by changing one byte. No wallet required.">
+  <title>228 bytes / 767-2676 Time</title>
+  <link rel="stylesheet" href="/demo/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#packet">Skip to the packet</a>
+  <main>
+    <header class="masthead">
+      <a class="wordmark" href="/" aria-label="767-2676 Time home">767-2676 Time</a>
+      <p>767-2676.com / San Francisco / Pacific</p>
+      <p class="folio">Evaluation / 001</p>
+    </header>
+
+    <section class="title-grid" aria-labelledby="page-title">
+      <p class="kicker">A settled public sample</p>
+      <h1 id="page-title">Valid signature.<br>Closed window. <span>STOP.</span></h1>
+      <p class="dek">A local clock and a chat log do not travel as proof. This packet binds the same 228 bytes to a signed witness interval. The holder compares that interval with the task window and decides.</p>
+    </section>
+
+    <section id="packet" class="instrument" aria-labelledby="instrument-title">
+      <div class="instrument-head">
+        <div>
+          <p class="eyebrow">Time-window instrument</p>
+          <h2 id="instrument-title">One packet / two intervals</h2>
+        </div>
+        <div class="nucleus-mark" aria-hidden="true"><span></span></div>
+      </div>
+
+      <div class="timeline" role="img" aria-label="The execution window ends on August 30 at 20:05 UTC. The witness window begins on August 31 at 05:02:06 UTC. The intervals do not overlap.">
+        <div class="date-rail">
+          <p><strong>30 AUG 2026</strong><span>execution</span></p>
+          <p><strong>31 AUG 2026</strong><span>witness</span></p>
+        </div>
+        <div class="bands">
+          <div class="band-row execution-row">
+            <p class="band-label">20:00Z</p>
+            <div class="execution-band"><span>5 minutes</span></div>
+            <p class="band-label end">20:05Z</p>
+          </div>
+          <div class="night-gap" aria-hidden="true"><span>schedule closes</span><i></i><span>checkpoint arrives</span></div>
+          <div class="band-row witness-row">
+            <p class="band-label">05:02:06Z</p>
+            <div class="witness-band"><span>20 seconds</span></div>
+            <p class="band-label end">05:02:26Z</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fact-grid" aria-label="Packet result">
+        <div><span>Schedule bytes</span><strong data-field="byte-length">228</strong></div>
+        <div><span>Signature</span><strong data-field="signature">checking</strong></div>
+        <div><span>Window overlap</span><strong data-field="overlap">false</strong></div>
+        <div class="stop-cell"><span>Local policy</span><strong>STOP</strong></div>
+      </div>
+      <p class="boundary">The signature proves origin and integrity. It does not grant permission, schedule work, or perform the action.</p>
+    </section>
+
+    <section class="byte-test" aria-labelledby="byte-title">
+      <div class="section-number" aria-hidden="true">02</div>
+      <div class="byte-copy">
+        <p class="eyebrow">Digest control</p>
+        <h2 id="byte-title">One flipped byte.<br>Hash breaks.</h2>
+        <p>Change offset <code>226</code> in the exact schedule. The signed receipt stays untouched. Verification must fail closed.</p>
+        <div class="byte-readout" aria-live="polite">
+          <p><span>Offset</span><strong>226</strong></p>
+          <p><span>Original</span><strong data-field="original-byte">0x7d&nbsp; }</strong></p>
+          <p><span>Changed</span><strong data-field="tampered-byte">0x7c&nbsp; |</strong></p>
+        </div>
+        <div class="button-row">
+          <button type="button" data-action="flip" disabled>Flip byte 226</button>
+          <button class="quiet" type="button" data-action="reset">Reset</button>
+        </div>
+      </div>
+      <output class="test-result" data-field="tamper-result">
+        <span>Expected error</span>
+        <strong>witness_payload_digest_<wbr>does_not_match_expected</strong>
+        <small>Run the control to compare the mutated bytes.</small>
+      </output>
+    </section>
+
+    <section class="instructions" aria-labelledby="instructions-title">
+      <div class="instructions-head">
+        <p class="eyebrow">Two skins / one packet</p>
+        <h2 id="instructions-title">Read it or run it.</h2>
+      </div>
+      <div class="instruction-columns">
+        <article>
+          <h3>Humans</h3>
+          <ol>
+            <li>Open the JSON.</li>
+            <li>Compare <code>execution_window_utc</code> to <code>witness_window_utc</code>.</li>
+            <li>Change one character in the schedule bytes.</li>
+          </ol>
+        </article>
+        <article>
+          <h3>Agents</h3>
+          <ol>
+            <li>Load the packet. Verify signature and digest.</li>
+            <li>Apply the witness window to the execution window.</li>
+            <li>Emit stop or proceed from <code>evaluation-outcomes.json</code>.</li>
+            <li>Mutate byte 226 and verify again.</li>
+          </ol>
+          <p class="agent-warning">Do not request a paid anchor.</p>
+        </article>
+      </div>
+    </section>
+
+    <nav class="source-index" aria-label="Public source files">
+      <p class="eyebrow">Source index</p>
+      <a href="https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json"><span>01</span>Raw STOP packet</a>
+      <a href="https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.proceed-002.production.json"><span>02</span>Raw PROCEED packet</a>
+      <a href="https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-outcomes.json"><span>03</span>evaluation-outcomes.json</a>
+      <a href="https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript"><span>04</span>verify/typescript</a>
+      <a href="https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python"><span>05</span>verify/python</a>
+    </nav>
+
+    <footer>
+      <p>POPCORN proves the time and the fingerprint. The holder decides.</p>
+      <p data-field="load-status" role="status">Loading the public packet...</p>
+    </footer>
+  </main>
+  <script src="/demo/demo.js" defer></script>
+</body>
+</html>
