@@ -168,8 +168,28 @@ time {
   font-size: 0.78rem;
 }
 
+.agent-outcomes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+  margin: 0.85rem 0;
+}
+
 .agent-outcomes a {
-  border-color: var(--ink-green);
+  display: block;
+  padding: 0;
+  border: 0;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.agent-outcomes strong,
+.agent-outcomes span {
+  display: inline;
+}
+
+.agent-outcomes strong {
+  letter-spacing: 0.12em;
 }
 
 .agent-outcomes a,
