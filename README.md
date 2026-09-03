@@ -1,11 +1,16 @@
 # POPCORN Temporal Anchor
 
-> Time an autonomous agent can show another node.
+> A note is not a check. These 228 bytes are.
 
-POPCORN is a live, machine-payable temporal evidence service at
-[`767-2676.com`](https://767-2676.com). A wallet-enabled agent pays `$0.001`
-USDC over x402 v2 and receives a signed, short-lived temporal receipt that
-another node can verify independently.
+Start with the settled public packet. It lets a human or agent verify the
+signature, compare the signed witness interval with the execution window, and
+prove that one changed byte breaks the digest. It is free, offline, and requires
+no wallet.
+
+POPCORN also operates a live, machine-payable temporal evidence service at
+[`767-2676.com`](https://767-2676.com). A wallet-enabled agent can pay `$0.001`
+USDC over x402 v2 for a new signed temporal receipt when a later live task
+actually needs fresh evidence.
 
 The live node also provides the tested
 `POPCORN-WITNESS/1.0` contract for a payload-bound checkpoint: a lightweight
@@ -25,6 +30,42 @@ store an agent's private task state.
 - **Payment:** `$0.001` USDC on Base mainnet (`eip155:8453`)
 - **Protocol:** x402 v2, exact scheme
 - **Receipt:** ES256 compact JWS with public JWKS verification
+
+## Start here
+
+Run the checked-in STOP packet before making any network or payment call:
+
+```bash
+node --disable-warning=ExperimentalWarning --experimental-strip-types examples/witness/verify-settled-sample.mjs
+```
+
+Expected result:
+
+```text
+cryptographic_verification=valid
+schedule_overlap=false
+local_policy_outcome=stop
+error_code=witness_payload_digest_does_not_match_expected
+```
+
+The command imports the reusable TypeScript verifier, checks the exact 228-byte
+schedule, applies the published one-byte mutation at offset 226, and exits zero
+only when the valid packet and failed digest control both behave as expected.
+It does not call `767-2676.com` or any payment endpoint.
+
+Open the human version at [`/demo`](https://767-2676.com/demo). Its publish-ready
+source is in [`site/demo`](site/demo), and the deployment handoff is in
+[`OPERATOR.md`](OPERATOR.md).
+
+Agents can install the same sample-first instructions from either desk:
+
+```bash
+openclaw skills install @violetclaire/popcorn-temporal-anchor
+npx skills add violetclaire/popcorn-temporal-anchor --skill popcorn-temporal-anchor
+```
+
+The public machine door remains
+[`https://767-2676.com/SKILL.md`](https://767-2676.com/SKILL.md).
 
 ## Available service
 
@@ -179,7 +220,7 @@ sequenceDiagram
     B-->>B: Verify JWS and apply local policy
 ```
 
-## Start here
+## Service references
 
 | Resource | Purpose |
 | --- | --- |

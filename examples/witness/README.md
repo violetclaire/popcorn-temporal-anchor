@@ -1,5 +1,17 @@
 # Witness evaluation fixture
 
+Run the STOP packet and its one-byte digest control locally, with no wallet or
+network payment:
+
+```bash
+node --disable-warning=ExperimentalWarning --experimental-strip-types examples/witness/verify-settled-sample.mjs
+```
+
+The command exits zero only after the ES256 signature and exact payload digest
+verify, the signed witness window produces `STOP`, and the published mutation at
+byte offset 226 produces
+`witness_payload_digest_does_not_match_expected`.
+
 The original `schedule.sample.json` is the exact 228-byte schedule used to
 create `request.sample.json`. Its SHA-256 digest is:
 
