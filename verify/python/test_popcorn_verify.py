@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from popcorn_verify import (
+    digest_witness_signed_payload,
     evaluate_witness_against_schedule,
     verify_popcorn_temporal_evidence,
     verify_popcorn_witness_evidence,
@@ -37,6 +38,25 @@ STOP_PACKET = json.loads(
 STOP_PAYLOAD = base64.urlsafe_b64decode(
     STOP_PACKET["exact_schedule"]["bytes"] + "="
 )
+
+CHAIN_VECTOR = json.loads(
+    (Path(__file__).parents[1] / "test-vectors" / "popcorn-witness-chain-003.json").read_text()
+)
+CHAIN_CURRENT_PAYLOAD = base64.urlsafe_b64decode(
+    CHAIN_VECTOR["current"]["exact_schedule"]["bytes"] + "="
+)
+CHAIN_PREDECESSOR_PAYLOAD = base64.urlsafe_b64decode(
+    CHAIN_VECTOR["predecessor"]["exact_schedule"]["bytes"] + "="
+)
+CHAIN_PREDECESSOR = {
+    "response": CHAIN_VECTOR["predecessor"]["paid_evidence"],
+    "jwks": {"keys": [CHAIN_VECTOR["predecessor"]["public_verification_key"]]},
+    "verification": {
+        "expected_payload": CHAIN_PREDECESSOR_PAYLOAD,
+        "expected_nonce": CHAIN_VECTOR["predecessor"]["submitted_request"]["nonce"],
+        "max_clock_accuracy_radius_ms": 10_000,
+    },
+}
 
 
 class PopcornVerifierTests(unittest.TestCase):
@@ -129,6 +149,47 @@ class PopcornVerifierTests(unittest.TestCase):
         self.assertEqual(judgment["decision"], "TIME_CHECK_PASSED")
         self.assertFalse(judgment["authorization_granted"])
 
+    def test_chained_003_verifies_predecessor_002(self):
+        result = verify_popcorn_witness_evidence(
+            CHAIN_VECTOR["current"]["paid_evidence"],
+            {"keys": [CHAIN_VECTOR["current"]["public_verification_key"]]},
+            expected_payload=CHAIN_CURRENT_PAYLOAD,
+            expected_nonce=CHAIN_VECTOR["current"]["submitted_request"]["nonce"],
+            previous_receipt=CHAIN_PREDECESSOR,
+            max_clock_accuracy_radius_ms=10_000,
+        )
+        self.assertTrue(result["previous_attestation_digest_matched"])
+        self.assertEqual(
+            digest_witness_signed_payload(
+                CHAIN_VECTOR["predecessor"]["paid_evidence"]["witness_attestation"]["compact_jws"]
+            ),
+            CHAIN_VECTOR["expected_verification"]["previous_signed_payload_digest"],
+        )
+
+    def test_chained_receipt_requires_predecessor(self):
+        with self.assertRaisesRegex(ValueError, "previous receipt is required"):
+            verify_popcorn_witness_evidence(
+                CHAIN_VECTOR["current"]["paid_evidence"],
+                {"keys": [CHAIN_VECTOR["current"]["public_verification_key"]]},
+                expected_payload=CHAIN_CURRENT_PAYLOAD,
+                expected_nonce=CHAIN_VECTOR["current"]["submitted_request"]["nonce"],
+            )
+
+    def test_chained_receipt_rejects_tampered_predecessor(self):
+        tampered_predecessor = copy.deepcopy(CHAIN_PREDECESSOR)
+        tampered_predecessor["response"]["witness_receipt"]["payment_transaction"] = "0xtampered"
+        with self.assertRaisesRegex(
+            ValueError,
+            "previous receipt verification failed.*does not equal the signed payload",
+        ):
+            verify_popcorn_witness_evidence(
+                CHAIN_VECTOR["current"]["paid_evidence"],
+                {"keys": [CHAIN_VECTOR["current"]["public_verification_key"]]},
+                expected_payload=CHAIN_CURRENT_PAYLOAD,
+                expected_nonce=CHAIN_VECTOR["current"]["submitted_request"]["nonce"],
+                previous_receipt=tampered_predecessor,
+            )
+
     def test_settled_stop_checkpoint_is_after_schedule_window(self):
         result = verify_popcorn_witness_evidence(
             STOP_PACKET["paid_evidence"],
@@ -194,14 +255,14 @@ class PopcornVerifierTests(unittest.TestCase):
                 expected_nonce="CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
             )
 
-    def test_witness_rejects_wrong_predecessor(self):
+    def test_witness_rejects_unexpected_predecessor(self):
         with self.assertRaisesRegex(ValueError, "does not contain a previous attestation commitment"):
             verify_popcorn_witness_evidence(
                 WITNESS_RESPONSE,
                 WITNESS_JWKS,
                 expected_payload=WITNESS_PAYLOAD,
                 expected_nonce=WITNESS_VECTOR["submitted_request"]["nonce"],
-                expected_previous_attestation="not-the-previous-attestation",
+                previous_receipt=CHAIN_PREDECESSOR,
             )
 
     def test_witness_rejects_altered_scope(self):

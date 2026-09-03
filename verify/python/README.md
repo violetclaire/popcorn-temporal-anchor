@@ -15,7 +15,7 @@ The tests consume the exact same public vector as the TypeScript verifier.
 
 `verify_popcorn_witness_evidence` additionally verifies a
 `POPCORN-WITNESS/1.0` state checkpoint against the exact original payload,
-nonce, and optional previous compact JWS:
+nonce, and optional verified predecessor receipt:
 
 ```python
 verified = verify_popcorn_witness_evidence(
@@ -23,7 +23,14 @@ verified = verify_popcorn_witness_evidence(
     jwks,
     expected_payload=exact_payload_bytes,
     expected_nonce=original_nonce,
-    expected_previous_attestation=previous_compact_jws,
+    previous_receipt={
+        "response": previous_response,
+        "jwks": previous_jwks,
+        "verification": {
+            "expected_payload": previous_exact_payload_bytes,
+            "expected_nonce": previous_nonce,
+        },
+    },
     max_clock_accuracy_radius_ms=10_000,
 )
 replay_key = verified["replay_key"]

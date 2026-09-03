@@ -68,7 +68,7 @@
       "input": {
         "payload_digest": "sha-256",
         "nonce_bytes": 32,
-        "previous_attestation_digest": "optional_sha-256",
+        "previous_attestation_digest": "null, or SHA-256 over the exact signed payload bytes decoded from the predecessor compact JWS payload segment; canonical unpadded base64url",
         "original_payload_sent_to_popcorn": false
       },
       "result": {

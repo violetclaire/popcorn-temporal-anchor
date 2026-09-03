@@ -123,6 +123,7 @@
               "pattern": "^[A-Za-z0-9_-]{43}$"
             },
             "previous_attestation_digest": {
+              "description": "SHA-256 over the exact signed payload bytes of the predecessor compact JWS, obtained by base64url-decoding its second segment. The digest value uses the same canonical unpadded base64url encoding as payload_digest. Null starts a chain.",
               "anyOf": [
                 {
                   "type": "object",

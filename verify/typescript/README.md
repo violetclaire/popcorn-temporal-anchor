@@ -19,14 +19,21 @@ if (verified.execution_window?.eligible !== true) {
 ```
 
 For a payload-bound `POPCORN-WITNESS/1.0` checkpoint, the caller supplies the
-exact original payload bytes, original nonce, and—when chained—the previous
-compact JWS:
+exact original payload bytes, original nonce, and, when chained, the previous
+receipt with everything needed to verify it:
 
 ```ts
 const verified = await verifyPopcornWitnessEvidence(response, jwks, {
   expected_payload: exactPayloadBytes,
   expected_nonce: originalNonce,
-  expected_previous_attestation: previousCompactJws,
+  previous_receipt: {
+    response: previousResponse,
+    jwks: previousJwks,
+    verification: {
+      expected_payload: previousExactPayloadBytes,
+      expected_nonce: previousNonce,
+    },
+  },
   max_clock_accuracy_radius_ms: 10000,
 });
 
@@ -40,8 +47,8 @@ const judgment = evaluateWitnessAgainstSchedule(
 // STOP, TIME_CHECK_PASSED, or RECHECK. Never authorization.
 ```
 
-This verifies commitment integrity and predecessor digest binding. Verify the
-predecessor attestation independently before inferring an order between signed
+This verifies commitment integrity, recursively verifies the predecessor, and
+checks the SHA-256 digest of the predecessor's exact decoded signed payload
 bytes. The verifier does not store the replay key or claim that an action was
 executed, delivered, or authorized.
 

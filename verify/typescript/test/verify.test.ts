@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 
 import {
+  digestWitnessSignedPayload,
   evaluateWitnessAgainstSchedule,
   verifyPopcornTemporalEvidence,
   verifyPopcornWitnessEvidence,
@@ -49,6 +50,33 @@ const stopPacket = JSON.parse(
   ),
 );
 const stopPayload = Buffer.from(stopPacket.exact_schedule.bytes, "base64url");
+
+const chainVector = JSON.parse(
+  await readFile(
+    new URL(
+      "../../test-vectors/popcorn-witness-chain-003.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const chainCurrentPayload = Buffer.from(
+  chainVector.current.exact_schedule.bytes,
+  "base64url",
+);
+const chainPredecessorPayload = Buffer.from(
+  chainVector.predecessor.exact_schedule.bytes,
+  "base64url",
+);
+const chainPredecessor = {
+  response: chainVector.predecessor.paid_evidence as PopcornWitnessResponse,
+  jwks: { keys: [chainVector.predecessor.public_verification_key] },
+  verification: {
+    expected_payload: chainPredecessorPayload,
+    expected_nonce: chainVector.predecessor.submitted_request.nonce,
+    max_clock_accuracy_radius_ms: 10_000,
+  },
+};
 
 test("verifies the shared positive vector and computes the conservative interval", async () => {
   const result = await verifyPopcornTemporalEvidence(
@@ -184,6 +212,57 @@ test("verifies the settled PROCEED checkpoint inside its schedule window", async
   );
 });
 
+test("verifies receipt 003 and its signed-payload link to receipt 002", async () => {
+  const result = await verifyPopcornWitnessEvidence(
+    chainVector.current.paid_evidence,
+    { keys: [chainVector.current.public_verification_key] },
+    {
+      expected_payload: chainCurrentPayload,
+      expected_nonce: chainVector.current.submitted_request.nonce,
+      previous_receipt: chainPredecessor,
+      max_clock_accuracy_radius_ms: 10_000,
+    },
+  );
+  assert.equal(result.previous_attestation_digest_matched, true);
+  assert.equal(
+    await digestWitnessSignedPayload(
+      chainVector.predecessor.paid_evidence.witness_attestation.compact_jws,
+    ),
+    chainVector.expected_verification.previous_signed_payload_digest,
+  );
+});
+
+test("rejects a chained receipt when its predecessor is missing", async () => {
+  await assert.rejects(
+    verifyPopcornWitnessEvidence(
+      chainVector.current.paid_evidence,
+      { keys: [chainVector.current.public_verification_key] },
+      {
+        expected_payload: chainCurrentPayload,
+        expected_nonce: chainVector.current.submitted_request.nonce,
+      },
+    ),
+    /previous receipt is required/,
+  );
+});
+
+test("rejects a chained receipt when its predecessor was tampered", async () => {
+  const tamperedPredecessor = structuredClone(chainPredecessor);
+  tamperedPredecessor.response.witness_receipt.payment_transaction = "0xtampered";
+  await assert.rejects(
+    verifyPopcornWitnessEvidence(
+      chainVector.current.paid_evidence,
+      { keys: [chainVector.current.public_verification_key] },
+      {
+        expected_payload: chainCurrentPayload,
+        expected_nonce: chainVector.current.submitted_request.nonce,
+        previous_receipt: tamperedPredecessor,
+      },
+    ),
+    /previous receipt verification failed.*does not equal the signed payload/,
+  );
+});
+
 test("returns STOP when the verified witness window is entirely after the schedule", async () => {
   const result = await verifyPopcornWitnessEvidence(
     stopPacket.paid_evidence,
@@ -260,12 +339,12 @@ test("rejects a witness receipt presented with a different nonce", async () => {
   );
 });
 
-test("rejects a witness receipt with the wrong claimed predecessor", async () => {
+test("rejects an unexpected predecessor for a receipt that starts a chain", async () => {
   await assert.rejects(
     verifyPopcornWitnessEvidence(witnessResponse, witnessJwks, {
       expected_payload: witnessPayload,
       expected_nonce: witnessVector.submitted_request.nonce,
-      expected_previous_attestation: "not-the-previous-attestation",
+      previous_receipt: chainPredecessor,
     }),
     /does not contain a previous attestation commitment/,
   );

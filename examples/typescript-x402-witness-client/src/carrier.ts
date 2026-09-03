@@ -2,11 +2,13 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
 import {
+  digestWitnessSignedPayload,
   evaluateWitnessAgainstSchedule,
   verifyPopcornWitnessEvidence,
   type JsonWebKeySet,
   type PopcornWitnessResponse,
   type PortableScheduleExecutionWindowUtc,
+  type WitnessVerificationOptions,
   type WitnessScheduleDecision,
 } from "../../../verify/typescript/src/index.js";
 
@@ -40,7 +42,7 @@ export type PortableScheduleOutcome = {
     payload_digest: { algorithm: "sha-256"; value: string };
   };
   submitted_request: WitnessRequest;
-  previous_attestation: string | null;
+  previous_receipt: WitnessVerificationOptions["previous_receipt"] | null;
   paid_evidence: PopcornWitnessResponse;
   payment_exchange: PaymentExchange;
   reported_judgment: WitnessScheduleDecision;
@@ -101,21 +103,23 @@ export function parseScheduleWindow(
   return { opens_at, closes_at };
 }
 
-export function createWitnessRequest(
+export async function createWitnessRequest(
   scheduleBytes: Uint8Array,
   nonce: string,
-  previousAttestation?: string,
-): WitnessRequest {
+  previousResponse?: PopcornWitnessResponse,
+): Promise<WitnessRequest> {
   return {
     payload_digest: {
       algorithm: "sha-256",
       value: sha256Base64Url(scheduleBytes),
     },
     nonce,
-    previous_attestation_digest: previousAttestation
+    previous_attestation_digest: previousResponse
       ? {
           algorithm: "sha-256",
-          value: sha256Base64Url(previousAttestation),
+          value: await digestWitnessSignedPayload(
+            previousResponse.witness_attestation.compact_jws,
+          ),
         }
       : null,
   };
@@ -129,7 +133,7 @@ export async function buildPortableOutcome(input: {
   paidEvidence: PopcornWitnessResponse;
   paymentExchange: PaymentExchange;
   jwks: JsonWebKeySet;
-  previousAttestation?: string;
+  previousReceipt?: WitnessVerificationOptions["previous_receipt"];
 }): Promise<PortableScheduleOutcome> {
   const verified = await verifyPopcornWitnessEvidence(
     input.paidEvidence,
@@ -137,7 +141,7 @@ export async function buildPortableOutcome(input: {
     {
       expected_payload: input.scheduleBytes,
       expected_nonce: input.submittedRequest.nonce,
-      expected_previous_attestation: input.previousAttestation,
+      previous_receipt: input.previousReceipt,
       max_clock_accuracy_radius_ms: 10_000,
     },
   );
@@ -156,7 +160,7 @@ export async function buildPortableOutcome(input: {
       payload_digest: input.submittedRequest.payload_digest,
     },
     submitted_request: input.submittedRequest,
-    previous_attestation: input.previousAttestation ?? null,
+    previous_receipt: input.previousReceipt ?? null,
     paid_evidence: input.paidEvidence,
     payment_exchange: input.paymentExchange,
     reported_judgment: reportedJudgment,
@@ -231,10 +235,10 @@ export async function verifyPortableOutcome(
     throw new Error("outcome payload boundary is invalid");
   }
   if (
-    outcome.previous_attestation !== null &&
-    typeof outcome.previous_attestation !== "string"
+    outcome.previous_receipt !== null &&
+    !isRecord(outcome.previous_receipt)
   ) {
-    throw new Error("outcome previous_attestation is invalid");
+    throw new Error("outcome previous_receipt is invalid");
   }
 
   const verified = await verifyPopcornWitnessEvidence(
@@ -244,8 +248,7 @@ export async function verifyPortableOutcome(
       expected_node_id: options.expectedNodeId ?? "767-2676.com",
       expected_payload: scheduleBytes,
       expected_nonce: outcome.submitted_request.nonce,
-      expected_previous_attestation:
-        outcome.previous_attestation ?? undefined,
+      previous_receipt: outcome.previous_receipt ?? undefined,
       max_clock_accuracy_radius_ms: 10_000,
     },
   );

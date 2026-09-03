@@ -161,6 +161,9 @@ export async function issuePopcornWitnessReceipt(
       nonce_uniqueness_enforced: false,
       replay_prevented: false,
       authorization_granted: false,
+      external_atomic_clock_alignment_proven: false,
+      clock_accuracy_independently_verified: false,
+      payer_authorization_bound_to_commitment: false,
     },
   };
 
@@ -189,8 +192,10 @@ export async function issuePopcornWitnessReceipt(
       format: "JWS",
       algorithm: "ES256",
       key_id: options.signing_key_id,
+      key_set: "/.well-known/popcorn-keys.json",
       compact_jws: `${signingInput}.${encodeBase64Url(signature)}`,
     },
+    payment_status: "settled" as const,
   };
 }
 

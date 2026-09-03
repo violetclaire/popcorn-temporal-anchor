@@ -60,6 +60,19 @@ def _sha256_base64url(value: bytes | str) -> str:
     return base64.urlsafe_b64encode(hashlib.sha256(data).digest()).decode().rstrip("=")
 
 
+def digest_witness_signed_payload(compact_jws: str) -> str:
+    if not isinstance(compact_jws, str):
+        raise ValueError("compact_jws is missing")
+    parts = compact_jws.split(".")
+    if len(parts) != 3 or any(not part for part in parts):
+        raise ValueError("compact_jws must contain exactly three parts")
+    payload_bytes = _decode_base64url(parts[1])
+    canonical = base64.urlsafe_b64encode(payload_bytes).decode().rstrip("=")
+    if canonical != parts[1]:
+        raise ValueError("compact JWS signed payload is not canonical base64url")
+    return _sha256_base64url(payload_bytes)
+
+
 def _require_exact_keys(value: dict[str, Any], expected: set[str], label: str) -> None:
     if set(value) != expected:
         raise ValueError(f"{label} contains missing or unsupported fields")
@@ -265,9 +278,10 @@ def verify_popcorn_witness_evidence(
     expected_nonce: str,
     expected_payload: bytes | str | None = None,
     expected_payload_digest: str | None = None,
-    expected_previous_attestation: str | None = None,
+    previous_receipt: dict[str, Any] | None = None,
     expected_node_id: str = "767-2676.com",
     max_clock_accuracy_radius_ms: int = 60_000,
+    _seen_attestations: set[str] | None = None,
 ) -> dict[str, Any]:
     receipt = response.get("witness_receipt")
     attestation = response.get("witness_attestation")
@@ -286,6 +300,10 @@ def verify_popcorn_witness_evidence(
     compact = attestation.get("compact_jws")
     if not isinstance(compact, str):
         raise ValueError("compact_jws is missing")
+    seen_attestations = _seen_attestations if _seen_attestations is not None else set()
+    if compact in seen_attestations:
+        raise ValueError("witness receipt chain contains a cycle")
+    seen_attestations.add(compact)
     parts = compact.split(".")
     if len(parts) != 3 or any(not part for part in parts):
         raise ValueError("compact_jws must contain exactly three parts")
@@ -465,12 +483,32 @@ def verify_popcorn_witness_evidence(
 
     previous_attestation_digest_matched = False
     if previous_digest is not None:
-        if expected_previous_attestation is None:
-            raise ValueError("previous attestation is required to verify the claimed chain")
-        if previous_digest["value"] != _sha256_base64url(expected_previous_attestation):
-            raise ValueError("previous attestation digest does not match the claimed chain")
+        if previous_receipt is None:
+            raise ValueError("previous receipt is required to verify the claimed chain")
+        if not isinstance(previous_receipt, dict):
+            raise ValueError("previous_receipt must be an object")
+        _require_exact_keys(
+            previous_receipt,
+            {"response", "jwks", "verification"},
+            "previous_receipt",
+        )
+        verification = previous_receipt.get("verification")
+        if not isinstance(verification, dict):
+            raise ValueError("previous_receipt.verification must be an object")
+        try:
+            verify_popcorn_witness_evidence(
+                previous_receipt["response"],
+                previous_receipt["jwks"],
+                _seen_attestations=seen_attestations,
+                **verification,
+            )
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"previous receipt verification failed: {exc}") from exc
+        previous_compact = previous_receipt["response"]["witness_attestation"]["compact_jws"]
+        if previous_digest["value"] != digest_witness_signed_payload(previous_compact):
+            raise ValueError("previous signed payload digest does not match the claimed chain")
         previous_attestation_digest_matched = True
-    elif expected_previous_attestation is not None:
+    elif previous_receipt is not None:
         raise ValueError("receipt does not contain a previous attestation commitment")
 
     return {

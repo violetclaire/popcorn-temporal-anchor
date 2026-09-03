@@ -63,7 +63,7 @@ test("issues a payload-bound receipt accepted by the offline verifier", async ()
   assert.equal(verified.previous_attestation_digest_matched, false);
   assert.equal(
     verified.replay_key,
-    `767-2676.com:pwr_issuer_test:${nonce}`,
+    `POPCORN-WITNESS/1.0:767-2676.com:${nonce}`,
   );
 });
 

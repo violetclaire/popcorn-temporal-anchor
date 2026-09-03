@@ -14,7 +14,7 @@ agent-local payload bytes
         |
         | SHA-256
         v
-payload digest + fresh nonce + optional H(previous compact JWS)
+payload digest + fresh nonce + optional H(previous signed payload bytes)
         |
         | POST /v1/receipt through x402
         v
@@ -65,6 +65,11 @@ intends to carry and later supplies those same bytes to a verifier. If the
 payload is JSON, the caller must choose and preserve a deterministic byte
 serialization.
 
+When chaining receipts, `previous_attestation_digest` is SHA-256 over the exact
+signed payload bytes obtained by base64url-decoding the second segment of the
+predecessor compact JWS. It is not a digest of the compact JWS string. `null`
+starts a chain.
+
 The response is defined by
 [`schemas/witness-response.v1.schema.json`](../schemas/witness-response.v1.schema.json).
 Its signed payload uses `protocol_id: POPCORN-WITNESS/1.0`.
@@ -102,7 +107,8 @@ and receipt, an offline verifier can establish that:
 - the payload digest matches the bytes supplied by the verifier;
 - the signed nonce matches the nonce expected for that request;
 - the signed time relationships and accuracy interval are internally valid;
-- when present, the predecessor digest matches the exact previous compact JWS.
+- when present, the predecessor receipt verifies and its exact signed-payload
+  digest matches the commitment.
 
 This supports three higher-level patterns, but does not implement their local
 policy:

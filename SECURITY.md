@@ -36,7 +36,7 @@ uncertainty, and their own participant-local execution policy.
 
 A payload-bound witness receipt additionally requires exact payload-digest and
 nonce matching. When it claims a predecessor, verify the digest of the exact
-previous compact JWS. The signed clock-accuracy radius must be supported by the
+previous receipt's exact signed payload bytes. The signed clock-accuracy radius must be supported by the
 issuer's published operational policy; decimal timestamp precision is not an
 accuracy guarantee. Consuming applications—not POPCORN—must retain replay keys
 and enforce idempotency.

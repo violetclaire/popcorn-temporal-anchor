@@ -94,7 +94,7 @@ The agent hashes the exact payload bytes locally and sends only:
 
 - the SHA-256 payload digest;
 - a fresh 32-byte nonce;
-- optionally, the SHA-256 digest of the preceding compact JWS.
+- optionally, the SHA-256 digest of the preceding receipt's exact signed payload bytes.
 
 POPCORN signs those values with a bounded witness interval. The agent carries
 the original payload and signed evidence together. A later session or another
@@ -330,8 +330,8 @@ and conservative execution-window decisions.
 `POPCORN-WITNESS/1.0` is intentionally separate. Its durable payload-bound
 receipt carries a digest and nonce rather than private task data. When the
 prior attestation is independently verified and the new receipt includes
-`H(previous compact JWS)`, the new receipt is bound to those exact prior signed
-bytes. This does not prove either real-world action executed. Application-level
+`H(previous signed payload bytes)`, the new receipt is bound to those exact prior
+signed bytes. This does not prove either real-world action executed. Application-level
 replay rejection still requires participant-local state.
 
 ## OpenClaw

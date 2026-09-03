@@ -6,7 +6,7 @@ The agent keeps the schedule or other payload. POPCORN receives only:
 
 - a SHA-256 digest of the exact payload bytes;
 - a caller-generated 32-byte nonce; and
-- either `null` or the SHA-256 digest of the preceding compact JWS.
+- either `null` or the SHA-256 digest of the preceding receipt's exact signed payload bytes.
 
 POPCORN does not receive or store the underlying payload. It does not identify the caller, authorize an action, reserve a slot, enforce nonce uniqueness, prevent replay, prove delivery, or prove that the committed action happened.
 
@@ -30,7 +30,7 @@ Content-Type: application/json
 
 All three fields are required and additional fields are rejected. The body limit is 4 KiB. Query parameters and non-JSON content types are rejected before payment.
 
-For a chain, set `previous_attestation_digest` to the SHA-256 digest of the preceding receipt's exact `compact_jws` UTF-8 bytes. Consumers must independently compare that value with the predecessor they expected.
+For a chain, split the preceding receipt's `compact_jws` on `.`, base64url-decode the second segment, and set `previous_attestation_digest` to the SHA-256 digest of those exact signed payload bytes. Encode the 32-byte digest as canonical unpadded base64url, the same as `payload_digest`. A verifier must require the preceding receipt, verify its signature and signed relationships, then compare the digest. `null` starts a chain.
 
 ## Payment and response
 
@@ -44,12 +44,12 @@ The witness signing key is separate from the existing POPCORN temporal receipt k
 
 ## Consumer obligations
 
-A verifier must have the exact expected payload bytes or expected digest, expected nonce, expected predecessor digest, an independently obtained JWKS, and a locally selected maximum clock-accuracy radius. It must:
+A verifier must have the exact expected payload bytes or expected digest, expected nonce, the preceding receipt and its verification inputs when chained, an independently obtained JWKS, and a locally selected maximum clock-accuracy radius. It must:
 
 1. validate the envelope, receipt, JWS header, and public key strictly;
 2. verify the ES256 signature;
 3. hash the exact payload bytes and compare the digest;
-4. compare the expected nonce and predecessor digest;
+4. compare the expected nonce and, when chained, verify the preceding receipt before checking its signed-payload digest;
 5. reject a clock radius broader than local policy; and
 6. consume the returned replay key only once within its own system.
 

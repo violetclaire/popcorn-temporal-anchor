@@ -69,8 +69,7 @@ async function main(): Promise<void> {
   const scheduleBytes = await readExactBytes(args.schedule ?? args.scheduleUrl!);
   const executionWindowUtc = parseScheduleWindow(scheduleBytes);
   const nonce = randomBytes(32).toString("base64url");
-  const previousAttestation = process.env.PREVIOUS_COMPACT_JWS || undefined;
-  const request = createWitnessRequest(scheduleBytes, nonce, previousAttestation);
+  const request = await createWitnessRequest(scheduleBytes, nonce);
 
   if (args.dryRun) {
     console.log(
@@ -147,7 +146,6 @@ async function main(): Promise<void> {
     paidEvidence: body,
     paymentExchange: observed as PaymentExchange,
     jwks,
-    previousAttestation,
   });
   await writeFile(args.out!, `${JSON.stringify(outcome, null, 2)}\n`, {
     encoding: "utf8",

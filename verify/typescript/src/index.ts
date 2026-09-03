@@ -128,7 +128,11 @@ export type WitnessVerificationOptions = {
   expected_nonce: string;
   expected_payload?: string | Uint8Array;
   expected_payload_digest?: string;
-  expected_previous_attestation?: string;
+  previous_receipt?: {
+    response: PopcornWitnessResponse;
+    jwks: JsonWebKeySet;
+    verification: WitnessVerificationOptions;
+  };
   max_clock_accuracy_radius_ms?: number;
 };
 
@@ -226,6 +230,23 @@ async function sha256Base64Url(value: string | Uint8Array): Promise<string> {
   const bytes = new Uint8Array(new ArrayBuffer(input.byteLength));
   bytes.set(input);
   return encodeBase64Url(await crypto.subtle.digest("SHA-256", bytes));
+}
+
+export async function digestWitnessSignedPayload(
+  compactJws: string,
+): Promise<string> {
+  if (typeof compactJws !== "string") {
+    throw new Error("compact_jws is missing");
+  }
+  const parts = compactJws.split(".");
+  if (parts.length !== 3 || parts.some((part) => part.length === 0)) {
+    throw new Error("compact_jws must contain exactly three parts");
+  }
+  const payloadBytes = decodeBase64Url(parts[1]);
+  if (Buffer.from(payloadBytes).toString("base64url") !== parts[1]) {
+    throw new Error("compact JWS signed payload is not canonical base64url");
+  }
+  return sha256Base64Url(payloadBytes);
 }
 
 function requireSha256Digest(value: unknown, label: string): asserts value is Sha256Digest {
@@ -528,6 +549,20 @@ export async function verifyPopcornWitnessEvidence(
   jwks: JsonWebKeySet,
   options: WitnessVerificationOptions,
 ): Promise<VerifiedWitnessEvidence> {
+  return verifyPopcornWitnessEvidenceInternal(
+    response,
+    jwks,
+    options,
+    new Set<string>(),
+  );
+}
+
+async function verifyPopcornWitnessEvidenceInternal(
+  response: PopcornWitnessResponse,
+  jwks: JsonWebKeySet,
+  options: WitnessVerificationOptions,
+  seenAttestations: Set<string>,
+): Promise<VerifiedWitnessEvidence> {
   if (!isRecord(response) || !isRecord(response.witness_receipt)) {
     throw new Error("response is missing witness_receipt");
   }
@@ -547,6 +582,10 @@ export async function verifyPopcornWitnessEvidence(
 
   const compact = response.witness_attestation.compact_jws;
   if (typeof compact !== "string") throw new Error("compact_jws is missing");
+  if (seenAttestations.has(compact)) {
+    throw new Error("witness receipt chain contains a cycle");
+  }
+  seenAttestations.add(compact);
   const parts = compact.split(".");
   if (parts.length !== 3 || parts.some((part) => part.length === 0)) {
     throw new Error("compact_jws must contain exactly three parts");
@@ -761,19 +800,30 @@ export async function verifyPopcornWitnessEvidence(
 
   let previousAttestationDigestMatched = false;
   if (receipt.commitment.previous_attestation_digest !== null) {
-    if (options.expected_previous_attestation === undefined) {
-      throw new Error("previous attestation is required to verify the claimed chain");
+    if (options.previous_receipt === undefined) {
+      throw new Error("previous receipt is required to verify the claimed chain");
     }
-    const expectedPreviousDigest = await sha256Base64Url(
-      options.expected_previous_attestation,
+    try {
+      await verifyPopcornWitnessEvidenceInternal(
+        options.previous_receipt.response,
+        options.previous_receipt.jwks,
+        options.previous_receipt.verification,
+        seenAttestations,
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "verification failed";
+      throw new Error(`previous receipt verification failed: ${message}`);
+    }
+    const expectedPreviousDigest = await digestWitnessSignedPayload(
+      options.previous_receipt.response.witness_attestation.compact_jws,
     );
     if (
       receipt.commitment.previous_attestation_digest.value !== expectedPreviousDigest
     ) {
-      throw new Error("previous attestation digest does not match the claimed chain");
+      throw new Error("previous signed payload digest does not match the claimed chain");
     }
     previousAttestationDigestMatched = true;
-  } else if (options.expected_previous_attestation !== undefined) {
+  } else if (options.previous_receipt !== undefined) {
     throw new Error("receipt does not contain a previous attestation commitment");
   }
 

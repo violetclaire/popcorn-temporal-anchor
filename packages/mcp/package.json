@@ -1,0 +1,58 @@
+{
+  "name": "@violetclaire/popcorn-mcp",
+  "version": "0.1.0",
+  "mcpName": "io.github.violetclaire/popcorn-mcp",
+  "description": "Local stdio MCP server for POPCORN signed time and payload witnesses",
+  "type": "module",
+  "bin": {
+    "popcorn-mcp": "dist/packages/mcp/src/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsc --project tsconfig.build.json",
+    "check": "tsc --noEmit && tsx --test test/*.test.ts && npm run build && npm run test:stdio",
+    "test": "tsx --test test/*.test.ts",
+    "test:stdio": "node test/stdio-smoke.mjs",
+    "prepack": "npm run check"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "mcp",
+    "x402",
+    "agents",
+    "time",
+    "receipts",
+    "base",
+    "usdc"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/violetclaire/popcorn-temporal-anchor.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://767-2676.com/agents",
+  "bugs": "https://github.com/violetclaire/popcorn-temporal-anchor/issues",
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "@x402/evm": "2.24.0",
+    "@x402/fetch": "2.24.0",
+    "viem": "2.56.3",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.0.0",
+    "@types/node": "26.4.0",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  }
+}
