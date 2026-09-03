@@ -12,7 +12,7 @@ This is a clock and a seal. It does not refund, authorize, or hold funds.
 
 ## Run with npx
 
-The package is not published yet. After publication, the command will be:
+Install and run the published package with:
 
 ```bash
 npx -y @violetclaire/popcorn-mcp
@@ -165,8 +165,6 @@ an `env` object to its private local configuration. Never paste the key into a
 tool call or chat.
 
 ## Claude Code
-
-After publication:
 
 ```bash
 claude mcp add --transport stdio popcorn -- npx -y @violetclaire/popcorn-mcp
