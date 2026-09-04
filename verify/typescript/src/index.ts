@@ -151,6 +151,29 @@ export type VerifiedWitnessEvidence = {
   };
 };
 
+export type WitnessChainVerificationOptions = Omit<
+  WitnessVerificationOptions,
+  "previous_receipt"
+>;
+
+export type WitnessChainEntry = {
+  response: PopcornWitnessResponse;
+  jwks: JsonWebKeySet;
+  verification: WitnessChainVerificationOptions;
+};
+
+export type VerifiedWitnessChainEntry = {
+  index: number;
+  signed_payload_digest: string;
+  verified: VerifiedWitnessEvidence;
+};
+
+export type VerifiedWitnessChain = {
+  chain_length: number;
+  head_signed_payload_digest: string;
+  entries: VerifiedWitnessChainEntry[];
+};
+
 export type PortableScheduleExecutionWindowUtc = {
   opens_at: string;
   closes_at: string;
@@ -562,6 +585,7 @@ async function verifyPopcornWitnessEvidenceInternal(
   jwks: JsonWebKeySet,
   options: WitnessVerificationOptions,
   seenAttestations: Set<string>,
+  verifyPredecessor = true,
 ): Promise<VerifiedWitnessEvidence> {
   if (!isRecord(response) || !isRecord(response.witness_receipt)) {
     throw new Error("response is missing witness_receipt");
@@ -799,7 +823,10 @@ async function verifyPopcornWitnessEvidenceInternal(
   }
 
   let previousAttestationDigestMatched = false;
-  if (receipt.commitment.previous_attestation_digest !== null) {
+  if (
+    verifyPredecessor &&
+    receipt.commitment.previous_attestation_digest !== null
+  ) {
     if (options.previous_receipt === undefined) {
       throw new Error("previous receipt is required to verify the claimed chain");
     }
@@ -823,7 +850,10 @@ async function verifyPopcornWitnessEvidenceInternal(
       throw new Error("previous signed payload digest does not match the claimed chain");
     }
     previousAttestationDigestMatched = true;
-  } else if (options.previous_receipt !== undefined) {
+  } else if (
+    verifyPredecessor &&
+    options.previous_receipt !== undefined
+  ) {
     throw new Error("receipt does not contain a previous attestation commitment");
   }
 
@@ -837,5 +867,84 @@ async function verifyPopcornWitnessEvidenceInternal(
     replay_key: `${receipt.protocol_id}:${receipt.node_id}:${receipt.commitment.nonce}`,
     payment_replay_key: `x402:${receipt.payment_identifier}`,
     witness_window_utc: { earliest, latest },
+  };
+}
+
+export async function verifyPopcornWitnessChain(
+  entries: readonly WitnessChainEntry[],
+): Promise<VerifiedWitnessChain> {
+  if (!Array.isArray(entries) || entries.length === 0) {
+    throw new Error("witness chain must contain at least one receipt");
+  }
+
+  const seenAttestations = new Set<string>();
+  const verifiedEntries: VerifiedWitnessChainEntry[] = [];
+  let previousSignedPayloadDigest: string | null = null;
+
+  for (const [index, entry] of entries.entries()) {
+    const rawEntry: unknown = entry;
+    if (!isRecord(rawEntry) || !isRecord(rawEntry.verification)) {
+      throw new Error(`witness chain entry ${index} is invalid`);
+    }
+    if (Object.hasOwn(rawEntry.verification, "previous_receipt")) {
+      throw new Error(
+        `witness chain entry ${index} must not contain recursive previous_receipt input`,
+      );
+    }
+
+    let verified: VerifiedWitnessEvidence;
+    try {
+      verified = await verifyPopcornWitnessEvidenceInternal(
+        entry.response,
+        entry.jwks,
+        entry.verification,
+        seenAttestations,
+        false,
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "verification failed";
+      throw new Error(`witness chain entry ${index} verification failed: ${message}`);
+    }
+
+    const claimedPreviousDigest =
+      verified.witness_receipt.commitment.previous_attestation_digest;
+    if (index === 0) {
+      if (claimedPreviousDigest !== null) {
+        throw new Error(
+          "witness chain entry 0 must start with previous_attestation_digest null",
+        );
+      }
+    } else {
+      if (claimedPreviousDigest === null) {
+        throw new Error(
+          `witness chain entry ${index} is missing its predecessor digest`,
+        );
+      }
+      if (claimedPreviousDigest.value !== previousSignedPayloadDigest) {
+        throw new Error(
+          `witness chain entry ${index} predecessor digest does not match entry ${index - 1}`,
+        );
+      }
+      verified = {
+        ...verified,
+        previous_attestation_digest_matched: true,
+      };
+    }
+
+    const signedPayloadDigest = await digestWitnessSignedPayload(
+      entry.response.witness_attestation.compact_jws,
+    );
+    verifiedEntries.push({
+      index,
+      signed_payload_digest: signedPayloadDigest,
+      verified,
+    });
+    previousSignedPayloadDigest = signedPayloadDigest;
+  }
+
+  return {
+    chain_length: verifiedEntries.length,
+    head_signed_payload_digest: previousSignedPayloadDigest as string,
+    entries: verifiedEntries,
   };
 }

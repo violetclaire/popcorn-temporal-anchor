@@ -11,6 +11,7 @@ import {
   popcornHash,
   popcornTime,
   popcornVerify,
+  popcornVerifyWitnessChain,
   popcornWitness,
 } from "../src/core.js";
 
@@ -129,4 +130,37 @@ test("popcorn_verify validates chained receipt 003 entirely offline", async () =
   });
   assert.equal(result.receipt_type, "witness");
   assert.equal(result.verified.previous_attestation_digest_matched, true);
+});
+
+test("core export verifies a chronological chain in one pass", async () => {
+  const vector = JSON.parse(
+    await readFile(
+      new URL(
+        "../../../verify/test-vectors/popcorn-witness-chain-003.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  const result = await popcornVerifyWitnessChain([
+    {
+      response: vector.predecessor.paid_evidence,
+      jwks: { keys: [vector.predecessor.public_verification_key] },
+      verification: {
+        expected_nonce: vector.predecessor.submitted_request.nonce,
+        expected_payload: Buffer.from(vector.predecessor.exact_schedule.bytes, "base64url"),
+      },
+    },
+    {
+      response: vector.current.paid_evidence,
+      jwks: { keys: [vector.current.public_verification_key] },
+      verification: {
+        expected_nonce: vector.current.submitted_request.nonce,
+        expected_payload: Buffer.from(vector.current.exact_schedule.bytes, "base64url"),
+      },
+    },
+  ]);
+
+  assert.equal(result.chain_length, 2);
+  assert.equal(result.entries[1]?.verified.previous_attestation_digest_matched, true);
 });

@@ -20,6 +20,26 @@ npx -y @violetclaire/popcorn-mcp
 
 Node.js 20 or newer is required.
 
+## Programmatic core
+
+The supported `@violetclaire/popcorn-mcp/core` export exposes the same local
+hashing, offline verification, and paid client functions used by the stdio
+server:
+
+```ts
+import {
+  popcornHash,
+  popcornVerifyWitnessChain,
+  popcornWitness,
+} from "@violetclaire/popcorn-mcp/core";
+```
+
+`popcornVerifyWitnessChain` accepts receipts in chronological order, starting
+with a receipt whose `previous_attestation_digest` is `null`. It verifies each
+receipt and signature once, checks each link against the prior receipt's exact
+signed-payload bytes, and returns the verified entries plus the head digest.
+It is free, local, and sends no network request.
+
 ## Tools
 
 ### `popcorn_catalog`

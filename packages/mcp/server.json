@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.violetclaire/popcorn-mcp",
+  "title": "POPCORN MCP",
+  "description": "Signed time and SHA-256 witness receipts for agents, with offline verification and x402 payment.",
+  "repository": {
+    "url": "https://github.com/violetclaire/popcorn-temporal-anchor",
+    "source": "github",
+    "subfolder": "packages/mcp"
+  },
+  "version": "0.1.1",
+  "websiteUrl": "https://767-2676.com/agents",
+  "icons": [
+    {
+      "src": "https://767-2676.com/favicon-32x32.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "32x32"
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@violetclaire/popcorn-mcp",
+      "version": "0.1.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "EVM_PRIVATE_KEY",
+          "description": "Optional dedicated Base payer key. Required only for a paid tool call that explicitly sets approve_payment to true.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

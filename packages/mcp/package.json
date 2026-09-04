@@ -1,11 +1,18 @@
 {
   "name": "@violetclaire/popcorn-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "mcpName": "io.github.violetclaire/popcorn-mcp",
   "description": "Local stdio MCP server for POPCORN signed time and payload witnesses",
   "type": "module",
   "bin": {
     "popcorn-mcp": "dist/packages/mcp/src/index.js"
+  },
+  "exports": {
+    "./core": {
+      "types": "./dist/packages/mcp/src/core.d.ts",
+      "import": "./dist/packages/mcp/src/core.js",
+      "default": "./dist/packages/mcp/src/core.js"
+    }
   },
   "files": [
     "dist",
@@ -14,9 +21,10 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "build": "tsc --project tsconfig.build.json",
-    "check": "tsc --noEmit && tsx --test test/*.test.ts && npm run build && npm run test:stdio",
+    "check": "tsc --noEmit && tsx --test test/*.test.ts && npm run build && npm run test:stdio && npm run test:exports",
     "test": "tsx --test test/*.test.ts",
     "test:stdio": "node test/stdio-smoke.mjs",
+    "test:exports": "node test/package-exports-smoke.mjs",
     "prepack": "npm run check"
   },
   "engines": {
@@ -24,9 +32,13 @@
   },
   "keywords": [
     "mcp",
+    "mcp-server",
+    "model-context-protocol",
     "x402",
     "agents",
     "time",
+    "timestamp",
+    "attestation",
     "receipts",
     "base",
     "usdc"

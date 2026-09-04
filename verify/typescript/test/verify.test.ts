@@ -6,6 +6,7 @@ import {
   digestWitnessSignedPayload,
   evaluateWitnessAgainstSchedule,
   verifyPopcornTemporalEvidence,
+  verifyPopcornWitnessChain,
   verifyPopcornWitnessEvidence,
   type JsonWebKeySet,
   type PopcornResponse,
@@ -229,6 +230,68 @@ test("verifies receipt 003 and its signed-payload link to receipt 002", async ()
       chainVector.predecessor.paid_evidence.witness_attestation.compact_jws,
     ),
     chainVector.expected_verification.previous_signed_payload_digest,
+  );
+});
+
+test("verifies a chronological witness chain in one pass", async () => {
+  const result = await verifyPopcornWitnessChain([
+    chainPredecessor,
+    {
+      response: chainVector.current.paid_evidence,
+      jwks: { keys: [chainVector.current.public_verification_key] },
+      verification: {
+        expected_payload: chainCurrentPayload,
+        expected_nonce: chainVector.current.submitted_request.nonce,
+        max_clock_accuracy_radius_ms: 10_000,
+      },
+    },
+  ]);
+
+  assert.equal(result.chain_length, 2);
+  assert.equal(
+    result.entries[0]?.signed_payload_digest,
+    chainVector.expected_verification.previous_signed_payload_digest,
+  );
+  assert.equal(result.entries[0]?.verified.previous_attestation_digest_matched, false);
+  assert.equal(result.entries[1]?.verified.previous_attestation_digest_matched, true);
+  assert.equal(
+    result.head_signed_payload_digest,
+    result.entries[1]?.signed_payload_digest,
+  );
+});
+
+test("flat chain verifier rejects a missing predecessor", async () => {
+  await assert.rejects(
+    verifyPopcornWitnessChain([
+      {
+        response: chainVector.current.paid_evidence,
+        jwks: { keys: [chainVector.current.public_verification_key] },
+        verification: {
+          expected_payload: chainCurrentPayload,
+          expected_nonce: chainVector.current.submitted_request.nonce,
+        },
+      },
+    ]),
+    /entry 0 must start with previous_attestation_digest null/,
+  );
+});
+
+test("flat chain verifier rejects a tampered predecessor", async () => {
+  const tamperedPredecessor = structuredClone(chainPredecessor);
+  tamperedPredecessor.response.witness_receipt.payment_transaction = "0xtampered";
+  await assert.rejects(
+    verifyPopcornWitnessChain([
+      tamperedPredecessor,
+      {
+        response: chainVector.current.paid_evidence,
+        jwks: { keys: [chainVector.current.public_verification_key] },
+        verification: {
+          expected_payload: chainCurrentPayload,
+          expected_nonce: chainVector.current.submitted_request.nonce,
+        },
+      },
+    ]),
+    /entry 0 verification failed.*does not equal the signed payload/,
   );
 });
 

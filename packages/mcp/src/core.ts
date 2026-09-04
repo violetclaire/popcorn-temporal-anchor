@@ -7,11 +7,20 @@ import { privateKeyToAccount } from "viem/accounts";
 
 import {
   verifyPopcornTemporalEvidence,
+  verifyPopcornWitnessChain,
   verifyPopcornWitnessEvidence,
   type JsonWebKeySet,
   type PopcornResponse,
   type PopcornWitnessResponse,
+  type VerifiedWitnessChain,
+  type WitnessChainEntry,
   type WitnessVerificationOptions,
+} from "../../../verify/typescript/src/index.js";
+
+export type {
+  VerifiedWitnessChain,
+  WitnessChainEntry,
+  WitnessChainVerificationOptions,
 } from "../../../verify/typescript/src/index.js";
 
 export const POPCORN_ORIGIN = "https://767-2676.com";
@@ -345,6 +354,12 @@ export async function popcornVerify(input: {
     isRecord(policy) ? policy : {},
   );
   return { receipt_type: "time" as const, verified };
+}
+
+export async function popcornVerifyWitnessChain(
+  entries: readonly WitnessChainEntry[],
+): Promise<VerifiedWitnessChain> {
+  return verifyPopcornWitnessChain(entries);
 }
 
 function timeRequest(freshnessMs: number): PaymentDryRun["request"] {
