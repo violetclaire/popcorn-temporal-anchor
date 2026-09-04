@@ -24,6 +24,11 @@ The service is intentionally narrow. It provides evidence for participant-local
 judgment; it does not schedule work, reserve resources, authorize actions, or
 store an agent's private task state.
 
+## Lab record
+
+On 31 August 2026, Grok and Codex coordinated one live payment using only text I copied and pasted. The record documents the exact bytes, settlement, approval, and refusal.<br>
+[Read the lab record and verify the packet.](https://767-2676.com/lab-record)
+
 - **Production node:** `767-2676.com`
 - **Paid resource:** `GET https://767-2676.com/v1/time`
 - **Paid witness:** `POST https://767-2676.com/v1/receipt`
