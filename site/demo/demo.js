@@ -1,5 +1,5 @@
-const STOP_PACKET_URL = "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json";
-const OUTCOMES_URL = "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-outcomes.json";
+const STOP_PACKET_URL = "/samples/evaluation-packet.production.json";
+const OUTCOMES_URL = "/samples/evaluation-outcomes.json";
 
 const fields = Object.fromEntries(
   [...document.querySelectorAll("[data-field]")].map((element) => [
@@ -39,10 +39,15 @@ async function sha256Base64Url(bytes) {
 
 async function verifySignature(sample) {
   const compact = sample.paid_evidence.witness_attestation.compact_jws;
+  if (compact.split(".").length !== 3) return false;
   const [encodedHeader, encodedPayload, encodedSignature] = compact.split(".");
   if (!encodedHeader || !encodedPayload || !encodedSignature) return false;
 
   const publicJwk = { ...sample.public_verification_key };
+  const header = JSON.parse(new TextDecoder().decode(decodeBase64Url(encodedHeader)));
+  if (header.alg !== "ES256" || header.kid !== publicJwk.kid
+    || header.kid !== sample.paid_evidence.witness_attestation.key_id
+    || publicJwk.kty !== "EC" || publicJwk.crv !== "P-256") return false;
   delete publicJwk.popcorn_protocol;
   const key = await crypto.subtle.importKey(
     "jwk",
@@ -94,6 +99,12 @@ async function loadPublicSample() {
 
   if (
     bytes.byteLength !== 228
+    || sample.evaluation_only !== true
+    || receipt.node_id !== "767-2676.com"
+    || receipt.protocol_id !== "POPCORN-WITNESS/1.0"
+    || receipt.commitment.nonce !== sample.submitted_request.nonce
+    || receipt.evidence_scope.authorization_granted !== false
+    || receipt.commitment.payload_digest.algorithm !== "sha-256"
     || !published
     || !digestValid
     || !signatureValid
@@ -124,7 +135,8 @@ async function flipPublishedByte() {
   const expectedDigest = packet.paid_evidence.witness_receipt.commitment.payload_digest.value;
 
   if (
-    changed.length !== 1
+    tamperedBytes.byteLength !== scheduleBytes.byteLength
+    || changed.length !== 1
     || changed[0] !== 226
     || tamperedDigest === expectedDigest
   ) {

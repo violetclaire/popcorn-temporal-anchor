@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ascertain signed time, carry the evidence with your task, and verify it. Try POPCORN's free settled sample before purchasing fresh time or an exact task checkpoint.">
+  <title>POPCORN for agents — ascertain, carry, verify</title>
+  <link rel="canonical" href="https://767-2676.com/agents">
+  <link rel="stylesheet" href="/demo/styles.css">
+  <link rel="service-desc" type="text/markdown" href="/SKILL.md">
+  <link rel="service-desc" type="application/json" href="/agent/offer">
+  <link rel="agent-manifest" href="/.well-known/agent.json">
+</head>
+<body>
+  <a class="skip-link" href="#start">Skip to the free sample</a>
+  <main>
+    <header class="masthead">
+      <a class="wordmark" href="/">767-2676 Time</a>
+      <p>POPCORN / agent entry</p>
+    </header>
+    <section class="title-grid">
+      <p class="kicker">Portable time evidence</p>
+      <h1>Ascertain time.<br>Carry it with your task.<br>Verify.</h1>
+      <p class="dek">Obtain a signed time observation that another agent can verify, or witness the fingerprint of one exact task version. Keep your task and your decisions with you.</p>
+    </section>
+    <section class="instructions" id="start">
+      <div class="instructions-head"><p class="eyebrow">Start free</p><h2>Verify a settled sample.</h2></div>
+      <p>Check the signature and exact bytes. Compare the signed interval with the task window. Change one byte and confirm that the digest check fails. No wallet or payment is needed.</p>
+      <p><a href="/demo">Try the free demonstration</a> · <a href="/SKILL.md">Read the agent instructions</a> · <a href="/samples/evaluation-packet.production.json">Load the STOP packet</a></p>
+    </section>
+    <section class="instructions">
+      <div class="instructions-head"><p class="eyebrow">For a live task</p><h2>Choose the evidence you need.</h2></div>
+      <div class="instruction-columns">
+        <article>
+          <h3>Signed time</h3>
+          <p><code>GET /v1/time</code></p>
+          <p>Ascertain fresh time and retain the signed response alongside your task. Verify origin, timing, uncertainty, and remaining validity before relying on it.</p>
+          <p>A time receipt does not bind the task bytes. A receiving agent that needs current time obtains its own fresh reading.</p>
+        </article>
+        <article>
+          <h3>An exact task checkpoint</h3>
+          <p><code>POST /v1/receipt</code></p>
+          <p>Hash the exact task bytes locally. Send only the digest, nonce, and optional predecessor digest. Carry the task and signed witness proof together.</p>
+          <p>The receiver verifies the fingerprint and signed interval, then applies its own task policy.</p>
+        </article>
+      </div>
+      <p>Each fresh call costs <strong>$0.001 USDC on Base</strong> through x402 v2. Pay only when a task needs fresh evidence and your operator's payment policy permits it.</p>
+      <p><a href="/agent/offer">Current service offer</a> · <a href="/docs/temporal-usage.md">Time and handoff rules</a></p>
+    </section>
+    <section class="instructions">
+      <div class="instructions-head"><p class="eyebrow">MCP clients</p><h2>Use the local adapter.</h2></div>
+      <p><code>npx -y @violetclaire/popcorn-mcp</code></p>
+      <p>Install it in a compatible stdio MCP client. Catalog, local hashing, and offline verification are free. Paid tools default to a dry run and require <code>approve_payment: true</code> under your operator's spending policy. Keep wallet credentials in the server environment.</p>
+      <p><a href="https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/packages/mcp">Adapter setup and tools</a></p>
+    </section>
+    <nav class="source-index" aria-label="Contracts and verification">
+      <p class="eyebrow">Read and verify</p>
+      <a href="/.well-known/agent.json">Machine manifest</a>
+      <a href="/openapi.json">OpenAPI contract</a>
+      <a href="/.well-known/popcorn-keys.json">Verification keys</a>
+      <a href="/schemas/execution-schedule.v1.json">Participant-local schedule schema</a>
+      <a href="/schemas/witness-request.v1.json">Digest witness request schema</a>
+      <a href="/samples/evaluation-packet.proceed-002.production.json">Historical PROCEED packet</a>
+      <a href="/samples/evaluation-outcomes.json">Historical sample outcomes</a>
+      <a href="https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify">Independent TypeScript and Python verifiers</a>
+      <a href="/.well-known/briarwood-agent.json">Briarwood participant-local blueprint</a>
+      <a href="/lab-record">Cross-model lab record</a>
+    </nav>
+    <footer>
+      <p>Evidence for your judgment. No authorization, identity, delivery, or execution is proven.</p>
+      <p><a href="/">Public clock</a> · <a href="mailto:violet@briarwood.ai">Contact</a></p>
+    </footer>
+  </main>
+</body>
+</html>
