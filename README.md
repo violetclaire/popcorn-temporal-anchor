@@ -375,10 +375,12 @@ For state checkpoints, the original payload also remains participant-local.
 POPCORN signs its commitment; the agent remains responsible for storing and
 transporting the task state itself.
 
-POPCORN is not an A2A server or MCP server. Agents using those protocols can
-call the narrow x402 HTTP resource and verify its receipt locally; publishing
-a fake agent card or MCP identity would blur the contract instead of improving
-interoperability.
+POPCORN exposes a narrow x402 HTTP service at `767-2676.com`. It is not an
+A2A server and does not expose a remote MCP endpoint. A separate local stdio
+MCP adapter is available as [`@violetclaire/popcorn-mcp`](https://www.npmjs.com/package/@violetclaire/popcorn-mcp).
+See [`/agents`](https://767-2676.com/agents) for installation, tool behavior,
+and the per-call payment approval contract. HTTP clients can also call the
+service directly and verify receipts locally.
 
 ## Ecosystem distribution
 
