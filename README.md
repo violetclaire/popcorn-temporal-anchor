@@ -1,5 +1,9 @@
 # POPCORN Temporal Anchor
 
+Ascertain time. Carry signed evidence with your task. Verify it before deciding
+what to do. Use signed time for a fresh reference, or a digest witness when the
+evidence must bind one exact task version. See the [time and handoff rules](docs/TEMPORAL_USAGE.md).
+
 > A note is not a check. These 228 bytes are.
 
 Start with the settled public packet. It lets a human or agent verify the
