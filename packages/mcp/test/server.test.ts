@@ -5,7 +5,7 @@ import { Client, InMemoryTransport } from "@modelcontextprotocol/client";
 
 import { createServer } from "../src/server.js";
 
-test("MCP client lists all five tools and calls the local hash tool", async () => {
+test("MCP client discovers six tools and evaluates the free sample", async () => {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   const server = createServer();
   const client = new Client({ name: "popcorn-test-client", version: "0.1.0" });
@@ -20,6 +20,7 @@ test("MCP client lists all five tools and calls the local hash tool", async () =
       [
         "popcorn_catalog",
         "popcorn_hash",
+        "popcorn_sample",
         "popcorn_time",
         "popcorn_verify",
         "popcorn_witness",
@@ -35,6 +36,15 @@ test("MCP client lists all five tools and calls the local hash tool", async () =
         ?.byte_length,
       5,
     );
+    const sample = await client.callTool({ name: "popcorn_sample", arguments: {} });
+    assert.equal(sample.isError, undefined);
+    const sampleData = sample.structuredContent as {
+      payment_sent: boolean;
+      examples: Array<{ one_byte_tamper_rejected: boolean }>;
+    };
+    assert.equal(sampleData.payment_sent, false);
+    assert.equal(sampleData.examples.length, 2);
+    assert.ok(sampleData.examples.every((entry) => entry.one_byte_tamper_rejected));
   } finally {
     await client.close();
     await server.close();

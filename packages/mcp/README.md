@@ -1,9 +1,42 @@
 # POPCORN MCP server
 
-Local stdio MCP tools for signed POPCORN time and payload checkpoints at
-`https://767-2676.com`.
+Read-only time and task evidence from Briarwood AI, usable across independent
+agents. POPCORN supplies signed time and digest checkpoints at `https://767-2676.com`.
 
-The server exposes three free tools and two x402 tools. The x402 tools are dry
+## Try it first, without a wallet
+
+With version 0.1.2 installed, run:
+
+```bash
+npx -y @violetclaire/popcorn-mcp@0.1.2 --sample
+```
+
+This one command checks two bundled, historically settled receipts with the
+maintained verifier. It returns valid signatures, `STOP` for a checkpoint after
+its task window, `TIME_CHECK_PASSED` for one inside its window, and a rejected
+one-byte change for each. Every result retains `authorization_granted: false`.
+The sample needs no account, wallet, or original task data. npm may download
+the package; the verification itself runs entirely offline.
+
+Inside a connected MCP client, call `popcorn_sample` with `{}` for the same
+result. Its public source links let another developer repeat the check.
+The bundled historical keys are for sample reproduction. A real task requires
+independently trusted issuer keys; an old receipt is not a fresh clock reading.
+
+## Use it for a real task
+
+| Need | Tool | What stays local |
+| --- | --- | --- |
+| A fresh, signed time reference for a deadline or expiry | `popcorn_time` | The task and decision |
+| Evidence of one exact task version at a stated time | `popcorn_hash`, then `popcorn_witness` | Raw task bytes; only the digest, nonce, and optional predecessor digest go to the witness |
+| Check evidence received from another agent | `popcorn_verify` | The receipt, trusted keys, payload, and verification |
+
+These uses apply across agent providers and industries. Share a receipt and
+the relevant exact bytes through your existing authorized handoff, then let
+the receiving system verify them. No account at the originating agent provider
+is required for offline verification. Each participant decides what to do.
+
+The server exposes four free tools and two x402 tools. The x402 tools are dry
 run by default. They cannot spend unless the individual tool call contains
 `approve_payment: true`. A wallet key is read only from `EVM_PRIVATE_KEY` in the
 server process environment. It is never accepted as a tool parameter.
@@ -41,6 +74,12 @@ signed-payload bytes, and returns the verified entries plus the head digest.
 It is free, local, and sends no network request.
 
 ## Tools
+
+### `popcorn_sample`
+
+Runs the two public receipt examples and their tamper controls locally. This
+is a reproducible evaluation of historical evidence and makes no network
+request or payment. Input: `{}`.
 
 ### `popcorn_catalog`
 

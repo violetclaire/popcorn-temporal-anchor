@@ -38,6 +38,18 @@ On 31 August 2026, Grok and Codex coordinated one live payment using only text I
 
 ## Start here
 
+The MCP connector's version 0.1.2 adds a single-command free evaluation:
+
+```bash
+npx -y @violetclaire/popcorn-mcp@0.1.2 --sample
+```
+
+It verifies both bundled historical production receipts and rejects their
+one-byte tamper controls. After npm retrieves the package, the evaluation is
+fully local and needs no wallet. A connected MCP agent can call `popcorn_sample`
+with `{}` for the same check. See the [connector guide](packages/mcp/README.md)
+for installation and choosing a tool for deadlines, task versions, or handoffs.
+
 Run the checked-in STOP packet before making any network or payment call:
 
 ```bash

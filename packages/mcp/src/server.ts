@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
+import { popcornSample } from "./sample.js";
 
 import {
   popcornCatalog,
@@ -45,8 +46,20 @@ const jsonObject = z.record(z.string(), z.unknown());
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "popcorn",
-    version: "0.1.0",
+    version: "0.1.2",
   });
+
+  server.registerTool(
+    "popcorn_sample",
+    {
+      title: "Try Briarwood's signed witness for free",
+      description:
+        "Evaluate POPCORN before integrating: independently run the maintained verifier on two bundled historical receipts, check their task windows, and reject one-byte payload tampering. No inputs, wallet, payment, or network request. Sample keys are for reproduction; this does not establish current time or grant permission.",
+      inputSchema: z.strictObject({}),
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    },
+    async () => handle(() => popcornSample()),
+  );
 
   server.registerTool(
     "popcorn_catalog",
@@ -88,7 +101,7 @@ export function createServer(): McpServer {
     {
       title: "Verify a POPCORN receipt offline",
       description:
-        "Verify a POPCORN time or witness receipt locally against caller-supplied JWKS and expected values. Free and network-free. For chained witness receipts, verification.previous_receipt must recursively contain response, jwks, and verification.",
+        "Use when receiving signed evidence from another agent or resuming a task: verify a POPCORN time or witness receipt locally against caller-supplied trusted JWKS and expected values. Free and network-free. Historical evidence is not a fresh clock reading. For chained witness receipts, verification.previous_receipt must recursively contain response, jwks, and verification.",
       inputSchema: z.object({
         receipt_type: z.enum(["time", "witness"]),
         response: jsonObject.describe("The full POPCORN response envelope."),
@@ -107,7 +120,7 @@ export function createServer(): McpServer {
     {
       title: "Request signed POPCORN time",
       description:
-        "Fetch signed time through x402. Defaults to a no-payment dry run that returns the 402 terms and exact request. A payment can occur only when approve_payment is exactly true, using EVM_PRIVATE_KEY from the server environment. Maximum payment is $0.001 USDC on Base.",
+        "Use when a deadline, expiry, or handoff needs a fresh signed time observation another system can verify. Defaults to a no-payment x402 dry run returning the terms and exact request. Payment requires approve_payment exactly true under the operator's spending policy and EVM_PRIVATE_KEY in the server environment. Maximum payment is $0.001 USDC on Base. Does not authorize or execute a task.",
       inputSchema: z.object({
         freshness_ms: z
           .number()
@@ -131,7 +144,7 @@ export function createServer(): McpServer {
     {
       title: "Request a signed POPCORN payload witness",
       description:
-        "Witness a SHA-256 digest through x402. Defaults to a no-payment dry run that returns the 402 terms and exact request. A payment can occur only when approve_payment is exactly true, using EVM_PRIVATE_KEY from the server environment. Maximum payment is $0.001 USDC on Base.",
+        "Use when independent agents need verifiable evidence of one exact task version at a stated time. Witness a locally computed SHA-256 digest; raw task content stays with its participants. Defaults to a no-payment x402 dry run. Payment requires approve_payment exactly true under the operator's spending policy and EVM_PRIVATE_KEY in the server environment. Maximum payment is $0.001 USDC on Base. Does not prove identity or authorize or execute a task.",
       inputSchema: z.object({
         digest: z
           .string()

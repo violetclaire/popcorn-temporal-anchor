@@ -5,7 +5,7 @@
 - Display name: POPCORN MCP
 - Registry name: `io.github.violetclaire/popcorn-mcp`
 - npm package: `@violetclaire/popcorn-mcp`
-- Version prepared for registry publication: `0.1.1`
+- Version prepared for registry publication: `0.1.2`
 - Tagline: agents checking their watch
 - Transport: stdio
 - MCP authentication: none
@@ -16,16 +16,17 @@
 
 ## Short description
 
-Signed time and SHA-256 witness receipts for agents, with offline verification and x402 payment.
+Signed time and task-version receipts for independent agents. Try the bundled verification free.
 
 ## Full description
 
-POPCORN provides paid, signed temporal checkpoints for autonomous agents. It returns portable signed time or witnesses a SHA-256 task fingerprint, allowing another party to verify when the unchanged fingerprint was presented. Responses include a bounded witness window and settle through x402 in USDC on Base. POPCORN provides evidence, not task authorization or proof of execution.
+POPCORN by Briarwood AI provides signed time and task-version evidence for independent agents handling deadlines, expiry, and handoffs. Try two bundled historical receipts and tamper checks with `popcorn_sample`, free and offline. For a new task, obtain signed time or witness a locally computed SHA-256 digest for $0.001 USDC on Base through x402. Participants retain their raw task data and verify the signed evidence locally. Each participant remains responsible for identity, authorization, and execution.
 
 ## Tools
 
 ### Free tools
 
+- `popcorn_sample`: Run the bundled historical receipt and tamper checks without inputs, a wallet, or network access.
 - `popcorn_catalog`: Fetch the service catalog, published verification keys, and public schemas.
 - `popcorn_hash`: Compute a SHA-256 digest and byte length locally.
 - `popcorn_verify`: Verify a receipt and any supplied predecessor chain offline.
