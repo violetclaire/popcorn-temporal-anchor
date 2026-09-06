@@ -1,6 +1,6 @@
 {
   "name": "@violetclaire/popcorn-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "mcpName": "io.github.violetclaire/popcorn-mcp",
   "description": "Local stdio MCP server for POPCORN signed time and payload witnesses",
   "type": "module",
@@ -20,11 +20,12 @@
   ],
   "scripts": {
     "start": "tsx src/index.ts",
-    "build": "tsc --project tsconfig.build.json",
-    "check": "tsc --noEmit && tsx --test test/*.test.ts && npm run build && npm run test:stdio && npm run test:exports",
-    "test": "tsx --test test/*.test.ts",
+    "build": "tsc --project tsconfig.build.json && node scripts/copy-samples.mjs",
+    "check": "tsc --noEmit && npm test && npm run build && npm run test:stdio && npm run test:exports && npm run test:sample-package",
+    "test": "node --import tsx --test test/*.test.ts",
     "test:stdio": "node test/stdio-smoke.mjs",
     "test:exports": "node test/package-exports-smoke.mjs",
+    "test:sample-package": "node test/sample-package-smoke.mjs",
     "prepack": "npm run check"
   },
   "engines": {

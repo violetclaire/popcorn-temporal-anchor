@@ -1,0 +1,35 @@
+name: Verify MCP package
+
+on:
+  push:
+    paths:
+      - "packages/mcp/**"
+      - "verify/typescript/src/**"
+      - "verify/test-vectors/**"
+      - "examples/witness/**"
+      - ".github/workflows/mcp.yml"
+  pull_request:
+    paths:
+      - "packages/mcp/**"
+      - "verify/typescript/src/**"
+      - "verify/test-vectors/**"
+      - "examples/witness/**"
+      - ".github/workflows/mcp.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: packages/mcp/package-lock.json
+      - run: npm ci
+        working-directory: packages/mcp
+      - run: npm run check
+        working-directory: packages/mcp
