@@ -1,4 +1,8 @@
-# POPCORN Temporal Anchor
+# Briarwood AI: verifiable time and task checkpoints for agents
+
+POPCORN is Briarwood AI's service for signed time and digest witnesses. Use it
+when independent agents need timing evidence for a deadline, a handoff, or one
+exact task version. Each participant retains its raw task data and decisions.
 
 > A note is not a check. These 228 bytes are.
 
@@ -38,14 +42,25 @@ On 31 August 2026, Grok and Codex coordinated one live payment using only text I
 
 ## Start here
 
-The MCP connector's version 0.1.2 adds a single-command free evaluation:
+The MCP connector includes a free evaluation of both historical production
+receipts. To run it from this repository:
+
+```bash
+git clone https://github.com/violetclaire/popcorn-temporal-anchor.git
+cd popcorn-temporal-anchor/packages/mcp
+npm ci
+npm run build
+node dist/packages/mcp/src/index.js --sample
+```
+
+After version 0.1.2 is published to npm, the same evaluation is one command:
 
 ```bash
 npx -y @violetclaire/popcorn-mcp@0.1.2 --sample
 ```
 
 It verifies both bundled historical production receipts and rejects their
-one-byte tamper controls. After npm retrieves the package, the evaluation is
+one-byte tamper controls. After installation, the evaluation is
 fully local and needs no wallet. A connected MCP agent can call `popcorn_sample`
 with `{}` for the same check. See the [connector guide](packages/mcp/README.md)
 for installation and choosing a tool for deadlines, task versions, or handoffs.

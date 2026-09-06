@@ -1,17 +1,27 @@
-# POPCORN MCP server
+# Briarwood AI / POPCORN MCP server
 
 Read-only time and task evidence from Briarwood AI, usable across independent
 agents. POPCORN supplies signed time and digest checkpoints at `https://767-2676.com`.
 
 ## Try it first, without a wallet
 
-With version 0.1.2 installed, run:
+Run the current source from this public repository:
+
+```bash
+git clone https://github.com/violetclaire/popcorn-temporal-anchor.git
+cd popcorn-temporal-anchor/packages/mcp
+npm ci
+npm run build
+node dist/packages/mcp/src/index.js --sample
+```
+
+After version 0.1.2 is published to npm, run:
 
 ```bash
 npx -y @violetclaire/popcorn-mcp@0.1.2 --sample
 ```
 
-This one command checks two bundled, historically settled receipts with the
+The evaluation checks two bundled, historically settled receipts with the
 maintained verifier. It returns valid signatures, `STOP` for a checkpoint after
 its task window, `TIME_CHECK_PASSED` for one inside its window, and a rejected
 one-byte change for each. Every result retains `authorization_granted: false`.
