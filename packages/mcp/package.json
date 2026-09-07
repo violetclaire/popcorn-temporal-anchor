@@ -2,7 +2,7 @@
   "name": "@violetclaire/popcorn-mcp",
   "version": "0.1.2",
   "mcpName": "io.github.violetclaire/popcorn-mcp",
-  "description": "Local stdio MCP server for POPCORN signed time and payload witnesses",
+  "description": "Signed time for quote validity, cancellation deadlines and expiry checks. Free offline task sample.",
   "type": "module",
   "bin": {
     "popcorn-mcp": "dist/packages/mcp/src/index.js"

@@ -12,3 +12,6 @@ for (const filename of [
     new URL(filename, destination),
   );
 }
+const taskDestination = new URL("../dist/examples/task-schedule/", import.meta.url);
+await mkdir(taskDestination, { recursive: true });
+await copyFile(new URL("../../../examples/task-schedule/packet.json", import.meta.url), new URL("packet.json", taskDestination));

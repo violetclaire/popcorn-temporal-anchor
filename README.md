@@ -423,3 +423,19 @@ proofs, or private task payloads. See [`SECURITY.md`](SECURITY.md).
 ## Contact
 
 [`violet@briarwood.ai`](mailto:violet@briarwood.ai)
+
+## Discover the free task schedule sample
+
+Can I still cancel? Which side of the deadline am I on?
+
+Inspect [the public sample](https://767-2676.com/schedule/example), save and read
+[sample.mjs](https://767-2676.com/schedule/sample.mjs), then run `node sample.mjs`.
+This free offline check verifies the exact eight-line task schedule and its
+historical receipt, and rejects a changed byte. It does not establish current
+time or permission to act.
+
+Agents can find the [ARD catalog](https://767-2676.com/.well-known/ard.json),
+[AI catalog](https://767-2676.com/.well-known/ai-catalog.json), and
+[free sample skill](https://767-2676.com/skills/task-time/SKILL.md).
+See [discovery publishing details](docs/agent-discovery.md) and the
+[task schedule contract](docs/task-schedule.txt).

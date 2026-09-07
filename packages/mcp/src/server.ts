@@ -54,7 +54,7 @@ export function createServer(): McpServer {
     {
       title: "Try Briarwood's signed witness for free",
       description:
-        "Evaluate POPCORN before integrating: independently run the maintained verifier on two bundled historical receipts, check their task windows, and reject one-byte payload tampering. No inputs, wallet, payment, or network request. Sample keys are for reproduction; this does not establish current time or grant permission.",
+        "Try a clock for agents: hash an exact eight-line task schedule, verify its signed time witness, and reject a one-byte change to who must fulfill it. Also reproduce two legacy historical receipts. No inputs, wallet, payment, or network request. Free sample keys are for reproduction; this does not establish current time or grant permission.",
       inputSchema: z.strictObject({}),
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
@@ -120,7 +120,7 @@ export function createServer(): McpServer {
     {
       title: "Request signed POPCORN time",
       description:
-        "Use when a deadline, expiry, or handoff needs a fresh signed time observation another system can verify. Defaults to a no-payment x402 dry run returning the terms and exact request. Payment requires approve_payment exactly true under the operator's spending policy and EVM_PRIVATE_KEY in the server environment. Maximum payment is $0.001 USDC on Base. Does not authorize or execute a task.",
+        "Is this quote still valid? Can I still cancel? Has the deadline passed? Fetch a signed timestamp and verifiable current-time attestation for a deadline check, boundary check, or expiry check. Use fresh time evidence, not cached evidence or the local UTC clock; measure elapsed durations with a monotonic timer. This MCP time server provides x402 time. Defaults to a no-payment dry run, not a free signed time receipt. A fresh time receipt costs at most $0.001 USDC on Base and requires approve_payment exactly true under the operator's spending policy and EVM_PRIVATE_KEY. It does not establish availability or authorize a task.",
       inputSchema: z.object({
         freshness_ms: z
           .number()
@@ -144,7 +144,7 @@ export function createServer(): McpServer {
     {
       title: "Request a signed POPCORN payload witness",
       description:
-        "Use when independent agents need verifiable evidence of one exact task version at a stated time. Witness a locally computed SHA-256 digest; raw task content stays with its participants. Defaults to a no-payment x402 dry run. Payment requires approve_payment exactly true under the operator's spending policy and EVM_PRIVATE_KEY in the server environment. Maximum payment is $0.001 USDC on Base. Does not prove identity or authorize or execute a task.",
+        "Which task version existed before the cancellation deadline, quote expiry, or authorization boundary? Obtain a signed time witness for its exact SHA-256 digest and request nonce. Keep raw task content local. The time receipt records a checkpoint; use popcorn_time for fresh current time. Defaults to a no-payment x402 dry run. Payment requires approve_payment exactly true under the operator's spending policy and EVM_PRIVATE_KEY; maximum $0.001 USDC on Base. Does not prove identity, availability, authorization, or execution.",
       inputSchema: z.object({
         digest: z
           .string()

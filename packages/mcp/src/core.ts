@@ -74,9 +74,17 @@ function parseJson(text: string, label: string): unknown {
   }
 }
 
+function decodePaymentHeader(value: string, label: string): Buffer {
+  const decoded = Buffer.from(value, "base64");
+  if (value !== decoded.toString("base64") && value !== decoded.toString("base64url")) {
+    throw new Error(`${label} must be canonical base64 or unpadded base64url`);
+  }
+  return decoded;
+}
+
 function decodePaymentRequired(value: string): JsonRecord {
   const parsed = parseJson(
-    decodeCanonicalBase64Url(value, "PAYMENT-REQUIRED").toString("utf8"),
+    decodePaymentHeader(value, "PAYMENT-REQUIRED").toString("utf8"),
     "PAYMENT-REQUIRED",
   );
   if (!isRecord(parsed)) throw new Error("PAYMENT-REQUIRED must decode to an object");
@@ -203,7 +211,7 @@ async function paidRequest(
   let decoded: unknown;
   try {
     decoded = parseJson(
-      decodeCanonicalBase64Url(paymentResponse, "PAYMENT-RESPONSE").toString("utf8"),
+      decodePaymentHeader(paymentResponse, "PAYMENT-RESPONSE").toString("utf8"),
       "PAYMENT-RESPONSE",
     );
   } catch {

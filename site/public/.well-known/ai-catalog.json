@@ -1,0 +1,64 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "POPCORN",
+    "identifier": "767-2676.com",
+    "documentationUrl": "https://767-2676.com/agents"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:767-2676.com:skill:task-time",
+      "displayName": "POPCORN free task schedule sample",
+      "type": "application/ai-skill",
+      "url": "https://767-2676.com/skills/task-time/SKILL.md",
+      "description": "Can I still cancel? Which side of the deadline am I on? Inspect and run a free historical signed schedule sample. Verify exact bytes and detect changes; fresh time evidence is a separate paid request.",
+      "representativeQueries": [
+        "Can I still cancel before the deadline?",
+        "Is this quote still valid?",
+        "How do I verify a signed time receipt?",
+        "Does this receipt still cover a changed schedule?"
+      ],
+      "capabilities": [
+        "offline_receipt_verification",
+        "schedule_digest_check",
+        "deadline_evidence"
+      ],
+      "tags": [
+        "time",
+        "deadline",
+        "cancellation",
+        "schedule",
+        "free-sample"
+      ],
+      "metadata": {
+        "sampleUrl": "https://767-2676.com/schedule/example",
+        "offlineSampleFree": true,
+        "establishesCurrentTime": false
+      }
+    },
+    {
+      "identifier": "urn:air:767-2676.com:mcp:popcorn",
+      "displayName": "POPCORN MCP",
+      "type": "application/mcp-server+json",
+      "url": "https://767-2676.com/mcp/server.json",
+      "description": "Signed time and SHA-256 witness receipts for agents. Offline verification is free. Fresh witnesses cost $0.001 USDC per request and require explicit payment authorization.",
+      "representativeQueries": [
+        "Get signed current time for an agent task",
+        "Verify a SHA-256 witness receipt",
+        "Check time evidence before a quote expires"
+      ],
+      "capabilities": [
+        "signed_time",
+        "digest_witness",
+        "offline_verification"
+      ],
+      "tags": [
+        "mcp",
+        "time",
+        "x402",
+        "verification"
+      ],
+      "version": "0.1.1"
+    }
+  ]
+}

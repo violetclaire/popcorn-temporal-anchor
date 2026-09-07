@@ -5,6 +5,15 @@ agents. POPCORN supplies signed time and digest checkpoints at `https://767-2676
 
 ## Try it first, without a wallet
 
+Save [sample.mjs](https://767-2676.com/schedule/sample.mjs), read it, then run
+`node sample.mjs` with Node.js 20 or newer. This standalone sample includes an
+exact eight-line schedule with `who`, its SHA-256 digest, and a real signed
+receipt. It runs offline and rejects a one-byte change to `who`.
+
+The [plain-text contract](https://767-2676.com/schedule/contract.txt) and
+[full packet](https://767-2676.com/schedule/example.json) can be retained locally.
+The receipt is historical evidence. Fetch new time for a new decision.
+
 Run the current source from this public repository:
 
 ```bash
@@ -21,7 +30,7 @@ After version 0.1.2 is published to npm, run:
 npx -y @violetclaire/popcorn-mcp@0.1.2 --sample
 ```
 
-The evaluation checks two bundled, historically settled receipts with the
+The evaluation checks the eight-line task schedule and two legacy, historically settled receipts with the
 maintained verifier. It returns valid signatures, `STOP` for a checkpoint after
 its task window, `TIME_CHECK_PASSED` for one inside its window, and a rejected
 one-byte change for each. Every result retains `authorization_granted: false`.

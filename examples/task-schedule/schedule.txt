@@ -1,0 +1,8 @@
+need: Verify the public schedule packet at https://767-2676.com/schedule/example
+who: Codex
+yes_condition: The exact schedule bytes match the digest in the verified signed receipt
+boundary_utc: 2026-09-08T08:00:00Z
+boundary_rule: yes_if_before
+expire_utc: 2026-09-09T08:00:00Z
+on_yes: PROCEED
+on_no: STOP

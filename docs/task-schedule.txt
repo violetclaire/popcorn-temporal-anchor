@@ -1,0 +1,69 @@
+TASK SCHEDULE — agent contract
+Version: TASK-SCHEDULE/1.0
+
+A schedule is a fixed byte string. Its SHA-256 is its identity.
+Same schedule = same bytes = same digest. Any other encoding is a different schedule.
+
+Encoding: UTF-8, no BOM; eight lines in the order below. Each line is
+field_name: value followed by LF (0A), including the final line.
+The separator is one colon and one ASCII space. Values are nonempty single
+lines without control characters. Preserve the original bytes; do not trim,
+normalize Unicode, reorder fields, or change line endings before hashing.
+The title, version, and these instructions are not schedule bytes.
+
+Fields, in byte order:
+need           what must be accomplished
+who            who must fulfill it (single line)
+yes_condition  what must remain true to proceed
+boundary_utc   the instant YES becomes NO (YYYY-MM-DDTHH:MM:SSZ)
+boundary_rule  yes_if_before | yes_if_on_or_before
+expire_utc     at or after this instant, the schedule cannot be acted on
+on_yes         PROCEED
+on_no          STOP | REFER | COUNTER
+
+Carry the schedule with the task. Do not carry a time reading.
+
+To decide:
+1. Check the owner's instructions and yes_condition locally, before any fetch.
+   If yes_condition is false, use on_no. No time evidence is needed.
+   If a required condition is unknown, do not proceed; resolve it first.
+   A time receipt does not establish availability, identity, or permission.
+2. Fetch new temporal evidence from https://767-2676.com/v1/time.
+   Verify its signature, signed fields, and remaining validity using the
+   published verifier and https://767-2676.com/.well-known/popcorn-keys.json.
+   Derive the current interval [L, U] at this decision. Cached evidence is invalid.
+3. Let E = expire_utc. If L >= E, STOP. If U < E, continue.
+   Otherwise the interval straddles expiry: refetch.
+4. Let B = boundary_utc. Compare the SAME current interval:
+   yes_if_before:       U < B -> on_yes; L >= B -> on_no; otherwise refetch.
+   yes_if_on_or_before: U <= B -> on_yes; L > B -> on_no; otherwise refetch.
+5. Refetch at most three times after the initial fetch (four fetches total).
+   Unresolved, invalid, or unavailable evidence -> STOP. No unbounded retries.
+
+Expiry takes precedence over the boundary rule, including at equality.
+PROCEED is the agent's local decision under the owner's instructions, not an
+authorization issued by POPCORN. Recheck changed conditions before acting.
+
+Never use a local UTC/wall clock for steps 3 or 4. The /v1/time response contains
+signed time and duration fields; the verifier derives [L, U] using measured
+round-trip and elapsed durations from a monotonic timer. That timer measures
+duration only; it does not supply UTC. A witness_window_utc in a /v1/receipt
+response describes a past checkpoint and must not be substituted for now.
+If serializing interval bounds to whole milliseconds, round L down and U up.
+
+To witness the schedule's identity:
+Hash its exact bytes locally. POST to https://767-2676.com/v1/receipt with
+payload_digest = {"algorithm":"sha-256","value":"<unpadded base64url SHA-256>"},
+a fresh 32-byte nonce encoded as unpadded base64url, and
+previous_attestation_digest = null (or the predecessor attestation's digest).
+Send the digest and protocol metadata only. Never send the schedule fields.
+Verify the returned ES256 JWS and compare its signed commitment.payload_digest
+and commitment.nonce to what you submitted.
+
+Request binding means that /v1/receipt signs the submitted digest and nonce.
+It does not prove caller identity, enforce nonce uniqueness, prevent replay,
+prove task execution, reserve inventory, or authorize payment. /v1/time is
+bearer temporal evidence and is not bound to a task digest or request nonce.
+Retained receipts are historical evidence. Fetch time again for a new decision.
+
+The schedule travels. The time does not.

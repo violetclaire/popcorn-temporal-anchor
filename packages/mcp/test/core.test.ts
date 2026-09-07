@@ -67,6 +67,19 @@ test("popcorn_time defaults to one unpaid 402 dry run", async () => {
   assert.match(requests[0]?.url ?? "", /freshness_ms=30000$/);
 });
 
+test("standard base64 x402 headers work while changed prices still fail closed", async () => {
+  const dryFetch = (amount: string): typeof fetch => async (input) => {
+    const terms = challenge(input instanceof Request ? input.url : input.toString());
+    terms.accepts[0].amount = amount;
+    // Force padding so this covers the production failure with freshness_ms=60000.
+    while (Buffer.byteLength(JSON.stringify(terms)) % 3 === 0) terms.resource.description += "x";
+    return new Response("{}", { status: 402, headers: { "payment-required": Buffer.from(JSON.stringify(terms)).toString("base64") } });
+  };
+  const result = await popcornTime({ freshness_ms: 60000 }, { fetch: dryFetch("1000"), env: {} });
+  assert.equal(result.payment_sent, false);
+  await assert.rejects(popcornTime({}, { fetch: dryFetch("2000"), env: {} }), /locked POPCORN payment policy/);
+});
+
 test("popcorn_witness dry run returns the exact request and sends no payment", async () => {
   const requests: Array<{ url: string; init?: RequestInit }> = [];
   const digest = Buffer.alloc(32, 0x11).toString("base64url");

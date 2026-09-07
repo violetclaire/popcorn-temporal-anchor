@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { verifyTaskScheduleSample } from "./task-schedule.js";
 
 import {
   evaluateWitnessAgainstSchedule,
@@ -88,6 +89,7 @@ export async function popcornSample() {
     authorization_granted: false,
     key_trust: "Bundled historical sample keys are used for reproduction. Select trusted issuer keys independently for real tasks.",
     time_scope: "These results describe historical checkpoints. They do not establish current time or permission to act now.",
+    task_schedule: await verifyTaskScheduleSample(JSON.parse(await readFile(new URL("../../../examples/task-schedule/packet.json", import.meta.url), "utf8"))),
     examples: await Promise.all(SAMPLE_FILES.map(verifySample)),
   };
 }
