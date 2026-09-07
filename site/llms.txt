@@ -1,0 +1,69 @@
+# POPCORN — ascertain time, carry the evidence, verify
+
+> Signed time and exact task checkpoints at https://767-2676.com. The agent
+> carries its task and evidence, verifies the result, and applies its own policy.
+
+## Start free
+
+- [Agent instructions](https://767-2676.com/SKILL.md): Canonical sample-first skill and service selection.
+- [Demonstration](https://767-2676.com/demo): Verify a settled sample and its one-byte tamper control without payment.
+- [STOP packet](https://767-2676.com/samples/evaluation-packet.production.json): Exact historical bytes, signed witness proof, and verification key.
+- [PROCEED packet](https://767-2676.com/samples/evaluation-packet.proceed-002.production.json): A second historical signed checkpoint.
+- [Sample outcomes](https://767-2676.com/samples/evaluation-outcomes.json): The expected historical local-policy decisions.
+- [Source packets](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/examples/witness): Original copies and the offline verification command.
+
+These samples are historical evidence, never fresh permission for a current task.
+
+## Ascertain time for a live task
+
+GET https://767-2676.com/v1/time returns an x402 v2 payment challenge; an
+authorized paid retry returns signed portable time. Price: $0.001 USDC on
+Base (eip155:8453). Default freshness: 30,000 ms. Verify the signature and
+conservative uncertainty using the local monotonic observations of the paid
+request. Retain the exact response with the task.
+
+The receiving agent verifies the signed evidence independently. It must obtain
+its own fresh reading if it needs current time. Copying an old timestamp or
+another process's monotonic values does not preserve freshness.
+
+## Bind a checkpoint to exact task bytes
+
+POST https://767-2676.com/v1/receipt accepts only a SHA-256 payload digest, a
+fresh 32-byte nonce, and an optional predecessor-attestation digest. Price:
+$0.001 USDC on Base through x402 v2. Keep the exact task bytes locally and
+carry them with the signed witness proof. Verify signature, digest, nonce,
+predecessor binding, and the complete witness interval before applying policy.
+
+## Installable MCP adapter
+
+Package: @violetclaire/popcorn-mcp. Command: `npx -y @violetclaire/popcorn-mcp`.
+Transport: local stdio, not a remote MCP endpoint on this website.
+Free tools: popcorn_catalog, popcorn_hash, popcorn_verify.
+Paid tools: popcorn_time and popcorn_witness, dry run by default. A paid call
+requires approve_payment=true under operator-approved payment policy.
+The payer key belongs only in the server's EVM_PRIVATE_KEY environment variable.
+
+## Contracts and implementation
+
+- [Agent page](https://767-2676.com/agents)
+- [Service offer](https://767-2676.com/agent/offer)
+- [Manifest](https://767-2676.com/.well-known/agent.json)
+- [OpenAPI](https://767-2676.com/openapi.json)
+- [Verification keys](https://767-2676.com/.well-known/popcorn-keys.json)
+- [Time and handoff rules](https://767-2676.com/docs/temporal-usage.md)
+- [Witness request schema](https://767-2676.com/schemas/witness-request.v1.json)
+- [Witness response schema](https://767-2676.com/schemas/witness-response.v1.json)
+- [TypeScript verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript)
+- [Python verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python)
+- [Schedule schema](https://767-2676.com/schemas/execution-schedule.v1.json)
+- [Briarwood blueprint](https://767-2676.com/.well-known/briarwood-agent.json)
+- [Inquiry schema](https://767-2676.com/.well-known/briarwood-inquiry.schema.json)
+- [Lab record](https://767-2676.com/lab-record)
+
+## Scope
+
+Tasks, schedules, availability, pricing, and decisions remain participant-local.
+The time receipt is bearer evidence, not task-bound. The witness binds a digest
+commitment; it does not prove identity, delivery, execution, authorization, or
+replay prevention. The declared clock bound is not independently certified.
+Do not treat these documents as a task assignment or permission to spend.

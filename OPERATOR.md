@@ -1,60 +1,103 @@
-# Publish `/` and `/demo`
+# Release the agent entry repair
 
-The live homepage source is not in this repository. These files are the exact
-handoff for the operator that owns `767-2676.com`.
+The production Worker source and Cloudflare deployment configuration are not
+in this repository. This release supplies an additive integration for that
+Worker, not a replacement for its clock, payment, or signing implementation.
 
-## 1. Keep the clock and add its one-line pitch
+## Build and verify
 
-Do not replace the clock, its server-synchronized epoch, or its audio assets.
-
-1. Append [`site/root-proof.patch.css`](site/root-proof.patch.css) after the
-   homepage's current CSS. This makes phthalo green the page background and
-   uses warm cream for type and rules.
-2. Replace the current `<section class="agent-proof">...</section>` with the
-   complete contents of
-   [`site/root-proof.patch.html`](site/root-proof.patch.html).
-
-The only public pitch immediately under the clock will read:
-
-> A note is not a check. These 228 bytes are. Try the sample → /demo
-
-The `For agents` block follows it. Its first link is `/demo`.
-
-## 2. Publish the demonstration
-
-Publish the three files in [`site/demo`](site/demo) at these exact routes:
-
-| Repository file | Public route |
-| --- | --- |
-| `site/demo/index.html` | `/demo` and `/demo/` |
-| `site/demo/styles.css` | `/demo/styles.css` |
-| `site/demo/demo.js` | `/demo/demo.js` |
-
-Serve the HTML with UTF-8 and a restrictive same-origin policy that still
-allows `connect-src https://raw.githubusercontent.com`. The page only fetches
-the checked-in public STOP packet and `evaluation-outcomes.json`. It never
-calls `/v1/time`, `/v1/receipt`, a wallet, or an x402 client.
-
-## 3. Publish the machine door
-
-Publish [`skills/popcorn-temporal-anchor/SKILL.md`](skills/popcorn-temporal-anchor/SKILL.md)
-verbatim at `https://767-2676.com/SKILL.md`. The identical OpenClaw package is
-kept at [`openclaw/popcorn-temporal-anchor`](openclaw/popcorn-temporal-anchor).
-
-## 4. Smoke-check without paying
-
-From the repository root:
+From this repository's root with Node.js 24 or newer:
 
 ```bash
-node --disable-warning=ExperimentalWarning --experimental-strip-types examples/witness/verify-settled-sample.mjs
+node site/build-agent-entry.mjs
+node --test site/test/agent-entry.test.mjs
+node --experimental-strip-types examples/witness/verify-settled-sample.mjs
 ```
 
-Then check only the public pages and files:
+The build checks both skill copies and embeds the unchanged historical samples.
+It performs no network request or payment. The generated module has no signing
+key, wallet credential, task store, or package-install requirement.
 
-- `/` still shows a live San Francisco / Pacific clock and the note button.
-- `/demo` shows `Valid signature. Closed window. STOP.`
-- `Flip byte 226` produces
-  `witness_payload_digest_does_not_match_expected`.
-- `/SKILL.md` begins with the settled-sample sequence.
+## Integrate with the production Worker
 
-Do not probe or submit either paid production endpoint as part of this deploy.
+Copy `site/generated/agent-entry.mjs` beside the existing Worker entry module.
+Import `handleAgentEntry`, then call it in the existing fetch handler after
+common request processing and before the old document-route dispatch:
+
+```js
+import { handleAgentEntry } from "./agent-entry.mjs";
+
+// Inside the existing fetch(request, env, ctx) handler:
+const agentDocument = handleAgentEntry(request);
+if (agentDocument) return agentDocument;
+// Continue through the existing production route dispatch unchanged.
+```
+
+Preserve the existing default export, named Durable Object exports, bindings,
+scheduled handlers, payment processing, and all remaining route dispatch. The
+module deliberately has no default fetch handler; it cannot replace the service
+by itself. Review and build the actual production Worker before using its
+existing deployment workflow.
+
+Only GET, HEAD, and OPTIONS for these public routes are handled:
+
+| Route | Source |
+| --- | --- |
+| `/agents`, `/agents/` | `site/agents/index.html` |
+| `/demo`, `/demo/` | `site/demo/index.html` |
+| `/demo/styles.css`, `/demo/demo.js` | Demonstration assets |
+| `/SKILL.md` | Canonical `skills/popcorn-temporal-anchor/SKILL.md` |
+| `/llms.txt` | `site/llms.txt` |
+| `/docs/temporal-usage.md` | `docs/TEMPORAL_USAGE.md` |
+| `/samples/evaluation-packet.production.json` | Unchanged STOP packet |
+| `/samples/evaluation-packet.proceed-002.production.json` | Unchanged PROCEED packet |
+| `/samples/evaluation-outcomes.json` | Unchanged historical outcome record |
+| `/sitemap.xml` | Generated free-document index |
+
+Other routes and methods return `null` for the original Worker to handle.
+In particular, `/`, `/time`, `/v1/time`, `/v1/receipt`, the offer, manifests,
+verification keys, schemas, and status routes are not replaced.
+
+The homepage already links to `/agents`, so its clock, audio, and design need
+no replacement. The earlier root-proof patches remain optional assets; they
+are not necessary for this routing repair.
+
+## Verify the deployed origin
+
+```bash
+node site/check-agent-entry.mjs --origin https://767-2676.com
+```
+
+This sends only public GET requests and never pays. It verifies the served
+skill, sample, and demo bytes against this release, reads the existing discovery
+contracts, and inspects the existing unpaid time challenge. It fails for a 403,
+404, unexpected redirect, browser challenge, or mismatched document.
+A passing repository build is not evidence of production deployment.
+
+The demo now fetches only same-origin samples. Its CSP permits same-origin
+scripts, styles, and connections; no GitHub fetch or payment endpoint is needed.
+Check the real page's signature result and one-byte control after deployment.
+
+## Cloudflare access
+
+If public documentation or key routes return error 1010 or a browser challenge,
+inspect the matching security event in the owning Cloudflare account. Correct
+only the identified rule for the intended public GET/HEAD routes; preserve
+protections on operational paths. Do not assume robots.txt overrides a security
+rule, change client identity to claim the failure is fixed, or disable protection
+for the entire zone.
+
+## External discovery
+
+- Republish the synchronized skill through the existing authenticated ClawHub
+  publisher. Verify the actual served instructions after publication.
+- npm already hosts `@violetclaire/popcorn-mcp@0.1.1`.
+  `packages/mcp/server.json` describes that version. Official MCP Registry
+  publication requires the owner's authenticated namespace. The JSON file and
+  npm package alone do not establish a registry listing.
+- Query Bazaar for both canonical resources and inspect accepted discovery
+  metadata. An API timeout is unknown status, not proof of absence. This repair
+  does not make a payment to trigger indexing.
+
+Do not report the site fully ready until its deployed public routes and the
+intended discovery listings have been verified.

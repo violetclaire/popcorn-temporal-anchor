@@ -8,6 +8,18 @@ permissions:
   contents: read
 
 jobs:
+  agent-entry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node site/build-agent-entry.mjs
+      - run: git diff --exit-code -- site/generated/agent-entry.mjs
+      - run: node --test site/test/agent-entry.test.mjs
+      - run: node --experimental-strip-types examples/witness/verify-settled-sample.mjs
+
   typescript:
     runs-on: ubuntu-latest
     steps:
