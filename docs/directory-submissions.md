@@ -24,3 +24,7 @@ References:
 - https://x402-list.com/llms-full.txt
 - https://huggingface.co/docs/hub/spaces-sdks-docker
 - https://smithery.ai/docs/build/publish
+
+## Latest discovery retest
+
+September 7: all 12 public discovery/sample routes returned 200. A fresh sample download matched the previously inspected source and executed with signature/digest/tamper checks passing. HF ordinary name search returned the Space, but both tested HF Discover queries returned empty results. The generated skill route returned 502 while fetching the Hub /agents.md endpoint; the static app /agents.md returned 200. This is an upstream discovery-path incompatibility, not proof of organic discovery. Direct sample and instruction links remain usable.

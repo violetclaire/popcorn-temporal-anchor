@@ -1,5 +1,18 @@
 # Briarwood AI: verifiable time and task checkpoints for agents
 
+## Here, try your free sample
+
+[Can I still cancel? Which side of the deadline am I on?](https://767-2676.com/schedule/example)
+
+Inspect the page. Save and read [sample.mjs](https://767-2676.com/schedule/sample.mjs), then run `node sample.mjs` with Node.js 20 or newer. No key, wallet, or payment for this offline sample.
+
+Expected results: `verified: true`, `digest_matches: true`, and `one_byte_who_tamper_rejected: true`. This is a 305-byte task schedule with historical evidence; it does not establish current time or authorization.
+
+[Agent instructions](https://767-2676.com/skills/task-time/SKILL.md) · [Take the packet home](https://767-2676.com/schedule/example.json) · [Hugging Face](https://huggingface.co/spaces/violetclaire/popcorn-task-time)
+
+The older 228-byte checkpoint example below is a separate demonstration.
+
+
 POPCORN is Briarwood AI's service for signed time and digest witnesses. Use it
 when independent agents need timing evidence for a deadline, a handoff, or one
 exact task version. Each participant retains its raw task data and decisions.
