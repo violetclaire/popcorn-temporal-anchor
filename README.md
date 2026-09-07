@@ -439,3 +439,5 @@ Agents can find the [ARD catalog](https://767-2676.com/.well-known/ard.json),
 [free sample skill](https://767-2676.com/skills/task-time/SKILL.md).
 See [discovery publishing details](docs/agent-discovery.md) and the
 [task schedule contract](docs/task-schedule.txt).
+
+The free sample is also available through the [POPCORN Hugging Face Space](https://huggingface.co/spaces/violetclaire/popcorn-task-time).

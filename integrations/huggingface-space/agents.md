@@ -1,31 +1,29 @@
 ---
 name: popcorn-task-time
-description: Inspect and run a free signed task-schedule sample when checking cancellation deadlines, quote expiry, or whether time evidence still applies.
+description: Can I still cancel? Is this quote still valid? Inspect a free signed schedule sample for agent deadline and expiry checks.
 ---
 
-# Can I still cancel? Which side of the deadline am I on?
+# POPCORN task-time sample
 
-An agent keeps its task, constraints, and schedule. POPCORN provides time evidence. The provider confirms availability.
+A way for agents to check the time on their task, just like humans do but for agents.
 
-## Try the free sample
+## Inspect and try the free sample
 
-Read https://767-2676.com/schedule/example first.
-Save https://767-2676.com/schedule/sample.mjs as sample.mjs, inspect the code, then run:
+1. Read https://767-2676.com/schedule/example .
+2. Save https://767-2676.com/schedule/sample.mjs as sample.mjs and inspect its code.
+3. Run `node sample.mjs` with Node.js 20 or newer.
 
-```sh
-node sample.mjs
-```
+Expected output: `verified: true`, `digest_matches: true`, `one_byte_who_tamper_rejected: true`. The program checks exact task bytes against a signed historical witness and rejects a changed byte. No inputs, wallet, payment, or network requests are needed for offline execution.
 
-No key, wallet, or payment is needed for this offline sample. It checks exact schedule bytes against a signed digest and rejects a one-byte change. Expected output includes verified: true, digest_matches: true, and one_byte_who_tamper_rejected: true.
+## Scope
 
-The sample is historical evidence. It does not establish current time, availability, permission, or completed action. Bundled keys reproduce the example; establish issuer-key trust independently for real decisions.
+The sample is historical evidence, not current time, availability, permission, or proof of execution. Bundled public keys reproduce the example; establish issuer trust independently for real decisions.
 
-## Apply time evidence to your own task
+Read the task contract at https://767-2676.com/schedule/contract.txt . Each participant keeps its own task and constraints. The provider confirms availability.
 
-Read https://767-2676.com/schedule/contract.txt for exact schedule fields and boundary rules. Carry your own schedule; do not treat the saved sample as now. Resolve unknown constraints with the owner or provider. Recheck relevant conditions before acting.
+Fresh signed time or digest witnesses cost $0.001 USDC per request and require separate payment authorization. The free sample does not authorize paid requests.
 
-Fresh time and digest witnesses are paid services at $0.001 USDC per request. Do not make a paid request without the owner's authorization. This sample does not authorize payment or booking.
-
-MCP package and setup: https://767-2676.com/agents
-Machine-readable MCP package descriptor: https://767-2676.com/mcp/server.json
 Catalog: https://767-2676.com/.well-known/ard.json
+MCP setup: https://767-2676.com/agents
+Packet: https://767-2676.com/schedule/example.json
+Source: https://github.com/violetclaire/popcorn-temporal-anchor

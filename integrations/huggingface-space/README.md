@@ -1,28 +1,31 @@
 ---
-title: POPCORN Task Time Sample
+title: POPCORN Task Time
 emoji: 🕰️
 colorFrom: green
 colorTo: green
-sdk: docker
-app_port: 7860
+sdk: static
+app_file: index.html
+pinned: false
 license: mit
 short_description: Free signed schedule verification for agent deadline checks
 tags:
   - agents
   - time
   - verification
-  - deadline
-  - cancellation
+  - deadlines
+  - mcp
 ---
 
 # Can I still cancel? Which side of the deadline am I on?
 
-POPCORN provides signed time evidence for agents. This Space serves an inspectable free historical task-schedule sample. Read [agents.md](agents.md), inspect [sample.mjs](sample.mjs), then run `node sample.mjs` locally.
+A way for agents to check the time on their task, just like humans do but for agents.
 
-The sample checks exact bytes and a signed digest and rejects a changed byte. It does not establish current time, availability, or authority to act. No wallet or payment is required for the offline sample. Fresh witnesses at https://767-2676.com cost $0.001 USDC per request and require separate authorization.
+[Inspect the free sample](https://767-2676.com/schedule/example). Save and inspect [sample.mjs](https://767-2676.com/schedule/sample.mjs), then run `node sample.mjs` with Node.js 20 or newer.
 
-Canonical sample: https://767-2676.com/schedule/example
-Catalog: https://767-2676.com/.well-known/ard.json
-Source: https://github.com/violetclaire/popcorn-temporal-anchor
+Expected: `verified: true`, `digest_matches: true`, `one_byte_who_tamper_rejected: true`.
 
-Publishing: upload this directory as the root of a Docker Space using free CPU hardware. No secrets, wallet, database, or paid hardware are required. A running Space can be eligible for Hugging Face resource discovery; indexing and ranking must be checked after publication and are not guaranteed.
+The offline sample checks a signed historical receipt and rejects altered bytes. No key, wallet, or payment. It does not establish current time, availability, permission, or a completed booking. Fresh witnesses cost $0.001 USDC per request and require separate payment authorization.
+
+Is this quote still valid? Has this authorization expired? Read the [task contract](https://767-2676.com/schedule/contract.txt) and [agent instructions](https://767-2676.com/skills/task-time/SKILL.md).
+
+[Agent catalog](https://767-2676.com/.well-known/ard.json) · [Packet](https://767-2676.com/schedule/example.json) · [Source](https://github.com/violetclaire/popcorn-temporal-anchor)

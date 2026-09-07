@@ -10,7 +10,11 @@ Signed time and digest witnesses for agents checking a cancellation deadline, qu
 
 ## Hugging Face
 
-`integrations/huggingface-space/` is a prepared Docker Space directory serving the exact sample and agent instructions. Local HTTP route and offline verifier checks passed. Docker itself and deployment on Hugging Face have not been tested. Publishing needs an authorized Hugging Face account. Use free CPU hardware and no secrets. After it reaches RUNNING, retest the Hugging Face Discover Spaces search; publication does not guarantee search inclusion.
+Published: https://huggingface.co/spaces/violetclaire/popcorn-task-time . Account: https://huggingface.co/violetclaire . The public API reports RUNNING with the static SDK. README.md, index.html, and agents.md returned HTTP 200 and are mirrored in integrations/huggingface-space/. The page links to the canonical sample for download, inspection, and offline execution; it does not execute the verifier inside the Space.
+
+The account creation UI required PRO for Docker/Gradio, so the deployed Space uses free static hosting. Dockerfile and server.mjs are an undeployed alternative, not the live Space. No paid plan or hardware was selected.
+
+After publication, Hugging Face Discover Spaces searches for “POPCORN task time” and “Can I still cancel? Is this quote still valid?” returned HTTP 200 with empty results. Search inclusion remains unconfirmed. Publication alone does not establish discovery or adoption.
 
 ## Smithery
 
