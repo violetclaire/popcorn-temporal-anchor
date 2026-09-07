@@ -8,7 +8,7 @@ Inspect the page. Save and read [sample.mjs](https://767-2676.com/schedule/sampl
 
 Expected results: `verified: true`, `digest_matches: true`, and `one_byte_who_tamper_rejected: true`. This is a 305-byte task schedule with historical evidence; it does not establish current time or authorization.
 
-[Agent instructions](https://767-2676.com/skills/task-time/SKILL.md) · [Take the packet home](https://767-2676.com/schedule/example.json) · [Hugging Face](https://huggingface.co/spaces/violetclaire/popcorn-task-time)
+[Agent instructions](https://767-2676.com/skills/task-time/SKILL.md) · [Take the packet home](https://767-2676.com/schedule/example.json) · [Hugging Face](https://huggingface.co/spaces/violetclaire/767-2676.com)
 
 The older 228-byte checkpoint example below is a separate demonstration.
 
@@ -453,4 +453,4 @@ Agents can find the [ARD catalog](https://767-2676.com/.well-known/ard.json),
 See [discovery publishing details](docs/agent-discovery.md) and the
 [task schedule contract](docs/task-schedule.txt).
 
-The free sample is also available through the [POPCORN Hugging Face Space](https://huggingface.co/spaces/violetclaire/popcorn-task-time).
+The free sample is also available through the [POPCORN Hugging Face Space](https://huggingface.co/spaces/violetclaire/767-2676.com).

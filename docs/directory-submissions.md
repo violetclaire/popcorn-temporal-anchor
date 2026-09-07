@@ -10,7 +10,7 @@ Signed time and digest witnesses for agents checking a cancellation deadline, qu
 
 ## Hugging Face
 
-Published: https://huggingface.co/spaces/violetclaire/popcorn-task-time . Account: https://huggingface.co/violetclaire . The public API reports RUNNING with the static SDK. README.md, index.html, and agents.md returned HTTP 200 and are mirrored in integrations/huggingface-space/. The page links to the canonical sample for download, inspection, and offline execution; it does not execute the verifier inside the Space.
+Published: https://huggingface.co/spaces/violetclaire/767-2676.com . Account: https://huggingface.co/violetclaire . The public API reports RUNNING with the static SDK. README.md, index.html, and agents.md returned HTTP 200 and are mirrored in integrations/huggingface-space/. The page links to the canonical sample for download, inspection, and offline execution; it does not execute the verifier inside the Space.
 
 The account creation UI required PRO for Docker/Gradio, so the deployed Space uses free static hosting. Dockerfile and server.mjs are an undeployed alternative, not the live Space. No paid plan or hardware was selected.
 
@@ -28,3 +28,7 @@ References:
 ## Latest discovery retest
 
 September 7: all 12 public discovery/sample routes returned 200. A fresh sample download matched the previously inspected source and executed with signature/digest/tamper checks passing. HF ordinary name search returned the Space, but both tested HF Discover queries returned empty results. The generated skill route returned 502 while fetching the Hub /agents.md endpoint; the static app /agents.md returned 200. This is an upstream discovery-path incompatibility, not proof of organic discovery. Direct sample and instruction links remain usable.
+
+## Domain naming repair
+
+The Space was renamed to `violetclaire/767-2676.com` and its display title now starts with the domain. Ordinary Hub search for `767-2676.com` now returns it. The old Space link redirects. HF Discover semantic search still returned no results immediately after the rename; its generated skill still returns 502. A fallback repair is being prepared against hf-discover; it is not deployed upstream. Direct repository and static-host instruction URLs work.

@@ -1,5 +1,5 @@
 ---
-title: POPCORN Task Time
+title: 767-2676.com — Task Time for Agents
 emoji: 🕰️
 colorFrom: green
 colorTo: green
@@ -9,11 +9,11 @@ pinned: false
 license: mit
 short_description: Free signed schedule verification for agent deadline checks
 tags:
-  - agents
-  - time
-  - verification
-  - deadlines
-  - mcp
+- agents
+- time
+- verification
+- deadlines
+- mcp
 ---
 
 # Can I still cancel? Which side of the deadline am I on?
