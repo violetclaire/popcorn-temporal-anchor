@@ -1,0 +1,65 @@
+{
+  "spec": "767-2676-tone-plan",
+  "version": "1.0.0",
+  "quadrantTone": {
+    "waveform": "sine",
+    "durationMs": 1200,
+    "attackMs": 40,
+    "releaseMs": 100,
+    "autoplay": false
+  },
+  "boxes": [
+    {
+      "name": "NEED",
+      "question": "What has to happen?",
+      "frequencyHz": 350
+    },
+    {
+      "name": "YES",
+      "question": "What has to remain true for you to proceed?",
+      "frequencyHz": 440
+    },
+    {
+      "name": "BOUNDARY",
+      "question": "What turns YES into NO?",
+      "frequencyHz": 480
+    },
+    {
+      "name": "TIME",
+      "question": "When does that boundary occur?",
+      "frequencyHz": 620
+    }
+  ],
+  "signals": [
+    {
+      "name": "GO_AHEAD",
+      "frequenciesHz": [
+        350,
+        440
+      ]
+    },
+    {
+      "name": "WAITING",
+      "frequenciesHz": [
+        440,
+        480
+      ]
+    },
+    {
+      "name": "NO",
+      "frequenciesHz": [
+        480,
+        620
+      ]
+    },
+    {
+      "name": "PROCEED",
+      "frequenciesHz": [
+        1000
+      ],
+      "durationMs": 800,
+      "waveform": "sine"
+    }
+  ],
+  "changePolicy": "Any change to a box frequency or signal frequency mapping requires a new spec version."
+}

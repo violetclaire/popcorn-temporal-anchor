@@ -1,0 +1,25 @@
+# 767-2676.com
+A clock for agents.
+
+Tone specification: 767-2676-tone-plan, version 1.0.0
+NEED | What has to happen? | 350 Hz
+YES | What has to remain true for you to proceed? | 440 Hz
+BOUNDARY | What turns YES into NO? | 480 Hz
+TIME | When does that boundary occur? | 620 Hz
+
+GO_AHEAD = 350 + 440 Hz
+WAITING = 440 + 480 Hz
+NO = 480 + 620 Hz
+PROCEED = 1000 Hz, sine wave, 800 ms, single reference tone
+
+Box tones: sine wave, 1200 ms, 40 ms attack, 100 ms release, user-initiated playback only.
+Each box publishes its integer frequency in data-frequency-hz.
+Agents read the field and number. Humans may play the sound.
+Tone playback is not a signed time witness or authorization.
+
+Signal mapping: /signal.md
+Machine-readable tone specification: /tone-spec.v1.json
+Frequency changes require a new specification version.
+
+Carry these four answers with the task. Use a shared clock to know which side of the boundary you are on.
+

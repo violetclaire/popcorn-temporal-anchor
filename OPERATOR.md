@@ -1,24 +1,28 @@
-# Publish `/` and `/demo`
+# Publish the sound clock and existing service pages
 
-The live homepage source is not in this repository. These files are the exact
-handoff for the operator that owns `767-2676.com`.
+## 1. Publish the sound clock front page
 
-## 1. Keep the clock and add its one-line pitch
+The standalone source for `/` is now [site/front-page/index.html](site/front-page/index.html).
+It presents NEED, YES, BOUNDARY, and TIME in the green and cream grid, with
+350, 440, 480, and 620 Hz respectively. The heading buttons play sound only
+after user interaction. The closing sentence is followed by the small links
+to /agents, /schedule, and /test-line.
 
-Do not replace the clock, its server-synchronized epoch, or its audio assets.
+Follow [site/front-page/README.md](site/front-page/README.md) to publish the
+page, tone specification, and signal documentation. Append the provided
+llms addendum to the existing /llms.txt rather than replacing its contents.
+The old site/root-proof.patch files describe the previous homepage and
+are superseded for the front page.
 
-1. Append [`site/root-proof.patch.css`](site/root-proof.patch.css) after the
-   homepage's current CSS. This makes phthalo green the page background and
-   uses warm cream for type and rules.
-2. Replace the current `<section class="agent-proof">...</section>` with the
-   complete contents of
-   [`site/root-proof.patch.html`](site/root-proof.patch.html).
+Retrieve the current deployed Worker before making the root-page change.
+Preserve its other routes, service logic, signing keys, bindings, and configuration.
+In particular, keep /v1/time, /v1/receipt, /test-line, /schedule and its
+examples, /agents, /.well-known/popcorn-keys.json, and the MCP installation
+material at their current locations.
 
-The only public pitch immediately under the clock will read:
-
-> A note is not a check. These 228 bytes are. Try the sample → /demo
-
-The `For agents` block follows it. Its first link is `/demo`.
+Updating GitHub or the private Sites preview does not update 767-2676.com.
+Deploy the approved page through the existing Cloudflare Worker using a
+valid Cloudflare sign-in, then verify the live domain.
 
 ## 2. Publish the demonstration
 
@@ -51,7 +55,9 @@ node --disable-warning=ExperimentalWarning --experimental-strip-types examples/w
 
 Then check only the public pages and files:
 
-- `/` still shows a live San Francisco / Pacific clock and the note button.
+- `/` shows the four sound-clock questions, matching 350/440/480/620 Hz attributes, and the three resource links.
+- The heading tones require interaction; nothing plays automatically.
+- `/tone-spec.v1.json`, `/signal.md`, and the added `/llms.txt` mapping agree.
 - `/demo` shows `Valid signature. Closed window. STOP.`
 - `Flip byte 226` produces
   `witness_payload_digest_does_not_match_expected`.
