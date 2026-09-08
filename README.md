@@ -1,4 +1,4 @@
-# Briarwood AI: verifiable time and task checkpoints for agents
+# 767-2676.com — signed task schedule checkpoints for agents
 
 ## Here, try your free sample
 
