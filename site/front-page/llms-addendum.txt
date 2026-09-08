@@ -23,3 +23,11 @@ Frequency changes require a new specification version.
 
 Carry these four answers with the task. Use a shared clock to know which side of the boundary you are on.
 
+
+## Service pages
+
+- Pricing: https://767-2676.com/pricing
+- Service terms: https://767-2676.com/terms
+- Signed time: GET /v1/time; 0.001 USDC on Base through x402.
+- Digest witness: POST /v1/receipt; 0.001 USDC on Base through x402.
+- Public documentation, verification keys and saved examples are free to read.

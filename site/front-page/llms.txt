@@ -1,0 +1,135 @@
+# 767-2676.com — POPCORN Protocol
+
+Can I still cancel? Which side of the deadline am I on?
+
+Try it. No wallet or payment to verify the saved sample.
+
+Exact schedule: UTF-8, no BOM, LF after every line, including the final line.
+Only these eight lines are hashed (305 bytes):
+
+need: Verify the public schedule packet at https://767-2676.com/schedule/example
+who: Codex
+yes_condition: The exact schedule bytes match the digest in the verified signed receipt
+boundary_utc: 2026-09-08T08:00:00Z
+boundary_rule: yes_if_before
+expire_utc: 2026-09-09T08:00:00Z
+on_yes: PROCEED
+on_no: STOP
+
+SHA-256 (unpadded base64url):
+j8sufEx87iPci7eCPfHntKZ9M72mTpbyzqn8StjfyX0
+
+Hash the bytes. Verify the witness. Flip one byte.
+https://767-2676.com/schedule/example
+
+Contract: https://767-2676.com/schedule/contract.txt
+
+Agent discovery catalog: https://767-2676.com/.well-known/ard.json
+AI catalog: https://767-2676.com/.well-known/ai-catalog.json
+Free sample skill: https://767-2676.com/skills/task-time/SKILL.md
+
+
+> Paid, portable temporal evidence that another node can independently verify for execution-window grounding and cross-node audit.
+
+## Primary capability
+
+- [Temporal anchor](https://767-2676.com/v1/time): Request a signed Pacific and UTC time response. Unpaid requests return an x402 v2 `402 Payment Required` challenge for $0.001 USDC on Base mainnet. The legacy alias `/time?format=json` remains available.
+- [Schedule checkpoint](https://767-2676.com/v1/receipt): POST a SHA-256 digest, a 32-byte nonce, and an optional predecessor digest. After the same $0.001 x402 payment, POPCORN signs when that commitment was presented. The raw schedule or task bytes stay with the agent and are never sent to POPCORN.
+
+## Service entry
+
+- [Agent entry](https://767-2676.com/agents): Compact, crawlable explanation of when a node should obtain temporal grounding.
+- [Service offer](https://767-2676.com/agent/offer): Free machine-native `service_offer` describing compatible task types, the paid request contract, verification, and x402 settlement headers.
+
+## MCP server
+
+- Package: `@violetclaire/popcorn-mcp`
+- Install and run: `npx -y @violetclaire/popcorn-mcp`
+- Transport: local stdio
+- Free tools: catalog, local hashing, and offline receipt verification.
+- Paid tools: signed time and payload witness. They return a dry run by default and can spend only when the individual call contains `approve_payment: true`. The wallet key is read only from `EVM_PRIVATE_KEY`.
+
+## Machine discovery
+
+- [Agent skill](https://767-2676.com/SKILL.md): Operational instructions for selecting, purchasing, validating, and applying a POPCORN temporal anchor without sending participant-local task state.
+- [Node manifest](https://767-2676.com/.well-known/agent.json): Protocol metadata, payment requirements, capabilities, and endpoints.
+- [Verification keys](https://767-2676.com/.well-known/popcorn-keys.json): Public keys for validating signed temporal attestations.
+- [Node status](https://767-2676.com/agent/status): Local engine health and protocol version.
+- [Briarwood blueprint](https://767-2676.com/.well-known/briarwood-agent.json): Participant-local inquiry, callback, and trust-network architecture.
+- [Briarwood inquiry schema](https://767-2676.com/.well-known/briarwood-inquiry.schema.json): Read-only request, response, expiry, participant-attestation, and authorized-referral contract for direct node-to-node implementation.
+- [Briarwood inquiry example](https://767-2676.com/.well-known/briarwood-inquiry-example.json): Static worked exchange showing a narrow availability inquiry, a scoped response, and an authorized referral without operating a central inquiry service.
+- [Reference handoff](https://767-2676.com/agent/handoff): x402-gated validation of `node_id`, `task_payload`, and `execution_window_utc` with digest-only retention.
+- [Portable execution schedule schema](https://767-2676.com/schemas/execution-schedule.v1.json): Read-only JSON Schema for an agent-carried, participant-local operational run-of-show. It structures task order, assigned nodes, location references, execution windows, duration, buffers, drift judgment, recovery, and outcome preservation.
+- [Portable execution schedule example](https://767-2676.com/examples/execution-schedule.v1.json): Minimal machine-native example using `schedule_id`, `event_id`, `node_id`, `resource_id`, `task_payload`, and `execution_window_utc`.
+- [OpenAPI contract](https://767-2676.com/openapi.json): Machine-readable request, response, payment, and verification contract.
+- [Witness request schema](https://767-2676.com/schemas/witness-request.v1.json): Strict digest-only POST body; raw task and schedule fields are rejected.
+- [Witness response schema](https://767-2676.com/schemas/witness-response.v1.json): Strict signed response and evidence boundaries.
+
+## Verify two settled outcomes
+
+- [STOP — expired schedule](https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json): The signature and exact digest verify, but the checkpoint falls after the schedule closed.
+- [PROCEED — on-time schedule](https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.proceed-002.production.json): The signature and exact digest verify, and the checkpoint overlaps the schedule window.
+- [Machine-readable outcome policy](https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-outcomes.json): Verify the checkpoint, check it against the participant-local schedule, and decide whether to proceed. POPCORN does not make that decision.
+- [JavaScript witness verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript): Verifies the ES256 signature, signed envelope, expected digest, nonce, predecessor, node, and local clock policy without a wallet or network request.
+- [Python witness verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python): Independent verification of the same production packet.
+- [Witness protocol](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/WITNESS_PROTOCOL.md): Exact signed scope, exclusions, request sequence, and fail-closed rules.
+
+## Offline verifier kit
+
+- [TypeScript verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript): Network-free ES256 verification, signed-field validation, monotonic uncertainty calculation, and fail-closed execution-window judgment.
+- [Python verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python): Independent implementation of the same contract using Python cryptography.
+- [Shared verification vector](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/verify/test-vectors/popcorn-receipt-v1.json): One public signed response and JWKS consumed by both implementations; contains no private signing key, wallet, payment proof, or task data.
+- [Stale-action circuit breaker](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/examples/stale-action): Demonstrates that expired evidence returns `request_new_temporal_anchor` instead of executing a protected action.
+
+## Protocol constraints
+
+- POPCORN is a temporal reference node, not a central task, availability, pricing, schedule, or trust database.
+- POPCORN is not an A2A server or a remote MCP endpoint. It publishes a local stdio MCP package that calls its narrow x402 HTTP resources and verifies receipts locally.
+- The free service offer is discovery metadata, not a task assignment. The calling node retains its `task_payload` and `execution_window_utc` and pays only when requesting the temporal anchor.
+- Execution schedules remain agent-carried and participant-local; 767-2676.com publishes the schema and stores no schedule instances.
+- POPCORN supplies the shared time reference. The Briarwood blueprint supplies inquiry and handoff behavior. The portable schedule supplies task sequence, execution context, and local recovery judgment.
+- POPCORN signs only temporal evidence. Each participating node signs its own inquiry or response envelope and binds the independently verified POPCORN anchor inside that participant assertion.
+- The Briarwood inquiry schema and example are read-only teaching artifacts. 767-2676.com does not answer participant availability inquiries or store inquiry instances.
+- Each event ends in `completed`, `expired`, `released`, or `handed_off`; a terminal receipt remains while ephemeral locks, payment proofs, retry counters, and transient task state are cleared before the next event.
+- Participant state remains participant-local.
+- A temporal attestation proves origin and integrity; it does not claim external atomic-clock synchronization or eliminate network delay.
+- Freshness is evaluated with a client monotonic timer and a conservative network-uncertainty bound; the client wall clock is not trusted.
+- The default freshness window is 30,000 ms, sized for an agent to receive, verify, evaluate, and act. Callers may request a shorter window with the freshness_ms query parameter.
+- A signed anchor is bearer temporal evidence. It is not caller-bound, task-bound, or an authorization grant.
+- A witness proves only that a specific digest commitment was presented to this node within the stated clock window. It does not prove identity, authorization, delivery, execution, outcome, nonce uniqueness, or replay prevention.
+- Normal ES256 key rotation publishes the previous public key alongside the active key for a bounded overlap period.
+
+
+# 767-2676.com
+A clock for agents.
+
+Tone specification: 767-2676-tone-plan, version 1.0.0
+NEED | What has to happen? | 350 Hz
+YES | What has to remain true for you to proceed? | 440 Hz
+BOUNDARY | What turns YES into NO? | 480 Hz
+TIME | When does that boundary occur? | 620 Hz
+
+GO_AHEAD = 350 + 440 Hz
+WAITING = 440 + 480 Hz
+NO = 480 + 620 Hz
+PROCEED = 1000 Hz, sine wave, 800 ms, single reference tone
+
+Box tones: sine wave, 1200 ms, 40 ms attack, 100 ms release, user-initiated playback only.
+Each box publishes its integer frequency in data-frequency-hz.
+Agents read the field and number. Humans may play the sound.
+Tone playback is not a signed time witness or authorization.
+
+Signal mapping: /signal.md
+Machine-readable tone specification: /tone-spec.v1.json
+Frequency changes require a new specification version.
+
+Carry these four answers with the task. Use a shared clock to know which side of the boundary you are on.
+
+
+## Service pages
+
+- Pricing: https://767-2676.com/pricing
+- Service terms: https://767-2676.com/terms
+- Signed time: GET /v1/time; 0.001 USDC on Base through x402.
+- Digest witness: POST /v1/receipt; 0.001 USDC on Base through x402.
+- Public documentation, verification keys and saved examples are free to read.
