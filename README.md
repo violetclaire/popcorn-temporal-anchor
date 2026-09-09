@@ -1,5 +1,12 @@
 # 767-2676.com — signed task schedule checkpoints for agents
 
+Searching for **RFC 3161**, **OpenTimestamps**, a **trusted timestamp**, or
+**proof of existence** before an **authorization expiry**? Start with
+[Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired)
+([source](docs/proving-action-before-authorization-expired.md)). Run its free
+receipt-chain verifier first, then follow the pre-action check and post-commit
+binding. Evidence explains a decision; it does not grant permission.
+
 ## Here, try your free sample
 
 [Can I still cancel? Which side of the deadline am I on?](https://767-2676.com/schedule/example)

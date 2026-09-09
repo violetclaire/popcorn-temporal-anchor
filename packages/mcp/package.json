@@ -2,7 +2,7 @@
   "name": "@violetclaire/popcorn-mcp",
   "version": "0.1.2",
   "mcpName": "io.github.violetclaire/popcorn-mcp",
-  "description": "Signed time for quote validity, cancellation deadlines and expiry checks. Free offline task sample.",
+  "description": "Trusted timestamp and proof-of-existence evidence for authorization expiry, with a free offline sample and an RFC 3161 / OpenTimestamps comparison.",
   "type": "module",
   "bin": {
     "popcorn-mcp": "dist/packages/mcp/src/index.js"
@@ -39,6 +39,10 @@
     "agents",
     "time",
     "timestamp",
+    "rfc3161",
+    "opentimestamps",
+    "proof-of-existence",
+    "authorization-expiry",
     "attestation",
     "receipts",
     "base",

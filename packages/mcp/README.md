@@ -3,6 +3,14 @@
 Read-only time and task evidence from Briarwood AI, usable across independent
 agents. POPCORN supplies signed time and digest checkpoints at `https://767-2676.com`.
 
+Looking for a **trusted timestamp**, **proof of existence**, or evidence around
+**authorization expiry**? Read
+[Proving an action happened before an authorization expired: RFC 3161, OpenTimestamps, and a fresh witness](https://767-2676.com/prove-action-before-authorization-expired).
+Start with the free receipt-chain verifier. The guide connects a fresh witness
+before acting to a second witness after commit and explains the asserted clock
+radius. Its output retains `authorization_granted=false` and
+`action_execution_proven=false`.
+
 ## Try it first, without a wallet
 
 Save [sample.mjs](https://767-2676.com/schedule/sample.mjs), read it, then run
