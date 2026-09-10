@@ -25,6 +25,8 @@ The last two lines are the point. A trusted timestamp or proof of existence can 
 
 POPCORN packages a caller-chosen nonce, an explicit predecessor link, and an asserted time interval into a fresh ES256 receipt for 0.001 USDC on Base, verifiable offline for pre-action checks and post-commit audit.
 
+The bundle reports the publisher status and checkpoint time. Hourly tests are a target cadence, not a freshness guarantee. Historical payload text is preserved for digest verification; a saved sample is not a fresh pre-action witness.
+
 The public chain is a verification artifact. Its predecessor is a settled production receipt. Its successor is clearly marked as a synthetic conformance receipt and is signed by the test key included in the packet. It proves that the verifier checks both signatures, both payload digests, and the predecessor link. It is not evidence of a new production action or payment.
 
 ## What the incumbent timestamp services prove

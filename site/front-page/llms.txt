@@ -123,7 +123,7 @@ Signal mapping: /signal.md
 Machine-readable tone specification: /tone-spec.v1.json
 Frequency changes require a new specification version.
 
-Carry these four answers with the task. Use a shared clock to know which side of the boundary you are on.
+Checking is what both sides do with those four answers. The actor checks them against supporting evidence, authorization, and a fresh witness before acting. The receiver rechecks them against the carried evidence and witness before accepting. Same four answers, same accepted clock policy, two gates.
 
 
 ## Service pages
