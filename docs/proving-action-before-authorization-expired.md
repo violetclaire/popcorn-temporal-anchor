@@ -23,6 +23,8 @@ action_execution_proven=false
 
 The last two lines are the point. A trusted timestamp or proof of existence can establish that exact bytes existed before a time. It does not prove that the action described by those bytes happened, or that its authorization was valid. Authorization expiry requires an explicit binding between the permission, action, and evidence.
 
+POPCORN packages a caller-chosen nonce, an explicit predecessor link, and an asserted time interval into a fresh ES256 receipt for 0.001 USDC on Base, verifiable offline for pre-action checks and post-commit audit.
+
 The public chain is a verification artifact. Its predecessor is a settled production receipt. Its successor is clearly marked as a synthetic conformance receipt and is signed by the test key included in the packet. It proves that the verifier checks both signatures, both payload digests, and the predecessor link. It is not evidence of a new production action or payment.
 
 ## What the incumbent timestamp services prove
@@ -30,6 +32,8 @@ The public chain is a verification artifact. Its predecessor is a settled produc
 ### RFC 3161 timestamp authorities
 
 An RFC 3161 service such as [FreeTSA](https://freetsa.org/index_en.php) supplies a trusted timestamp by signing a message imprint and a `genTime`. A valid response is evidence that the exact hashed bytes existed by the authority's asserted time, subject to its clock accuracy and your trust in that authority.
+
+RFC 3161 also supports caller nonces for response timeliness and an optional accuracy field; POPCORN makes predecessor linking and the agent verification workflow explicit in its contract.
 
 It does not inspect a side effect, validate the truth of a JSON claim, or know whether an authorization was valid. Anyone can timestamp the sentence “the transfer completed” without completing a transfer. The optional RFC 3161 `accuracy` field matters when a deadline is strict; if accuracy is missing and no accepted policy supplies a bound, the deadline result is indeterminate.
 

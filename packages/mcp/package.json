@@ -46,7 +46,9 @@
     "attestation",
     "receipts",
     "base",
-    "usdc"
+    "usdc",
+    "trusted-timestamp",
+    "authorization"
   ],
   "license": "MIT",
   "publishConfig": {
