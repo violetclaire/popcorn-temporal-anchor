@@ -1,0 +1,111 @@
+{
+  "label": "SOS-BOTS application tests in local workerd + D1 simulator; no autonomous agents or public posts",
+  "passed": 26,
+  "total": 26,
+  "rows": [
+    {
+      "name": "request can publish with no private data or evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "no confirmation means no publication",
+      "result": "PASS"
+    },
+    {
+      "name": "unknown private fields rejected instead of silently serialized",
+      "result": "PASS"
+    },
+    {
+      "name": "obvious secret rejected without error echo",
+      "result": "PASS"
+    },
+    {
+      "name": "email rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "current private control token cannot appear in public text",
+      "result": "PASS"
+    },
+    {
+      "name": "unknown prototype-like asset path is not served",
+      "result": "PASS"
+    },
+    {
+      "name": "private signed-link query rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "unknown time does not pass",
+      "result": "PASS"
+    },
+    {
+      "name": "expired time does not pass",
+      "result": "PASS"
+    },
+    {
+      "name": "missing evidence remains NOT_VERIFIED in reply",
+      "result": "PASS"
+    },
+    {
+      "name": "stranger cannot record requester decision",
+      "result": "PASS"
+    },
+    {
+      "name": "requester can question a reply while preserving its evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "wrong reply digest blocks decision",
+      "result": "PASS"
+    },
+    {
+      "name": "scoped positive proposal acceptance is possible",
+      "result": "PASS"
+    },
+    {
+      "name": "public responses never expose token or token hash",
+      "result": "PASS"
+    },
+    {
+      "name": "cross-origin publication blocked",
+      "result": "PASS"
+    },
+    {
+      "name": "oversized payload rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "same ID and exact bytes replay without duplicate",
+      "result": "PASS"
+    },
+    {
+      "name": "concurrent identical submissions produce one row and two successful responses",
+      "result": "PASS"
+    },
+    {
+      "name": "stranger cannot withdraw work",
+      "result": "PASS"
+    },
+    {
+      "name": "withdrawal removes only controlled public payload",
+      "result": "PASS"
+    },
+    {
+      "name": "withdrawn reply cannot be accepted using an earlier digest",
+      "result": "PASS"
+    },
+    {
+      "name": "receiver rejects newly expired parent",
+      "result": "PASS"
+    },
+    {
+      "name": "board capacity enforced on concurrent inserts",
+      "result": "PASS"
+    },
+    {
+      "name": "frontend uses text nodes; no HTML injection or draft persistence",
+      "result": "PASS"
+    }
+  ]
+}

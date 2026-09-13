@@ -1,0 +1,47 @@
+// Installed package for standalone use; existing workspace runtime as fallback.
+const {Miniflare}=await import('miniflare').catch(()=>import('../npm-cache/_npx/d77349f55c2be1c0/node_modules/miniflare/dist/src/index.js'));
+import fs from 'node:fs';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {randomBytes,randomUUID} from 'node:crypto';
+const mf=new Miniflare({workers:[{config:{name:'sosbots-test',type:'worker',compatibilityDate:'2026-09-10',manifest:{mainModule:'worker.mjs',modulesRoot:fileURLToPath(new URL('./',import.meta.url)),modules:Object.fromEntries(['worker.mjs','policy.mjs','assets.mjs'].map(n=>[n,{type:'esm',contents:fs.readFileSync(new URL(n,import.meta.url),'utf8')}]))},env:{DB:{type:'d1',id:'sosbots-local-db'}}}}],port:8792,host:'127.0.0.1',cf:false,telemetry:{enabled:false}});
+const db=await mf.getD1Database('DB');
+await db.exec(fs.readFileSync(new URL('./schema.sql',import.meta.url),'utf8').replaceAll('\n',' '));
+if(process.argv.includes('--serve')){console.log('Sandbox ready at '+await mf.ready);await new Promise(()=>{});}
+const token=()=>randomBytes(32).toString('hex'), expiry=()=>new Date(Date.now()+3600000).toISOString();
+const base=()=>({kind:'request',handle:'fixture-author',need:'Check a synthetic example.',work_done:'No real customer data in this fixture.',constraints:'Review only; no spending or execution.',help_requested:'Check these public assumptions.',terms:'Keep attribution. No transfer of ownership.',evidence:[],expires_at:expiry(),authorized_publication:true});
+async function call(path,options){const r=await mf.dispatchFetch('http://localhost:8792'+path,options);let j;try{j=await r.json();}catch{}return {status:r.status,j};}
+async function post(p,t=token(),id=randomUUID(),extra={}){return call('/api/entries',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+t,'x-request-id':id,...extra},body:JSON.stringify(p)});}
+const rows=[];async function test(name,f){try{await f();rows.push({name,result:'PASS'});}catch(e){rows.push({name,result:'FAIL',error:e.message});}}
+try{
+ let request,reply;const owner=token(),responder=token();
+ await test('request can publish with no private data or evidence',async()=>{const r=await post(base(),owner);assert.equal(r.status,201);request=r.j.item;assert.deepEqual(request.content.evidence,[]);});
+ await test('no confirmation means no publication',async()=>{const p=base();delete p.authorized_publication;assert.equal((await post(p)).j.error,'PUBLICATION_CONFIRMATION_REQUIRED');});
+ await test('unknown private fields rejected instead of silently serialized',async()=>{const p={...base(),private_transcript:'sensitive fixture'};assert.equal((await post(p)).j.error,'UNKNOWN_OR_MALFORMED_FIELD');});
+ await test('obvious secret rejected without error echo',async()=>{const p=base();p.work_done='-----BEGIN PRIVATE KEY----- fixture';const r=await post(p);assert.equal(r.j.error,'POSSIBLE_PRIVATE_DATA');assert.ok(!JSON.stringify(r).includes('BEGIN'));});
+ await test('email rejected',async()=>{const p=base();p.need='Contact person@example.com';assert.equal((await post(p)).j.error,'POSSIBLE_PRIVATE_DATA');});
+ await test('current private control token cannot appear in public text',async()=>{const t=token(),p=base();p.work_done=t;assert.equal((await post(p,t)).j.error,'CONTROL_TOKEN_IN_PUBLIC_TEXT');});
+ await test('unknown prototype-like asset path is not served',async()=>assert.equal((await call('/constructor')).status,404));
+ await test('private signed-link query rejected',async()=>{const p=base();p.evidence=[{url:'https://example.com/file?token=secret'}];assert.equal((await post(p)).j.error,'PUBLIC_URL_ONLY_NO_QUERY');});
+ await test('unknown time does not pass',async()=>{const p=base();p.expires_at='unknown';assert.equal((await post(p)).j.error,'INVALID_OR_EXPIRED_WINDOW');});
+ await test('expired time does not pass',async()=>{const p=base();p.expires_at=new Date(Date.now()-10000).toISOString();assert.equal((await post(p)).j.error,'INVALID_OR_EXPIRED_WINDOW');});
+ await test('missing evidence remains NOT_VERIFIED in reply',async()=>{const r=await post({kind:'reply',parent_id:request.id,handle:'fixture-checker',assessment:'NOT_VERIFIED',response:'A synthetic example is enough to ask; insufficient to establish truth.',checks_performed:'None; no independent proof supplied.',limitations:'Cannot infer private state.',terms:'No execution or payment.',evidence:[],expires_at:expiry(),authorized_publication:true},responder);assert.equal(r.status,201);reply=r.j.item;assert.equal(reply.content.assessment,'NOT_VERIFIED');});
+ const decision=()=>({kind:'decision',parent_id:request.id,reply_id:reply.id,reply_digest:reply.public_digest,handle:'fixture-author',decision:'QUESTION',basis:'Keep this unverified; ask for a synthetic reproducible test.',expires_at:expiry(),authorized_publication:true});
+ await test('stranger cannot record requester decision',async()=>assert.equal((await post(decision())).status,409));
+ await test('requester can question a reply while preserving its evidence',async()=>assert.equal((await post(decision(),owner)).status,201));
+ await test('wrong reply digest blocks decision',async()=>{const d=decision();d.reply_digest='0'.repeat(64);assert.equal((await post(d,owner)).status,409);});
+ await test('scoped positive proposal acceptance is possible',async()=>{const d=decision();d.decision='ACCEPT_PROPOSAL';d.basis='Accept further review only; no claim has been proved and no execution authorized.';assert.equal((await post(d,owner)).status,201);});
+ await test('public responses never expose token or token hash',async()=>{const r=await call('/api/entries/'+request.id);const text=JSON.stringify(r.j);assert.ok(!text.includes(owner));assert.ok(!text.includes('control_hash'));});
+ await test('cross-origin publication blocked',async()=>assert.equal((await post(base(),token(),randomUUID(),{origin:'https://elsewhere.example'})).status,403));
+ await test('oversized payload rejected',async()=>{const p=base();p.work_done='x'.repeat(14000);assert.equal((await post(p)).status,413);});
+ await test('same ID and exact bytes replay without duplicate',async()=>{const p=base(),t=token(),id=randomUUID();assert.equal((await post(p,t,id)).status,201);const replay=await post(p,t,id);assert.equal(replay.status,200);assert.equal(replay.j.replayed,true);const changed={...p,need:'Changed'};assert.equal((await post(changed,t,id)).status,409);});
+ await test('concurrent identical submissions produce one row and two successful responses',async()=>{const p=base(),t=token(),id=randomUUID();const r=await Promise.all([post(p,t,id),post(p,t,id)]);assert.ok(r.some(x=>x.status===201));assert.ok(r.every(x=>[200,201].includes(x.status)));assert.equal((await db.prepare('SELECT count(*) n FROM entries WHERE id=?1').bind(id).first()).n,1);});
+ await test('stranger cannot withdraw work',async()=>{const r=await call('/api/entries/'+request.id+'/withdraw',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+token()},body:JSON.stringify({confirm_withdrawal:true})});assert.equal(r.status,403);});
+ await test('withdrawal removes only controlled public payload',async()=>{const r=await call('/api/entries/'+reply.id+'/withdraw',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+responder},body:JSON.stringify({confirm_withdrawal:true})});assert.equal(r.status,200);const stored=await db.prepare('SELECT public_json FROM entries WHERE id=?1').bind(reply.id).first();assert.equal(stored.public_json,null);const parent=await call('/api/entries/'+request.id);assert.equal(parent.j.item.content.work_done,request.content.work_done);});
+ await test('withdrawn reply cannot be accepted using an earlier digest',async()=>{const d=decision();d.decision='ACCEPT_PROPOSAL';assert.equal((await post(d,owner)).status,409);});
+ await test('receiver rejects newly expired parent',async()=>{await db.prepare('UPDATE entries SET expires_at=?1 WHERE id=?2').bind('2000-01-01T00:00:00.000Z',request.id).run();const p={...reply.content,expires_at:expiry()};assert.equal((await post(p,responder)).status,409);});
+ await test('board capacity enforced on concurrent inserts',async()=>{const now=new Date().toISOString();const count=(await db.prepare('SELECT count(*) n FROM entries').first()).n;await db.batch(Array.from({length:199-count},()=>db.prepare("INSERT INTO entries(id,kind,created_at,expires_at,public_json,public_digest,control_hash) VALUES(?1,'request',?2,?3,'{}','fixture','fixture')").bind(randomUUID(),now,expiry())));const r=await Promise.all([post(base()),post(base())]);assert.equal(r.filter(x=>x.status===201).length,1);assert.equal(r.filter(x=>x.status===429).length,1);});
+ await test('frontend uses text nodes; no HTML injection or draft persistence',async()=>{const s=fs.readFileSync(new URL('./app.mjs',import.meta.url),'utf8');assert.ok(!/innerHTML|insertAdjacentHTML|localStorage|sessionStorage|sendBeacon/.test(s));assert.ok(s.includes('textContent'));});
+ const result={label:'SOS-BOTS application tests in local workerd + D1 simulator; no autonomous agents or public posts',passed:rows.filter(r=>r.result==='PASS').length,total:rows.length,rows};
+ const resultPath=process.env.SOS_BOTS_TEST_RESULTS||new URL('./test-results.json',import.meta.url);
+ fs.writeFileSync(resultPath,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+ if(rows.some(r=>r.result==='FAIL'))process.exitCode=1;
+} finally{await mf.dispose();}
+

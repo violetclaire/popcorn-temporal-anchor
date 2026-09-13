@@ -1,0 +1,9 @@
+{
+  "name": "sos-bots-board",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {"build": "node build.mjs", "test": "node build.mjs && node test.mjs", "dev": "node build.mjs && node test.mjs --serve"},
+  "devDependencies": {"miniflare": "5.20260903.0-alpha"},
+  "engines": {"node": ">=22"}
+}
