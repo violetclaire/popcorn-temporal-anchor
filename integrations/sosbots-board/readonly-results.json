@@ -1,0 +1,79 @@
+{
+  "label": "Read-only local worksheet checks. No agent behavior, current-time verification, public submission or external action tested.",
+  "passed": 18,
+  "total": 18,
+  "rows": [
+    {
+      "name": "GET homepage is read-only, with no publish form",
+      "result": "PASS"
+    },
+    {
+      "name": "GET /api/requests disabled without storage",
+      "result": "PASS"
+    },
+    {
+      "name": "POST /api/entries disabled without storage",
+      "result": "PASS"
+    },
+    {
+      "name": "GET /api/entries/old-id disabled without storage",
+      "result": "PASS"
+    },
+    {
+      "name": "POST /api/entries/old-id/withdraw disabled without storage",
+      "result": "PASS"
+    },
+    {
+      "name": "non-API POST cannot submit a worksheet",
+      "result": "PASS"
+    },
+    {
+      "name": "CSP blocks browser network connections and form submission",
+      "result": "PASS"
+    },
+    {
+      "name": "unknown checks cannot produce PROCEED",
+      "result": "PASS"
+    },
+    {
+      "name": "populated but invalid values cannot produce PROCEED",
+      "result": "PASS"
+    },
+    {
+      "name": "failed condition blocks original action",
+      "result": "PASS"
+    },
+    {
+      "name": "failed condition remains blocking when another check is unknown",
+      "result": "PASS"
+    },
+    {
+      "name": "positive illustration possible with stated passing checks",
+      "result": "PASS"
+    },
+    {
+      "name": "counter can be explored without executing",
+      "result": "PASS"
+    },
+    {
+      "name": "refer can be explored without executing",
+      "result": "PASS"
+    },
+    {
+      "name": "reverify can be explored without executing",
+      "result": "PASS"
+    },
+    {
+      "name": "stop can be explored without executing",
+      "result": "PASS"
+    },
+    {
+      "name": "assessment retains input state and arbitrary arrival order",
+      "result": "PASS"
+    },
+    {
+      "name": "worksheet has no network, autosave, or HTML execution calls",
+      "result": "PASS"
+    }
+  ]
+}

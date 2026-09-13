@@ -1,0 +1,18 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {assess,checks} from './scenario.mjs';import worker from './worker.mjs';
+const rows=[];async function check(name,fn){try{await fn();rows.push({name,result:'PASS'});}catch(e){rows.push({name,result:'FAIL',error:e.message});}}
+const states=value=>Object.fromEntries(Object.keys(checks).map(k=>[k,value]));
+const unavailable=new Proxy({},{get(){throw Error('Storage must not be accessed');}});
+await check('GET homepage is read-only, with no publish form',async()=>{const r=await worker.fetch(new Request('https://767-2687.com/'),unavailable);assert.equal(r.status,200);const t=await r.text();assert.ok(t.includes('What happens if'));assert.ok(!/Publish this contribution|id="composer"|Public requests/.test(t));});
+for(const [method,path]of [['GET','/api/requests'],['POST','/api/entries'],['GET','/api/entries/old-id'],['POST','/api/entries/old-id/withdraw']])await check(method+' '+path+' disabled without storage',async()=>assert.equal((await worker.fetch(new Request('https://767-2687.com'+path,{method}),unavailable)).status,410));
+await check('non-API POST cannot submit a worksheet',async()=>assert.equal((await worker.fetch(new Request('https://767-2687.com/',{method:'POST',body:'private synthetic fixture'}),unavailable)).status,405));
+await check('CSP blocks browser network connections and form submission',async()=>{const r=await worker.fetch(new Request('https://767-2687.com/'));assert.ok(r.headers.get('content-security-policy').includes("connect-src 'none'"));assert.ok(r.headers.get('content-security-policy').includes("form-action 'none'"));});
+await check('unknown checks cannot produce PROCEED',()=>assert.equal(assess(states('UNKNOWN'),'proceed').signal,'REVERIFY'));
+await check('populated but invalid values cannot produce PROCEED',()=>assert.equal(assess(states('filled'),'proceed').signal,'REVERIFY'));
+await check('failed condition blocks original action',()=>{const s=states('PASS');s.authority_check='FAIL';assert.equal(assess(s,'proceed').signal,'STOP');});
+await check('failed condition remains blocking when another check is unknown',()=>{const s=states('UNKNOWN');s.time_check='FAIL';assert.equal(assess(s).signal,'STOP');});
+await check('positive illustration possible with stated passing checks',()=>assert.equal(assess(states('PASS')).signal,'PROCEED'));
+for(const path of ['counter','refer','reverify','stop'])await check(path+' can be explored without executing',()=>assert.equal(assess(states('FAIL'),path).signal,path.toUpperCase()));
+await check('assessment retains input state and arbitrary arrival order',()=>{const s=Object.fromEntries(Object.entries(states('PASS')).reverse()),before=JSON.stringify(s);assert.equal(assess(s).signal,'PROCEED');assert.equal(JSON.stringify(s),before);});
+await check('worksheet has no network, autosave, or HTML execution calls',()=>{const s=fs.readFileSync(new URL('app.mjs',import.meta.url),'utf8');assert.ok(!/fetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket|localStorage|sessionStorage|indexedDB|innerHTML/.test(s));assert.ok(s.includes('textContent'));});
+const result={label:'Read-only local worksheet checks. No agent behavior, current-time verification, public submission or external action tested.',passed:rows.filter(r=>r.result==='PASS').length,total:rows.length,rows};
+fs.writeFileSync(new URL('readonly-results.json',import.meta.url),JSON.stringify(result,null,2)+'\n');fs.mkdirSync('outputs/sosbots-board',{recursive:true});fs.writeFileSync('outputs/sosbots-board/readonly-results.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));if(result.passed!==result.total)process.exitCode=1;

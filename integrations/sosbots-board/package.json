@@ -1,9 +1,8 @@
 {
-  "name": "sos-bots-board",
+  "name": "sos-bots-scenario-guide",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "scripts": {"build": "node build.mjs", "test": "node build.mjs && node test.mjs", "dev": "node build.mjs && node test.mjs --serve"},
-  "devDependencies": {"miniflare": "5.20260903.0-alpha"},
+  "scripts": {"build": "node build.mjs", "test": "node build.mjs && node test-readonly.mjs && node build.mjs", "dev": "node build.mjs && node serve-readonly.mjs"},
   "engines": {"node": ">=22"}
 }

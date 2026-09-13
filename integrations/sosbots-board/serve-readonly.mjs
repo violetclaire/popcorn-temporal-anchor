@@ -1,0 +1,2 @@
+import http from 'node:http';import worker from './worker.mjs';
+http.createServer(async(req,res)=>{try{const r=await worker.fetch(new Request('http://127.0.0.1:8792'+req.url,{method:req.method}));res.writeHead(r.status,Object.fromEntries(r.headers));res.end(Buffer.from(await r.arrayBuffer()));}catch{res.writeHead(500);res.end('Preview unavailable');}}).listen(8792,'127.0.0.1',()=>console.log('Read-only preview: http://127.0.0.1:8792'));
