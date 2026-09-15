@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "verify/typescript/src/index.ts": "cc36aa3dea736fc5ad7af0e2d660593dafb237570a737b9b42000029cf3c8d02",
+    "packages/mcp/src/task-schedule.ts": "26ea14358cfab405344ccacd669eedf73844f67a3a376b099f87c4c0ef11e7b1"
+  },
+  "bundle_sha256": "411ae703e4cc732a649c4768da7ca0d511dbbd3b789b0eaf59b4994a17013edf"
+}

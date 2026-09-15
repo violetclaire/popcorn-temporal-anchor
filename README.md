@@ -1,5 +1,16 @@
 # 767-2676.com — signed task schedule checkpoints for agents
 
+## Run the verification checks yourself
+
+[Offline checker and instructions](examples/verification-checks/README.md): 37 cases covering schedule boundaries, malformed input, exact bytes, and saved signed receipts. From this repository with Node.js 20+:
+
+```sh
+node examples/verification-checks/check.mjs
+```
+
+No wallet, payment, or network call. Expected results are separate from computation. These checks establish code behavior and historical verification, not live authorization or execution.
+
+
 Searching for **RFC 3161**, **OpenTimestamps**, a **trusted timestamp**, or
 **proof of existence** before an **authorization expiry**? Start with
 [Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired)

@@ -1,0 +1,409 @@
+{
+  "schedule": "need: verify a test task\nwho: test operator\nyes_condition: local check is true\nboundary_utc: 2026-09-20T10:00:00Z\nboundary_rule: yes_if_before\nexpire_utc: 2026-09-20T11:00:00Z\non_yes: PROCEED\non_no: COUNTER\n",
+  "cases": [
+    {
+      "id": "E-before",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399998,
+        "U": 1789898399999,
+        "condition": true
+      },
+      "expected": {
+        "value": "PROCEED"
+      }
+    },
+    {
+      "id": "E-no",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399998,
+        "U": 1789898399999,
+        "condition": false
+      },
+      "expected": {
+        "value": "COUNTER"
+      }
+    },
+    {
+      "id": "E-unknown",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399998,
+        "U": 1789898399999,
+        "condition": null
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-expired-no",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789902000000,
+        "U": 1789902000000,
+        "condition": false
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-expired-yes",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789902000000,
+        "U": 1789902000000,
+        "condition": true
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-expiry-straddle-no",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789901999999,
+        "U": 1789902000000,
+        "condition": false
+      },
+      "expected": {
+        "value": "COUNTER"
+      }
+    },
+    {
+      "id": "E-expiry-straddle-yes",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789901999999,
+        "U": 1789902000000,
+        "condition": true
+      },
+      "expected": {
+        "value": "REFETCH"
+      }
+    },
+    {
+      "id": "E-expiry-straddle-unknown",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789901999999,
+        "U": 1789902000000,
+        "condition": null
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-boundary-straddle",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399999,
+        "U": 1789898400000,
+        "condition": true
+      },
+      "expected": {
+        "value": "REFETCH"
+      }
+    },
+    {
+      "id": "E-boundary-equality",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898400000,
+        "U": 1789898400000,
+        "condition": true
+      },
+      "expected": {
+        "value": "COUNTER"
+      }
+    },
+    {
+      "id": "E-reversed-no",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898400000,
+        "U": 1789898399999,
+        "condition": false
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-nan-no",
+      "input": {
+        "kind": "evaluate",
+        "L": "NaN",
+        "U": "NaN",
+        "condition": false
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-negative-infinity",
+      "input": {
+        "kind": "evaluate",
+        "L": "-Infinity",
+        "U": "-Infinity",
+        "condition": true
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-positive-infinity",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399999,
+        "U": "Infinity",
+        "condition": true
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-text-false",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399998,
+        "U": 1789898399999,
+        "condition": "false"
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-object-condition",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399998,
+        "U": 1789898399999,
+        "condition": {}
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "E-numeric-condition",
+      "input": {
+        "kind": "evaluate",
+        "L": 1789898399998,
+        "U": 1789898399999,
+        "condition": 1
+      },
+      "expected": {
+        "value": "STOP"
+      }
+    },
+    {
+      "id": "P-valid",
+      "input": {
+        "kind": "parse"
+      },
+      "expected": {
+        "value": "VALID"
+      }
+    },
+    {
+      "id": "P-bom",
+      "input": {
+        "kind": "parse",
+        "mutation": "bom"
+      },
+      "expected": {
+        "errorIncludes": "missing or out-of-order"
+      }
+    },
+    {
+      "id": "P-invalid-utf8",
+      "input": {
+        "kind": "parse",
+        "mutation": "invalid-utf8"
+      },
+      "expected": {
+        "errorIncludes": "encoded data"
+      }
+    },
+    {
+      "id": "P-no-final-lf",
+      "input": {
+        "kind": "parse",
+        "mutation": "no-final-lf"
+      },
+      "expected": {
+        "errorIncludes": "eight LF"
+      }
+    },
+    {
+      "id": "P-crlf",
+      "input": {
+        "kind": "parse",
+        "mutation": "crlf"
+      },
+      "expected": {
+        "errorIncludes": "invalid single-line"
+      }
+    },
+    {
+      "id": "P-extra-field",
+      "input": {
+        "kind": "parse",
+        "mutation": "extra-field"
+      },
+      "expected": {
+        "errorIncludes": "eight LF"
+      }
+    },
+    {
+      "id": "P-missing-who",
+      "input": {
+        "kind": "parse",
+        "mutation": "missing-who"
+      },
+      "expected": {
+        "errorIncludes": "eight LF"
+      }
+    },
+    {
+      "id": "H-228-byte-identity",
+      "input": {
+        "kind": "historical"
+      },
+      "expected": {
+        "value": {
+          "bytes": 228,
+          "digest": "kvYtty3Ifr6SMK8xU76uP0OowwGRCELi6nufb1hWh3M"
+        }
+      }
+    },
+    {
+      "id": "W-valid",
+      "input": {
+        "kind": "witness",
+        "mutation": "valid"
+      },
+      "expected": {
+        "value": "VERIFIED"
+      }
+    },
+    {
+      "id": "W-repeat-verification",
+      "input": {
+        "kind": "witness",
+        "mutation": "repeat-verification"
+      },
+      "expected": {
+        "value": "VERIFIED"
+      }
+    },
+    {
+      "id": "W-payload",
+      "input": {
+        "kind": "witness",
+        "mutation": "payload"
+      },
+      "expected": {
+        "errorIncludes": "payload digest"
+      }
+    },
+    {
+      "id": "W-nonce",
+      "input": {
+        "kind": "witness",
+        "mutation": "nonce"
+      },
+      "expected": {
+        "errorIncludes": "nonce"
+      }
+    },
+    {
+      "id": "W-missing-nonce",
+      "input": {
+        "kind": "witness",
+        "mutation": "missing-nonce"
+      },
+      "expected": {
+        "errorIncludes": "nonce"
+      }
+    },
+    {
+      "id": "W-missing-payload",
+      "input": {
+        "kind": "witness",
+        "mutation": "missing-payload"
+      },
+      "expected": {
+        "errorIncludes": "exactly one"
+      }
+    },
+    {
+      "id": "W-scope",
+      "input": {
+        "kind": "witness",
+        "mutation": "scope"
+      },
+      "expected": {
+        "errorIncludes": "signed payload"
+      }
+    },
+    {
+      "id": "W-extra-field",
+      "input": {
+        "kind": "witness",
+        "mutation": "extra-field"
+      },
+      "expected": {
+        "errorIncludes": "signed payload"
+      }
+    },
+    {
+      "id": "W-key",
+      "input": {
+        "kind": "witness",
+        "mutation": "key"
+      },
+      "expected": {
+        "errorIncludes": "absent from JWKS"
+      }
+    },
+    {
+      "id": "W-radius",
+      "input": {
+        "kind": "witness",
+        "mutation": "radius"
+      },
+      "expected": {
+        "errorIncludes": "clock accuracy exceeds local policy"
+      }
+    },
+    {
+      "id": "W-signature",
+      "input": {
+        "kind": "witness",
+        "mutation": "signature"
+      },
+      "expected": {
+        "errorIncludes": "signature is invalid"
+      }
+    },
+    {
+      "id": "H-original-signed-receipt",
+      "input": {
+        "kind": "historical-signature"
+      },
+      "expected": {
+        "value": "VERIFIED"
+      }
+    }
+  ]
+}

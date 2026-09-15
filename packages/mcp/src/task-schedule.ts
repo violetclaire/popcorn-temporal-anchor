@@ -30,14 +30,17 @@ export function parseTaskSchedule(bytes: Uint8Array): TaskSchedule {
   return schedule;
 }
 
-/** False/unknown conditions short-circuit; only true needs a fresh verified interval. */
+/** Invalid intervals and established expiry stop; only a true YES can reach REFETCH.
+ * Inputs must come from a parsed schedule and verified time evidence. This is
+ * a local policy result, not an authorization or an execution gate.
+ */
 export function evaluateTaskSchedule(schedule: TaskSchedule, L: number, U: number, condition: boolean | null): string {
-  if (condition === null) return "STOP";
-  if (!condition) return schedule.on_no;
   if (!Number.isFinite(L) || !Number.isFinite(U) || L > U) return "STOP";
   const E = Date.parse(schedule.expire_utc), B = Date.parse(schedule.boundary_utc);
   if (!Number.isFinite(E) || !Number.isFinite(B)) return "STOP";
   if (L >= E) return "STOP";
+  if (typeof condition !== "boolean") return "STOP";
+  if (condition === false) return schedule.on_no;
   if (U >= E) return "REFETCH";
   if (schedule.boundary_rule === "yes_if_before") return U < B ? schedule.on_yes : L >= B ? schedule.on_no : "REFETCH";
   if (schedule.boundary_rule === "yes_if_on_or_before") return U <= B ? schedule.on_yes : L > B ? schedule.on_no : "REFETCH";

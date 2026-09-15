@@ -41,6 +41,12 @@ To decide:
    Unresolved, invalid, or unavailable evidence -> STOP. No unbounded retries.
 
 Expiry takes precedence over the boundary rule, including at equality.
+Evaluator clarification (2026-09-14): when [L, U] is supplied, reject malformed
+or non-finite bounds first, then STOP on established expiry (L >= E), even for
+a false condition. Reject unknown or non-boolean conditions with STOP. A false
+condition follows on_no; it never reaches refetch. Only true reaches the expiry
+straddle and boundary checks. A local NO before fetching does not require a
+paid time request; missing time must not be passed as a fabricated interval.
 PROCEED is the agent's local decision under the owner's instructions, not an
 authorization issued by POPCORN. Recheck changed conditions before acting.
 

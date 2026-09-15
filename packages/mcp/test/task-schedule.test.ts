@@ -19,9 +19,35 @@ test("expiry wins at equality; uncertainty never proceeds", () => {
   assert.equal(evaluateTaskSchedule(schedule, E - 1, E, true), "REFETCH");
   assert.equal(evaluateTaskSchedule({ ...schedule, on_no: "REFER" }, E, E, true), "STOP");
 });
-test("false and unknown conditions need no time evidence", () => {
-  assert.equal(evaluateTaskSchedule({ ...schedule, on_no: "REFER" }, NaN, NaN, false), "REFER");
+test("invalid intervals stop even when the condition is false", () => {
+  assert.equal(evaluateTaskSchedule({ ...schedule, on_no: "REFER" }, NaN, NaN, false), "STOP");
   assert.equal(evaluateTaskSchedule(schedule, NaN, NaN, null), "STOP");
+});
+
+test("established expiry wins over NO; only true reaches refetch", () => {
+  const E = Date.parse(schedule.expire_utc);
+  const s = { ...schedule, on_no: "COUNTER" };
+  assert.equal(evaluateTaskSchedule(s, E, E, false), "STOP");
+  assert.equal(evaluateTaskSchedule(s, E - 1, E, false), "COUNTER");
+  assert.equal(evaluateTaskSchedule(s, E - 1, E, true), "REFETCH");
+  assert.equal(evaluateTaskSchedule(s, E - 1, E, null), "STOP");
+});
+
+test("runtime condition types cannot masquerade as a true YES", () => {
+  const B = Date.parse(schedule.boundary_utc);
+  for (const condition of ["false", "true", {}, [], 1, 0, undefined]) {
+    assert.equal(evaluateTaskSchedule(schedule, B - 2, B - 1, condition as any), "STOP");
+  }
+  for (const [L, U] of [[-Infinity, -Infinity], [B - 1, Infinity], [NaN, NaN], [B, B - 1]]) {
+    assert.equal(evaluateTaskSchedule(schedule, L, U, true), "STOP");
+    assert.equal(evaluateTaskSchedule(schedule, L, U, false), "STOP");
+  }
+});
+
+test("invalid UTF-8 is rejected rather than replaced", () => {
+  const invalid = Buffer.from(bytes);
+  invalid[invalid.indexOf(Buffer.from("who: ")) + 5] = 255;
+  assert.throws(() => parseTaskSchedule(invalid));
 });
 test("both boundary equality conventions and a fractional crossing", () => {
   const B = Date.parse(schedule.boundary_utc);
