@@ -1,0 +1,26 @@
+const assert=require('node:assert/strict');
+const {compare}=require('./model.cjs');
+let count=0;
+function check(name,fn){fn();count++;console.log('PASS '+name);}
+const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} != ${b}`);
+const zero={tokenReduction:0,failureReduction:0,falseReject:0,gateEnergyRatio:0,gateSeconds:0};
+check('No-change identity',()=>{const r=compare(zero);near(r.savingsPct.freshL,0);near(r.savingsPct.facilityKWh,0);near(r.savingsPct.machineSeconds,0);});
+check('Original 56.65% scenario reproduced',()=>near(compare({tokenReduction:.5,failureReduction:.8,falseReject:.01,gateEnergyRatio:.02,fixedEnergyShare:0}).savingsPct.freshL,56.64983164983164));
+check('Independent closed-form resource ratio',()=>{const r=compare();const c=r.config;const p=1-(1-c.executionSuccess)*(1-c.failureReduction);const expected=1-c.executionSuccess/p*((c.fixedEnergyShare+(1-c.fixedEnergyShare)*(1-c.tokenReduction))+c.gateEnergyRatio/(1-c.falseReject));near(r.savingsPct.facilityKWh,expected*100);});
+check('Fixed costs weaken token-linked savings',()=>assert.ok(compare({fixedEnergyShare:.5}).savingsPct.freshL<compare({fixedEnergyShare:0}).savingsPct.freshL));
+check('No physical savings realization, no retry benefit',()=>near(compare({...zero,tokenReduction:.5,physicalSavingsFraction:0}).savingsPct.facilityKWh,0));
+check('Overhead-only adds cost',()=>near(compare({...zero,gateEnergyRatio:.05}).savingsPct.facilityKWh,-5));
+check('No freshwater baseline gives undefined percent, not 100%',()=>assert.equal(compare({siteWUE:0,gateWUE:0,gridFreshLPerKWh:0,gateGridFreshLPerKWh:0}).savingsPct.freshL,null));
+check('Dry model cooling still has upstream water',()=>{const r=compare({siteWUE:0,gateWUE:0});near(r.baseline.perSubmission.onSiteFreshL,0);assert.ok(r.baseline.perSubmission.upstreamFreshL>0);});
+check('Reclaimed on-site water is not counted as freshwater',()=>{const r=compare({siteFreshFraction:0,gateFreshFraction:0});near(r.baseline.perSubmission.onSiteFreshL,0);assert.ok(r.baseline.perSubmission.upstreamFreshL>0);});
+check('Verifier at water-intensive site can reverse savings',()=>assert.ok(compare({...zero,tokenReduction:.1,gateEnergyRatio:.25,gateWUE:10}).savingsPct.freshL<0));
+check('No successful completions leaves normalization undefined',()=>{const r=compare({falseReject:1});near(r.protocol.completion,0);assert.equal(r.protocol.perCompletion.freshL,null);assert.equal(r.savingsPct.freshL,null);});
+check('Higher rejection lowers completion',()=>assert.ok(compare({falseReject:.2}).protocol.completion<compare({falseReject:0}).protocol.completion));
+check('Demand doubles totals but not per-completion use',()=>{const a=compare(),b=compare({demandMultiplier:2});near(b.protocol.total.freshL,a.protocol.total.freshL*2);near(a.protocol.perCompletion.freshL,b.protocol.perCompletion.freshL);});
+check('Demand break-even reproduces equal water totals',()=>{const a=compare();near(compare({demandMultiplier:a.breakEvenDemand.freshL}).totalChangePct.freshL,0);});
+check('Gate-energy break-even reproduces zero per-completion savings',()=>{const a=compare();near(compare({gateEnergyRatio:a.overheadBreakEvenForFreshwater}).savingsPct.freshL,0);});
+check('Paid witnesses add money, never fabricate energy',()=>{const a=compare(),b=compare({paidWitnessesPerAttempt:1});near(a.protocol.perSubmission.freshL,b.protocol.perSubmission.freshL);assert.ok(b.protocol.perSubmission.dollars>a.protocol.perSubmission.dollars);});
+check('Human review priced independently',()=>{const r=compare({humanMinutesPerExecution:2,humanReviewReduction:.5});assert.ok(r.baseline.perSubmission.humanDollars>r.protocol.perSubmission.humanDollars);});
+check('Submission cost prevents retry-cap cancellation',()=>{const a=compare({fixedITkWhPerSubmission:.001,attempts:1}),b=compare({fixedITkWhPerSubmission:.001,attempts:3});assert.notEqual(a.baseline.perCompletion.freshL,b.baseline.perCompletion.freshL);});
+check('Reject invalid inputs',()=>{for(const x of [{falseReject:1.1},{modelITkWh:NaN},{modelPUE:.9},{attempts:0},{tokens:-1},{mispelled:2}])assert.throws(()=>compare(x));});
+console.log(`${count} checks passed`);

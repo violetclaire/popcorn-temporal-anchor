@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POPCORN resource simulation</title>
+<!--
+MIT License
+
+Copyright 2026 Violet Herod
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Names, logos, and branding are excluded under the repository licensing boundaries.
+-->
+<style>
+:root{color-scheme:light;--ink:#18342b;--paper:#f6f5ec;--accent:#325d45;--line:#cbd2c2;--muted:#526055}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1060px;margin:auto;padding:48px 28px}header{max-width:740px;margin-bottom:28px}h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.08;letter-spacing:-.045em;margin:10px 0 18px}header p{font-size:1.05rem}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:.75rem;font-weight:700}a{color:#275844;text-underline-offset:3px}a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #946421;outline-offset:3px}.text-small{font-size:.85rem;color:var(--muted)}.form-label{display:block;font-size:.9rem;font-weight:600;margin:20px 0}.form-select,.form-control{display:block;width:100%;padding:10px;margin-top:8px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);font:inherit}.form-select{max-width:670px}.form-range{display:block;width:100%;accent-color:var(--accent);margin:14px 0 0;min-height:24px}output{float:right;font-variant-numeric:tabular-nums;font-weight:400}.viz-controls{display:grid;grid-template-columns:1fr 1fr;column-gap:32px}.viz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0 18px}.card{padding:20px;background:#e8eddf;border:1px solid var(--line);border-radius:8px}.viz-stat-value{font-size:1.8rem;font-weight:650;letter-spacing:-.035em;margin:8px 0}.tabular-nums,td{font-variant-numeric:tabular-nums}.table{width:100%;border-collapse:collapse;margin:26px 0;font-size:.9rem}caption{text-align:left;font-weight:700;margin-bottom:10px}th,td{padding:12px 8px;text-align:left;border-bottom:1px solid var(--line)}thead{background:#e8eddf}tbody th{font-weight:500}details{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}summary{cursor:pointer;font-weight:650}.text-destructive{color:#973b28;font-weight:600;margin:18px 0}footer{font-size:.85rem;margin-top:36px;color:var(--muted)}.method{margin-top:28px;max-width:800px}.method p{margin:10px 0}
+@media(max-width:620px){main{padding:28px 18px}.viz-controls,.viz-grid{grid-template-columns:1fr}.form-label{margin:14px 0}.viz-stat-value{font-size:1.7rem}.table{font-size:.75rem}th,td{padding:10px 4px}.card{padding:16px}output{float:none;margin-left:10px}}
+</style>
+</head>
+<body><main>
+<div id="popcorn-water-explorer">
+  <header><p class="eyebrow">POPCORN / resource hypotheses</p><h1>Explore the assumptions.</h1><p>Change the inputs. See when resource use falls, rises, or shifts to another part of the workflow.</p></header>
+  <div class="text-small"><strong>Synthetic inputs. No measurements loaded.</strong> This model does not run agents or establish measured POPCORN performance.</div>
+  <label class="form-label">Scenario
+    <select class="form-select" id="pw-preset">
+      <option value="moderate">Moderate assumptions, fixed energy included</option>
+      <option value="earlier">Earlier 56.6% scenario</option>
+      <option value="fixed">Same strong improvements, fixed energy included</option>
+      <option value="half">Moderate, half of predicted energy savings realized</option>
+      <option value="worse">More tokens and more failures</option>
+      <option value="dry">Dry model site, water-intensive verifier</option>
+      <option value="none">Overhead without improvement</option>
+      <option value="rebound">Moderate assumptions, double demand</option>
+    </select>
+  </label>
+  <div class="viz-controls">
+    <label class="form-label">Token reduction <output id="pw-r-value"></output><input class="form-range" id="pw-r" type="range" min="-20" max="80" step="1" value="20"></label>
+    <label class="form-label">Execution failure reduction <output id="pw-b-value"></output><input class="form-range" id="pw-b" type="range" min="-100" max="100" step="1" value="50"></label>
+    <label class="form-label">Fixed share of model energy <output id="pw-a-value"></output><input class="form-range" id="pw-a" type="range" min="0" max="100" step="1" value="40"></label>
+    <label class="form-label">Predicted energy savings realized <output id="pw-z-value"></output><input class="form-range" id="pw-z" type="range" min="0" max="100" step="1" value="100"></label>
+    <label class="form-label">Verifier energy / baseline execution <output id="pw-h-value"></output><input class="form-range" id="pw-h" type="range" min="0" max="25" step="0.5" value="2"></label>
+    <label class="form-label">Submitted demand <output id="pw-v-value"></output><input class="form-range" id="pw-v" type="range" min="100" max="300" step="5" value="100"></label>
+  </div>
+  <div class="viz-grid" aria-live="polite">
+    <div class="card viz-stat"><div>Freshwater per delivered success</div><div class="viz-stat-value tabular-nums" id="pw-water">—</div><div class="text-small">Includes failed work</div></div>
+    <div class="card viz-stat"><div>Total freshwater at selected demand</div><div class="viz-stat-value tabular-nums" id="pw-total">—</div><div class="text-small">Compared with baseline demand</div></div>
+    <div class="card viz-stat"><div>Useful completion within attempt cap</div><div class="viz-stat-value tabular-nums" id="pw-completion">—</div><div class="text-small" id="pw-baseline-completion"></div></div>
+  </div>
+  <div class="text-small" id="pw-threshold" aria-live="polite"></div>
+  <table class="table table-sm">
+    <caption>Modeled change versus baseline</caption>
+    <thead><tr><th scope="col">Resource</th><th scope="col">Per delivered success</th><th scope="col">Total at selected demand</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Model tokens</th><td id="pw-tokens-e"></td><td id="pw-tokens-t"></td></tr>
+      <tr><th scope="row">Facility electricity</th><td id="pw-energy-e"></td><td id="pw-energy-t"></td></tr>
+      <tr><th scope="row">Onsite freshwater</th><td id="pw-site-e"></td><td id="pw-site-t"></td></tr>
+      <tr><th scope="row">Electricity-supply freshwater</th><td id="pw-grid-e"></td><td id="pw-grid-t"></td></tr>
+      <tr><th scope="row">Sequential machine time</th><td id="pw-time-e"></td><td id="pw-time-t"></td></tr>
+      <tr><th scope="row">Entered costs</th><td id="pw-cost-e"></td><td id="pw-cost-t"></td></tr>
+    </tbody>
+  </table>
+  <details>
+    <summary>Completion, water and cost assumptions</summary>
+    <div class="viz-controls">
+      <label class="form-label">Baseline execution success (%)<input class="form-control" id="pw-p0" type="number" min="0" max="100" value="80"></label>
+      <label class="form-label">False rejection (%)<input class="form-control" id="pw-f" type="number" min="0" max="100" step="1" value="1"></label>
+      <label class="form-label">Attempt cap<input class="form-control" id="pw-n" type="number" min="1" max="100" value="3"></label>
+      <label class="form-label">Model facility PUE<input class="form-control" id="pw-pue" type="number" min="1" max="5" step="0.1" value="1.2"></label>
+      <label class="form-label">Model onsite water (L / IT kWh)<input class="form-control" id="pw-wue" type="number" min="0" step="0.1" value="0.5"></label>
+      <label class="form-label">Model onsite freshwater share (%)<input class="form-control" id="pw-fresh" type="number" min="0" max="100" value="100"></label>
+      <label class="form-label">Model grid freshwater (L / facility kWh)<input class="form-control" id="pw-grid" type="number" min="0" step="0.1" value="1"></label>
+      <label class="form-label">Verifier facility PUE<input class="form-control" id="pw-gpue" type="number" min="1" max="5" step="0.1" value="1.2"></label>
+      <label class="form-label">Verifier onsite water (L / IT kWh)<input class="form-control" id="pw-gwue" type="number" min="0" step="0.1" value="0.5"></label>
+      <label class="form-label">Verifier onsite freshwater share (%)<input class="form-control" id="pw-gfresh" type="number" min="0" max="100" value="100"></label>
+      <label class="form-label">Verifier grid freshwater (L / facility kWh)<input class="form-control" id="pw-ggrid" type="number" min="0" step="0.1" value="1"></label>
+      <label class="form-label">Paid witness calls per attempt<input class="form-control" id="pw-paid" type="number" min="0" step="0.1" value="0"></label>
+    </div>
+    <div class="text-small">Synthetic baseline: 10,000 tokens, 20 seconds, 0.001 IT kWh and $0.02 per execution. Verifier: 0.4 seconds; entered paid witness price: $0.001. Fixed time share: 20%. Human review excluded. Water units represent consumption. No saving from hardware manufacture or shared idle infrastructure is modeled.</div>
+  </details>
+  <div id="pw-error" class="text-destructive" role="alert"></div>
+</div>
+<script>
+/* Hypothetical resource accounting, not measured POPCORN performance. No I/O. */
+(function(root) {
+  'use strict';
+  const defaults = {
+    tokens:10000, executionSuccess:0.8, attempts:3,
+    tokenReduction:0.2, failureReduction:0.5, falseReject:0.01,
+    fixedEnergyShare:0.4, energyExponent:1, physicalSavingsFraction:1,
+    modelITkWh:0.001, fixedITkWhPerSubmission:0,
+    gateEnergyRatio:0.02, modelPUE:1.2, gatePUE:1.2,
+    siteWUE:0.5, siteFreshFraction:1, gridFreshLPerKWh:1,
+    gateWUE:0.5, gateFreshFraction:1, gateGridFreshLPerKWh:1,
+    modelSeconds:20, fixedTimeShare:0.2, gateSeconds:0.4,
+    modelCost:0.02, fixedCostShare:0, gateCost:0,
+    witnessPrice:0.001, paidWitnessesPerAttempt:0,
+    humanMinutesPerExecution:0, humanReviewReduction:0,
+    humanMinutesPerGate:0, humanDollarsPerHour:30,
+    submissions:1000000, demandMultiplier:1
+  };
+  const bounded=['executionSuccess','falseReject',
+    'fixedEnergyShare','physicalSavingsFraction','siteFreshFraction','gateFreshFraction',
+    'fixedTimeShare','fixedCostShare','humanReviewReduction'];
+  function parameters(input={}) {
+    for(const key of Object.keys(input)) if(!(key in defaults)) throw Error('Unknown input: '+key);
+    const c={...defaults,...input};
+    for(const [k,v] of Object.entries(c)) if(!Number.isFinite(v)||(v<0&&!['tokenReduction','failureReduction'].includes(k))) throw Error('Invalid input: '+k);
+    for(const k of ['tokenReduction','failureReduction']) if(c[k]<-1||c[k]>1) throw Error(k+' must be between -1 and 1');
+    for(const k of bounded) if(c[k]>1) throw Error(k+' must be between 0 and 1');
+    if(!Number.isInteger(c.attempts)||c.attempts<1||c.attempts>100) throw Error('attempts must be 1..100');
+    if(c.modelPUE<1||c.gatePUE<1) throw Error('PUE must be >=1');
+    if(c.energyExponent<=0) throw Error('energyExponent must be >0');
+    return c;
+  }
+  function divide(a,b){return b>0?a/b:null;}
+  function run(c,enabled) {
+    const pass=enabled?1-c.falseReject:1;
+    const p=enabled?Math.max(0,1-(1-c.executionSuccess)*(1-c.failureReduction)):c.executionSuccess;
+    const s=pass*p;
+    let attempts=0, remaining=1;
+    for(let i=0;i<c.attempts;i++){attempts+=remaining;remaining*=1-s;}
+    const completion=1-remaining, executions=attempts*pass;
+    const reduction=enabled?c.tokenReduction:0;
+    const tokenFraction=1-reduction;
+    const allocatedFactor=c.fixedEnergyShare+(1-c.fixedEnergyShare)*tokenFraction**c.energyExponent;
+    const targetIT=c.fixedITkWhPerSubmission+executions*c.modelITkWh*allocatedFactor;
+    let baselineAttempts=0;
+    for(let i=0;i<c.attempts;i++) baselineAttempts+=(1-c.executionSuccess)**i;
+    const baselineIT=c.fixedITkWhPerSubmission+baselineAttempts*c.modelITkWh;
+    // Capture applies only to predicted reductions; extra work always incurs energy.
+    const modelIT=enabled&&targetIT<baselineIT?baselineIT-c.physicalSavingsFraction*(baselineIT-targetIT):targetIT;
+    const gateIT=enabled?attempts*c.modelITkWh*c.gateEnergyRatio:0;
+    const modelFacility=modelIT*c.modelPUE, gateFacility=gateIT*c.gatePUE;
+    const onSiteFresh=modelIT*c.siteWUE*c.siteFreshFraction+gateIT*c.gateWUE*c.gateFreshFraction;
+    const upstreamFresh=modelFacility*c.gridFreshLPerKWh+gateFacility*c.gateGridFreshLPerKWh;
+    const modelSeconds=executions*c.modelSeconds*(c.fixedTimeShare+(1-c.fixedTimeShare)*tokenFraction);
+    const gateSeconds=enabled?attempts*c.gateSeconds:0;
+    const humanMinutes=executions*c.humanMinutesPerExecution*(enabled?1-c.humanReviewReduction:1)+(enabled?attempts*c.humanMinutesPerGate:0);
+    const modelCost=executions*c.modelCost*(c.fixedCostShare+(1-c.fixedCostShare)*tokenFraction);
+    const witnessCost=enabled?attempts*c.paidWitnessesPerAttempt*c.witnessPrice:0;
+    const gateCost=enabled?attempts*c.gateCost:0;
+    const humanCost=humanMinutes*c.humanDollarsPerHour/60;
+    const perSubmission={tokens:executions*c.tokens*tokenFraction,
+      facilityKWh:modelFacility+gateFacility, modelFacilityKWh:modelFacility,gateFacilityKWh:gateFacility,
+      onSiteFreshL:onSiteFresh,upstreamFreshL:upstreamFresh,freshL:onSiteFresh+upstreamFresh,
+      machineSeconds:modelSeconds+gateSeconds,humanMinutes,
+      dollars:modelCost+witnessCost+gateCost+humanCost,modelDollars:modelCost,witnessDollars:witnessCost,
+      humanDollars:humanCost, heatEquivalentMJ:(modelFacility+gateFacility)*3.6};
+    const perCompletion=Object.fromEntries(Object.entries(perSubmission).map(([k,v])=>[k,divide(v,completion)]));
+    const submissions=c.submissions*(enabled?c.demandMultiplier:1);
+    const total=Object.fromEntries(Object.entries(perSubmission).map(([k,v])=>[k,v*submissions]));
+    return {attempts,executions,completion,submissions,completed:submissions*completion,perSubmission,perCompletion,total};
+  }
+  function compare(input={}) {
+    const config=parameters(input), baseline=run(config,false), protocol=run(config,true);
+    const savingsPct={},totalChangePct={},breakEvenDemand={};
+    for(const key of Object.keys(baseline.perSubmission)) {
+      const b=baseline.perCompletion[key],p=protocol.perCompletion[key];
+      savingsPct[key]=b!==null&&b>0&&p!==null?100*(1-p/b):null;
+      totalChangePct[key]=baseline.total[key]>0?100*(protocol.total[key]/baseline.total[key]-1):null;
+      breakEvenDemand[key]=divide(baseline.perSubmission[key],protocol.perSubmission[key]);
+    }
+    const zero=run({...config,gateEnergyRatio:0},true);
+    const gateFreshPerKWh=config.gateWUE*config.gateFreshFraction+config.gatePUE*config.gateGridFreshLPerKWh;
+    const gateFreshPerCompletion=divide(zero.attempts*config.modelITkWh*gateFreshPerKWh,zero.completion);
+    const overheadBreakEvenForFreshwater=gateFreshPerCompletion>0?
+      (baseline.perCompletion.freshL-zero.perCompletion.freshL)/gateFreshPerCompletion:null;
+    return {config,baseline,protocol,savingsPct,totalChangePct,breakEvenDemand,overheadBreakEvenForFreshwater};
+  }
+  const api={defaults,compare};
+  if(typeof module!=='undefined'&&module.exports) module.exports=api;
+  else root.PopcornWaterModel=api;
+})(globalThis);
+
+</script>
+<script>
+(function(){
+  const root=document.getElementById('popcorn-water-explorer');
+  const el=id=>root.querySelector('#pw-'+id);
+  const keys={r:'tokenReduction',b:'failureReduction',a:'fixedEnergyShare',z:'physicalSavingsFraction',h:'gateEnergyRatio',v:'demandMultiplier',p0:'executionSuccess',f:'falseReject',n:'attempts',pue:'modelPUE',wue:'siteWUE',fresh:'siteFreshFraction',grid:'gridFreshLPerKWh',gpue:'gatePUE',gwue:'gateWUE',gfresh:'gateFreshFraction',ggrid:'gateGridFreshLPerKWh',paid:'paidWitnessesPerAttempt'};
+  const percent=new Set(['r','b','a','z','h','v','p0','f','fresh','gfresh']);
+  function inputs(){
+    const out={};
+    for(const [id,key] of Object.entries(keys)) {
+      if(el(id).value.trim()==='') throw Error('Enter a value for '+key);
+      out[key]=Number(el(id).value)/(percent.has(id)?100:1);
+    }
+    return out;
+  }
+  const change=v=>v===null?'Undefined':Math.abs(v).toFixed(1)+'% '+(Math.abs(v)<.05?'change':v<0?'less':'more');
+  function update(){
+    try {
+      const input=inputs(),r=PopcornWaterModel.compare(input);
+      for(const id of ['r','b','a','z','h']) el(id+'-value').textContent=Number(el(id).value).toFixed(1)+'%';
+      el('v-value').textContent=input.demandMultiplier.toFixed(2)+'×';
+      el('water').textContent=change(r.savingsPct.freshL===null?null:-r.savingsPct.freshL);
+      el('total').textContent=change(r.totalChangePct.freshL);
+      el('completion').textContent=(100*r.protocol.completion).toFixed(2)+'%';
+      el('baseline-completion').textContent='Baseline '+(100*r.baseline.completion).toFixed(2)+'%';
+      const threshold=r.breakEvenDemand.freshL;
+      el('threshold').textContent=threshold===null?'Freshwater demand break-even: undefined':'Equal total freshwater at '+threshold.toFixed(2)+'× baseline submitted demand.';
+      for(const [label,key] of Object.entries({tokens:'tokens',energy:'facilityKWh',site:'onSiteFreshL',grid:'upstreamFreshL',time:'machineSeconds',cost:'dollars'})) {
+        el(label+'-e').textContent=change(r.savingsPct[key]===null?null:-r.savingsPct[key]);
+        el(label+'-t').textContent=change(r.totalChangePct[key]);
+      }
+      el('error').textContent='';
+      root.setAttribute('data-computed-water-savings',String(r.savingsPct.freshL));
+    } catch(e){
+      el('error').textContent=e.message;
+      for(const id of ['water','total','completion','baseline-completion','threshold'])el(id).textContent='—';
+      for(const label of ['tokens','energy','site','grid','time','cost'])for(const suffix of ['e','t'])el(label+'-'+suffix).textContent='—';
+      root.removeAttribute('data-computed-water-savings');
+    }
+  }
+  for(const id of Object.keys(keys)) el(id).addEventListener('input',update);
+  el('preset').addEventListener('change',()=>{
+    const name=el('preset').value;
+    const c={...PopcornWaterModel.defaults};
+    if(name==='earlier')Object.assign(c,{tokenReduction:.5,failureReduction:.8,fixedEnergyShare:0});
+    if(name==='fixed')Object.assign(c,{tokenReduction:.5,failureReduction:.8,fixedEnergyShare:.4});
+    if(name==='half')c.physicalSavingsFraction=.5;
+    if(name==='worse')Object.assign(c,{tokenReduction:-.1,failureReduction:-.5});
+    if(name==='dry')Object.assign(c,{siteWUE:0,gridFreshLPerKWh:.1,gateWUE:2,gateGridFreshLPerKWh:2,gateEnergyRatio:.25});
+    if(name==='none')Object.assign(c,{tokenReduction:0,failureReduction:0,falseReject:0,gateEnergyRatio:.05});
+    if(name==='rebound')c.demandMultiplier=2;
+    for(const [id,key] of Object.entries(keys))el(id).value=String(c[key]*(percent.has(id)?100:1));
+    update();
+  });
+  update();
+})();
+</script>
+
+<section class="method" aria-label="Accounting limitations"><p><strong>Read this as a sensitivity analysis.</strong> Per-completion accounting includes failed work. The model assumes independent retries. It has no separately parameterized baseline verifier cost and excludes shared always-on infrastructure, manufacture, training, and capacity expansion.</p><p>Water inputs represent consumption. Onsite freshwater and electricity-supply freshwater are separate. The selected locations and cooling values are illustrative, not a claim about a real facility.</p><p><a href="https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/examples/resource-simulation">Read the evidence, equations, full inputs, and measurement method on GitHub</a>.</p></section>
+<footer>Model and view are MIT licensed; the complete notice is embedded in this file. Names, logos, and branding are excluded under the repository licensing boundaries. No network calls occur unless you follow an external link.</footer>
+</main></body></html>
