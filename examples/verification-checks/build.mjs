@@ -10,7 +10,7 @@ const raw = sources.map(path => fs.readFileSync(new URL(path, root), 'utf8'));
 const compiled = raw.map(source => stripTypeScriptTypes(source, { mode: 'transform' }));
 const pattern = /import \{ verifyPopcornWitnessEvidence \} from "\.\.\/\.\.\/\.\.\/verify\/typescript\/src\/index\.js";\r?\n/;
 if (!pattern.test(compiled[1])) throw Error('Maintained verifier import changed; review bundling');
-const body = '// Generated from maintained source by build.mjs. Do not edit.\n// Licensing and prior grants: https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md\n' + compiled[0] + '\n' + compiled[1].replace(pattern, '');
+const body = '// Generated from maintained source by build.mjs. Do not edit.\n// SPDX-License-Identifier: MIT\n// Copyright 2026 Violet Herod\n// Licensing and prior grants: https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md\n' + compiled[0] + '\n' + compiled[1].replace(pattern, '');
 fs.writeFileSync(new URL('verifier.mjs', import.meta.url), body);
 fs.writeFileSync(new URL('sources.json', import.meta.url), JSON.stringify({
   sources: Object.fromEntries(sources.map((path, i) => [path, hash(raw[i])])),

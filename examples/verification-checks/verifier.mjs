@@ -1,4 +1,6 @@
 // Generated from maintained source by build.mjs. Do not edit.
+// SPDX-License-Identifier: MIT
+// Copyright 2026 Violet Herod
 // Licensing and prior grants: https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md
 const encoder = new TextEncoder();
 function decodeBase64Url(value) {

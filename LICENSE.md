@@ -5,10 +5,19 @@ Version 1.0 — September 15, 2026
 Copyright 2026 Violet Herod. All rights reserved except as expressly granted below.
 
 ## 1. Material covered
-These terms apply to original POPCORN code and documentation first offered under
-this notice, subject to the earlier-grant exception in section 5. They do not
-relicense previously MIT-covered material or govern the separate CDI project. Third-party material retains its own license. Public facts,
-abstract ideas and customer-owned data are not claimed as owned by this license.
+These Evaluation License terms cover `reference/issuer/typescript`, subject to
+section 5. Producer means code that holds or uses the issuer's signing keys, or
+issues or settles receipts or payments. Synthetic test-key generation is Checker.
+
+The Checker directories `verify/typescript`, `packages/mcp`, `integrations/huggingface-space`, `examples/verification-checks`, `examples/typescript-x402-client`, `examples/typescript-x402-witness-client`, `integrations/sosbots-board`, `verify/test-vectors`, `schemas`, `docs`, `skills`, `openclaw`, `examples/task-schedule` are MIT licensed under their own LICENSE files.
+Other Checker files are covered by the directory LICENSE files listed in
+LICENSING.md. Root documentation and `service-catalog.json` are MIT under
+`docs/LICENSE`; root repository configuration files are MIT under `.github/LICENSE`.
+Names, logos, and branding are excluded from both licenses.
+
+This notice governs this repository only; other Briarwood projects carry their own terms.
+Third-party material retains its own license. Public facts, abstract ideas and
+customer-owned data are not claimed as owned by this license.
 
 ## 2. Examination and testing
 You may read, download, copy and run the covered material, and make local changes,

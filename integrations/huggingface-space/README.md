@@ -6,9 +6,7 @@ colorTo: green
 sdk: static
 app_file: index.html
 pinned: false
-license: other
-license_name: POPCORN Evaluation License with prior-grant exceptions
-license_link: https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSE.md
+license: mit
 short_description: Free signed schedule verification for agent deadline checks
 tags:
 - agents
@@ -33,4 +31,4 @@ Is this quote still valid? Has this authorization expired? Read the [task contra
 [Agent catalog](https://767-2676.com/.well-known/ard.json) · [Packet](https://767-2676.com/schedule/example.json) · [Source](https://github.com/violetclaire/popcorn-temporal-anchor)
 ## Licensing
 
-See [LICENSE.md](LICENSE.md). Earlier MIT declarations and rights granted under them are not revoked by this metadata change. Paid receipt use is separate: [carry-and-use permission](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/RECEIPT_USE.md).
+This directory is MIT licensed; see [LICENSE](LICENSE). Earlier grants are described in [LICENSING.md](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md). Paid receipt use is separate: [carry-and-use permission](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/RECEIPT_USE.md).

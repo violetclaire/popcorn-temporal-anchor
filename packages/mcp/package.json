@@ -17,7 +17,7 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE.md",
+    "LICENSE",
     "LICENSING.md"
   ],
   "scripts": {
@@ -52,7 +52,7 @@
     "trusted-timestamp",
     "authorization"
   ],
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
