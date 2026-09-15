@@ -6,7 +6,9 @@ colorTo: green
 sdk: static
 app_file: index.html
 pinned: false
-license: mit
+license: other
+license_name: popcorn-read-and-use
+license_link: https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/integrations/huggingface-space/LICENSE
 short_description: Free signed schedule verification for agent deadline checks
 tags:
 - agents
@@ -31,4 +33,4 @@ Is this quote still valid? Has this authorization expired? Read the [task contra
 [Agent catalog](https://767-2676.com/.well-known/ard.json) · [Packet](https://767-2676.com/schedule/example.json) · [Source](https://github.com/violetclaire/popcorn-temporal-anchor)
 ## Licensing
 
-This directory is MIT licensed; see [LICENSE](LICENSE). Earlier grants are described in [LICENSING.md](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md). Paid receipt use is separate: [carry-and-use permission](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/RECEIPT_USE.md).
+The historical sample and checker are free to run in personal, agent and business workflows under [LICENSE](LICENSE). Fresh evidence uses the normal paid service flow; no separate written agreement is needed for ordinary use. Code resale and operating a competing issuer are not granted. Earlier grants are described in [LICENSING.md](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md). Paid receipt use is separate: [carry-and-use permission](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/RECEIPT_USE.md).

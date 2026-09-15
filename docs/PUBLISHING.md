@@ -20,9 +20,10 @@ gh repo edit violetclaire/popcorn-temporal-anchor --homepage "https://767-2676.c
 
 Do not paste the `PS C:\...>` prompt. Enter only the commands.
 
-The repository intentionally has no reuse license until the owner selects one.
-For broad open-source adoption, obtain legal advice or explicitly choose a
-license such as Apache-2.0 before inviting code reuse.
+The current source and client-use permissions are in LICENSE.md and LICENSING.md.
+Keep the source public and the ordinary sample/checker and paid-service flow
+self-service. Do not assign a permissive license to new work based on its folder
+or technical role; obtain an explicit owner decision for the specific material.
 
 ## GitHub success signals
 

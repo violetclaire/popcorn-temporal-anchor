@@ -1,7 +1,7 @@
 // POPCORN free historical sample. Save as sample.mjs; Node 20+. No wallet or network calls.
 // Generated from maintained source by build.mjs. Do not edit.
-// SPDX-License-Identifier: MIT
 // Copyright 2026 Violet Herod
+// Free sample/checker use under the POPCORN Read-and-Use Terms; see LICENSE and LICENSING.md.
 // Licensing and prior grants: https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSING.md
 const encoder = new TextEncoder();
 function decodeBase64Url(value) {

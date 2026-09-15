@@ -4,7 +4,7 @@ An inspectable model of when changes in model work, execution failures, verifica
 
 [Equations, assumptions, and measurement method](EQUATIONS.md#equations) · [Full inputs and outputs](results.json) · [25,920-row sensitivity grid](grid.csv) · [Blank measurement template](measurement-template.csv)
 
-## Run it yourself
+## Execution instructions for authorized reviewers
 
 From the repository root, with Node.js 20 or newer:
 
@@ -62,4 +62,4 @@ Use the [blank CSV template](measurement-template.csv) and [measurement method](
 
 `model.cjs` is the single computation source for the CLI and generated browser view. `check.cjs` tests it; `simulate.cjs` produces the scenario files. `explorer-template.html` contains the view and its small local stylesheet; `build-view.cjs` embeds the model and license notice in `index.html`.
 
-This example inherits the repository's existing MIT scope for caller-run examples, with a copy of [the MIT license](LICENSE). See the repository's [licensing boundaries](../../LICENSING.md). Names, logos, and branding remain excluded as stated there. The simulator holds no issuer signing keys and issues or settles no receipts or payments.
+Copyright 2026 Violet Herod. This simulator is available for source inspection under [LICENSE](LICENSE); it is not included in the free sample/checker/client-use grant. The execution commands above describe how an authorized reviewer reproduces results. Public visibility does not grant code resale, redistribution or commercial hosting. See the [licensing boundaries](../../LICENSING.md). The simulator holds no issuer signing keys and issues or settles no receipts or payments.

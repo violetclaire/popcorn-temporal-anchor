@@ -4,71 +4,68 @@ Effective for this notice: September 15, 2026.
 
 This notice governs this repository only; other Briarwood projects carry their own terms.
 
-## Rule
+## Self-service use
 
-Producer means code that holds or uses the issuer's signing keys, or issues or
-settles receipts or payments. Everything else that callers run or read is
-Checker, MIT. Branding is excluded from both.
+The repository is publicly readable. The historical sample, checker and client
+tools may be run in personal, agent and business workflows under the
+[POPCORN Read-and-Use Terms](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSE.md). Ordinary users do not need a negotiated
+contract or separate written agreement. Fresh signed time or a schedule/task
+witness is purchased through the service, currently $0.001 USDC per request.
+
+Public source inspection and free checker use do not grant rights to resell the
+code, republish it as another product or operate a competing issuer. The resource
+simulator is available for inspection; it is outside the free client-use grant.
+The words Checker and Producer describe technical roles, not automatic licenses
+for newly added files. Future licensing decisions must identify their exact scope.
 
 ## Directory map
 
-Paths below are relative to the repository root. Each MIT directory has a
-standard LICENSE file. The issuer's LICENSE.md contains the Evaluation License.
+All owner-authored files below use the Read-and-Use Terms, with the stated scope.
+Third-party material retains its own license. Copies of the terms are placed in
+the component LICENSE files for distribution.
 
-| Top-level directory | License and scope |
+| Top-level directory | Scope |
 | --- | --- |
-| `.github` | MIT: repository workflows and templates. |
-| `assets` | Excluded: names, logos and branding. |
-| `docs` | MIT: documentation and instructions; receipt-use terms remain unchanged. |
-| `examples` | MIT: all examples, clients, checks and saved example files. |
-| `integrations` | MIT: Hugging Face and SOS-BOTS callers, static serving and worksheet code. |
-| `openclaw` | MIT: instructions; this directory contains no executable code. |
-| `packages` | MIT: MCP client/checker package and supporting files. |
-| `reference` | MIT for deployment documentation; `reference/issuer/typescript` is POPCORN Evaluation License. |
-| `schemas` | MIT: protocol schemas. |
-| `site` | MIT: pages, caller examples, metadata and static-page deployment tooling; branding excluded. |
-| `skills` | MIT: instructions. |
-| `verify` | MIT: TypeScript and Python verifiers and test vectors. |
+| .github | Supporting workflows and templates; source inspection and use needed for permitted checks. |
+| assets | Names, logos and branding excluded from reuse. |
+| docs | Public documentation and instructions; issued-receipt use remains governed separately. |
+| examples | Historical sample, client and conformance uses are permitted; resource-simulation is inspection only. |
+| integrations | Caller-facing sample, checker and client uses are permitted; no independent issuer operation. |
+| openclaw | Public instructions for the permitted client flow. |
+| packages | MCP client and checker uses are permitted; no software-resale grant. |
+| reference | Source inspection; producer/issuer operation is not granted. |
+| schemas | Public protocol descriptions for preparing tasks and using/checking the service. |
+| site | Public pages, metadata and client-facing checks; branding excluded. |
+| skills | Instructions for the permitted client flow. |
+| verify | Verification libraries and conformance tests under the free checker permission. |
 
-Explicit Checker LICENSE files are present in `verify/typescript`, `packages/mcp`, `integrations/huggingface-space`, `examples/verification-checks`, `examples/typescript-x402-client`, `examples/typescript-x402-witness-client`, `integrations/sosbots-board`, `verify/test-vectors`, `schemas`, `docs`, `skills`, `openclaw`, `examples/task-schedule`.
-Other children inherit their parent directory's license unless the map states
-an exception.
+Root documentation, service-catalog.json and repository configuration follow
+the same terms and applicable scope. Names, logos, and branding in assets are
+not licensed for reuse. Source visibility does not transfer ownership.
 
-Root documentation and `service-catalog.json` are MIT under `docs/LICENSE`;
-root repository configuration files are MIT under `.github/LICENSE`.
-The root [LICENSE.md](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSE.md)
-retains the Evaluation License for the issuer scope named in its section 1.
+## Earlier declarations
 
-Names, logos, and branding in `assets` are not licensed for reuse.
+The npm releases @violetclaire/popcorn-mcp 0.1.0, 0.1.1 and 0.1.2 declared MIT.
+The Hugging Face integration and earlier repository checker directories also
+declared MIT. Repository commit 4d4dafdf1ec4b51b37d6269bed034c31876fd27e
+introduced an explicit MIT declaration for examples/resource-simulation.
+These are historical records, not current grants by this notice.
 
-The SOS-BOTS Worker serves static files, rejects writes, holds no issuer signing
-keys and issues or settles no receipts or payments. Its whole directory is MIT.
-The test-vector generator creates synthetic keys in memory; it contains no
-issuer private key material. Public verification keys and signed fixtures are
-not private signing keys.
-
-## Existing grants are different from future terms
-
-The npm releases `@violetclaire/popcorn-mcp` 0.1.0, 0.1.1 and 0.1.2 declared MIT.
-They include compiled MCP and POPCORN verifier code; 0.1.2 also includes the
-sample and task-schedule code. The Hugging Face integration also declared MIT.
-This notice does not revoke or narrow rights previously granted, remove required
-notices, or establish the legal reach of those grants. Changing repository
-metadata does not change existing npm tarballs. Prior grants and patent scope
-require separate review. Third-party dependencies retain their own licenses.
+This correction does not revoke or narrow rights already granted under another
+applicable license. It does not rewrite historical commits or signed evidence,
+change existing npm tarballs, or establish the legal effect of earlier grants
+or patent filings. Third-party dependency licenses remain unchanged.
 
 ## Receipts
 
-The files in `examples/task-schedule` are MIT. The signed receipts inside are
-also covered by `docs/RECEIPT_USE.md`.
+[Receipt carry-and-use permission](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/RECEIPT_USE.md) permits recipients to keep,
+carry, share and verify legitimately issued receipts, including in commercial
+workflows, without an additional receipt-use royalty. Fresh issuance is paid.
+This does not authorize software resale, issuer operation or task execution.
 
-[Receipt carry-and-use permission](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/RECEIPT_USE.md)
-allows recipients to use and pass issued receipts in their workflows. It does
-not license issuer software, grant task authority, or turn a historical
-checkpoint into current time.
+## Deployment scope
 
-## Distribution status
-
-Repository notices govern only within their applicable scope. The npm registry,
-Hugging Face Space and hosted website are separately deployed surfaces; a source
-commit alone does not update them. See the package's actual release terms.
+These repository notices do not by themselves update previously published npm
+packages, the live Hugging Face Space or hosted website files. Their actual
+deployed versions must be checked separately. No registry publishing, unpublishing
+or payment is part of this repository licensing correction.

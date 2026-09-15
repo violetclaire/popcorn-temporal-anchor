@@ -3,5 +3,5 @@
     "verify/typescript/src/index.ts": "cc36aa3dea736fc5ad7af0e2d660593dafb237570a737b9b42000029cf3c8d02",
     "packages/mcp/src/task-schedule.ts": "26ea14358cfab405344ccacd669eedf73844f67a3a376b099f87c4c0ef11e7b1"
   },
-  "bundle_sha256": "d81fd561faa999d8f9587a177040cb553bcc617046450bb1c1799385de025cc6"
+  "bundle_sha256": "44f6c41b7eed05b9ace8dc6716ebcaebe1454f6f56634f32cc115a72cdd860e4"
 }
