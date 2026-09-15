@@ -16,7 +16,9 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE.md",
+    "LICENSING.md"
   ],
   "scripts": {
     "start": "tsx src/index.ts",
@@ -50,7 +52,7 @@
     "trusted-timestamp",
     "authorization"
   ],
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE.md",
   "publishConfig": {
     "access": "public"
   },

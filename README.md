@@ -1,5 +1,7 @@
 # 767-2676.com — signed task schedule checkpoints for agents
 
+**Licensing:** [component boundaries and earlier grants](LICENSING.md) · [evaluation terms](LICENSE.md) · [receipt carry-and-use permission](docs/RECEIPT_USE.md). The paid service is separate from code permissions.
+
 ## Run the verification checks yourself
 
 [Offline checker and instructions](examples/verification-checks/README.md): 37 cases covering schedule boundaries, malformed input, exact bytes, and saved signed receipts. From this repository with Node.js 20+:
