@@ -8,13 +8,14 @@ This notice governs this repository only; other Briarwood projects carry their o
 
 The repository is publicly readable. The historical sample, checker and client
 tools may be run in personal, agent and business workflows under the
-[POPCORN Read-and-Use Terms](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSE.md). Ordinary users do not need a negotiated
+[POPCORN Read-and-Use Terms](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSE.md).
+Including the checker and client tools inside your own product, agent or model is permitted under section 2 of the Terms, with no license fee.
+Ordinary users do not need a negotiated
 contract or separate written agreement. Fresh signed time or a schedule/task
 witness is purchased through the service, currently $0.001 USDC per request.
 
 Public source inspection and free checker use do not grant rights to resell the
-code, republish it as another product or operate a competing issuer. The resource
-simulator is available for inspection; it is outside the free client-use grant.
+code, republish it as another product or operate a competing issuer.
 The words Checker and Producer describe technical roles, not automatic licenses
 for newly added files. Future licensing decisions must identify their exact scope.
 
@@ -29,7 +30,7 @@ the component LICENSE files for distribution.
 | .github | Supporting workflows and templates; source inspection and use needed for permitted checks. |
 | assets | Names, logos and branding excluded from reuse. |
 | docs | Public documentation and instructions; issued-receipt use remains governed separately. |
-| examples | Historical sample, client and conformance uses are permitted; resource-simulation is inspection only. |
+| examples | Historical sample, client, conformance and resource-simulation uses are permitted. |
 | integrations | Caller-facing sample, checker and client uses are permitted; no independent issuer operation. |
 | openclaw | Public instructions for the permitted client flow. |
 | packages | MCP client and checker uses are permitted; no software-resale grant. |

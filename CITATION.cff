@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use POPCORN or cite this work, please cite it as below and contact the author about collaboration."
+title: "POPCORN: payload-bound temporal witness receipts for autonomous agents"
+authors:
+  - family-names: Herod
+    given-names: Violet Claire
+    email: violet@briarwood.ai
+repository-code: "https://github.com/violetclaire/popcorn-temporal-anchor"
+url: "https://767-2676.com"
+license-url: "https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/LICENSE.md"
+date-released: "2026-09-15"
+keywords:
+  - temporal witness
+  - agent authorization expiry
+  - signed receipts
+  - predecessor chain
+  - evidence scope
