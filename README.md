@@ -86,10 +86,10 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-After version 0.1.2 is published to npm, the same evaluation is one command:
+After version 0.1.3 is published to npm, the same evaluation is one command:
 
 ```bash
-npx -y @violetclaire/popcorn-mcp@0.1.2 --sample
+npx -y @violetclaire/popcorn-mcp@0.1.3 --sample
 ```
 
 It verifies both bundled historical production receipts and rejects their
