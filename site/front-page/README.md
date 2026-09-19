@@ -24,6 +24,7 @@ Serve `index.html` at `/` through the current Cloudflare Worker. Preserve the cu
 | signal.md | /signal.md |
 | pricing.html | /pricing |
 | terms.html | /terms |
+| privacy.html | /privacy and /privacy/ |
 | llms-addendum.txt | Append to the existing /llms.txt; preserve its other content |
 
 Keep /v1/time, /v1/receipt, /test-line, /schedule and its examples, /agents, /.well-known/popcorn-keys.json, the MCP installation material, and the other existing routes at their current locations.
@@ -43,3 +44,7 @@ Published to https://767-2676.com/ as Cloudflare Worker version `fb47ecb5-1626-4
 `llms.txt` is a snapshot of the complete published discovery document. Future updates should preserve its service and verification links. `patch-worker.mjs` records the checked transformation from the preceding live source; it deliberately refuses a source with changed anchors. Always download and inspect the current Worker before using it.
 
 The directory reported its last site-pillar check at 2026-09-06T21:43:17.888Z. Root llms.txt was reachable before this release. Its response is now text/plain and the front page links to it in HTML metadata. The directory controls its next assessment and ranking.
+
+## Privacy page
+
+See [PRIVACY-DEPLOY.md](PRIVACY-DEPLOY.md) for the additive privacy route patch. It can be applied independently of older front-page transformations after inspecting a fresh Worker download.

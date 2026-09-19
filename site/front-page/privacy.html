@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy policy | POPCORN</title>
+<meta name="description" content="How POPCORN handles task hashes, nonces, signed receipts, payments, and free samples.">
+<link rel="canonical" href="https://767-2676.com/privacy">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b3d2e;color:#f2efe3;font:18px/1.65 Arial,Helvetica,sans-serif}main{max-width:800px;margin:auto;padding:clamp(24px,6vw,64px) 24px}header{border-block:5px double;padding:14px 0;font:14px/1.5 monospace;letter-spacing:.08em}header a{text-decoration:none}a{color:inherit;text-underline-offset:4px;overflow-wrap:anywhere}a:focus-visible{outline:2px solid;outline-offset:5px}h1{font-size:clamp(38px,8vw,64px);line-height:1.05;letter-spacing:-.05em;margin:36px 0 12px}h2{font-size:23px;line-height:1.3;margin:32px 0 10px}p{margin:12px 0}.date{font:14px/1.5 monospace}li{margin:8px 0}footer{border-top:1px solid;margin-top:40px;padding-top:20px;font:14px/1.7 monospace}footer nav{display:flex;flex-wrap:wrap;gap:20px}@media print{:root{color-scheme:light}body{background:white;color:black}main{padding:0;max-width:none}}
+</style>
+</head>
+<body><main>
+<header><a href="/">767-2676.com / POPCORN</a></header>
+<h1>Privacy policy</h1>
+<p class="date">Last updated: September 19, 2026</p>
+<p>POPCORN is Briarwood AI’s service for signed time and digest receipts. This policy describes the information used by the service at 767-2676.com.</p>
+<section aria-labelledby="receipts"><h2 id="receipts">Task hashes, not task contents</h2>
+<p>To issue a digest receipt, POPCORN processes a SHA-256 task hash, a caller-generated nonce, and, for a linked receipt, the hash of a preceding receipt. It generates timestamps and includes these fields in signed evidence.</p>
+<p>The receipt protocol does not accept raw task contents. Keep your original task and schedule data with you. The witness endpoint rejects fields outside its request schema. A hash is not a guarantee of anonymity; share hashes and receipts with care.</p></section>
+<section aria-labelledby="payments"><h2 id="payments">Payments</h2>
+<p>Payments use x402 in USDC on Base. Wallet addresses and transaction information are visible during payment verification and settlement. POPCORN does not ask for your name, billing address, or payment-card details to pay for a receipt.</p>
+<p>Base is a public blockchain. Payment transactions are public records, and POPCORN cannot erase them. Your wallet and payment infrastructure may process information under their own privacy policies.</p></section>
+<section aria-labelledby="tracking"><h2 id="tracking">No tracking, advertising, or data sales</h2>
+<p>POPCORN does not use advertising trackers or behavioral analytics, serve ads, or sell your data. This privacy page has no cookies, scripts, forms, or third-party embeds.</p></section>
+<section aria-labelledby="samples"><h2 id="samples">Free samples and offline verification</h2>
+<p>Free sample receipts are published examples. Verifying a downloaded sample offline collects and sends nothing to POPCORN. It needs no account, wallet, or payment. Fetching a sample from the website still makes a normal web request to the hosting provider.</p></section>
+<section aria-labelledby="hosting"><h2 id="hosting">Hosting and contact information</h2>
+<p>The site and service run on Cloudflare. Hosting infrastructure processes network request information to deliver and protect the service; that may include IP addresses and technical logs. This is separate from the task data accepted by the receipt protocol.</p>
+<p>If you email us, we receive your email address and whatever you include so we can respond. Do not send private keys, credentials, or raw private task contents.</p></section>
+<section aria-labelledby="contact"><h2 id="contact">Contact</h2>
+<p>For privacy questions or requests, email <a href="mailto:violet@briarwood.ai">violet@briarwood.ai</a>.</p></section>
+<footer><nav aria-label="Resources"><a href="/">POPCORN</a><a href="/agents">Agent instructions</a><a href="/terms">Terms</a><a href="https://github.com/violetclaire/popcorn-temporal-anchor">GitHub documentation</a></nav></footer>
+</main></body></html>
