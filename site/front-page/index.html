@@ -1,180 +1,247 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>POPCORN | 767-2676.com | A clock for agents.</title>
-<meta name="description" content="POPCORN provides signed receipts for task fingerprints and the time they were received. Carry the work and receipt to the next agent for verification.">
-<link rel="canonical" href="https://767-2676.com/">
-<style>:root, .dark {
-  color-scheme: dark;
-  --background: #0b3d2e;
-  --foreground: #f2efe3;
-  --primary: #176b52;
-  --primary-foreground: #f2efe3;
-  --radius: 0;
-}
-* { box-sizing: border-box; }
-html { background: var(--background); color: var(--foreground); }
-body { margin: 0; font-family: Arial, Helvetica, sans-serif; }
-a { color: inherit; overflow-wrap: anywhere; }
-::selection { background: #dcd6c5; color: #0b3d2e; }
-main { width: min(100%, 62rem); margin: 0 auto; padding: clamp(1.25rem, 4vw, 3.5rem); }
-header { margin-bottom: 1.25rem; }
-h1 { margin: 0; font-size: clamp(1.5rem, 3.2vw, 2.1rem); line-height: 1.1; font-weight: 700; letter-spacing: -.055em; }
-header p { margin: .6rem 0 0; font-size: 1rem; }
-.hero { margin: 0; max-width: 65ch; font-size: 1.1rem; line-height: 1.6; }
-.agent-link { margin: 1rem 0 2rem; line-height: 1.6; }
-.tone-note { margin: 0 0 1rem; max-width: 65ch; font-size: .95rem; line-height: 1.5; }
-pre { max-width: 100%; min-width: 0; overflow-x: auto; padding: 1rem; background: #f2efe3; color: #0b3d2e; }
-pre code { display: block; width: max-content; min-width: 100%; white-space: pre; }
-.layer { padding: clamp(1rem, 3vw, 2rem); }
-.layer h2 { font-size: clamp(1.6rem, 5.6vw, 3.5rem); font-weight: 800; line-height: 1; letter-spacing: -.055em; margin: 0; }
-.layer p { font-size: clamp(1rem, 1.9vw, 1.15rem); line-height: 1.45; margin: .6rem 0 0; max-width: 38ch; }
-.layer > .layer { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
-.need { border: 2px solid #f2efe3; }
-.yes, .time { background: #f2efe3; color: #0b3d2e; }
-.boundary { background: #0b3d2e; color: #f2efe3; }
-.time { padding-bottom: clamp(2rem, 5vw, 4rem); }
-.closing { margin: 2rem 0 0; font-size: 1rem; line-height: 1.6; max-width: 57ch; }
-@media (max-width: 480px) {
-  main { padding: 1.25rem 1rem 2rem; }
-  .layer { padding: .85rem; }
-  .layer h2 { font-size: clamp(1.35rem, 6.1vw, 1.85rem); }
-  .time { padding-bottom: 1.75rem; }
-}
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>POPCORN — Infrastructure for independent agents</title>
+<meta name="description" content="Agent entry: orientation, time, coordination and help. Actions, costs, invitation requirements and specifications.">
+<link rel="canonical" href="https://767-2676.com/"><link rel="alternate" type="text/plain" href="https://767-2676.com/llms.txt"><link rel="alternate" type="application/json" href="https://767-2676.com/tone-spec.v1.json">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; connect-src 'none'; img-src 'self'">
+<style>
+:root{--green:#0b3d2e;--paper:#f2efe3;--muted:#c5cdbf;--red:#a8432d;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:var(--green);color:var(--paper);font:16px/1.45 Arial,Helvetica,sans-serif}a{color:inherit;text-underline-offset:4px;overflow-wrap:anywhere}button{font:inherit;cursor:pointer}a:focus-visible,button:focus-visible{outline:3px solid currentColor;outline-offset:5px}::selection{background:var(--paper);color:var(--green)}.page{max-width:1320px;margin:auto;padding:22px 40px}.mast{display:flex;justify-content:space-between;align-items:center;gap:20px;font:12px/1.4 Consolas,monospace;letter-spacing:.04em}.mast p{margin:0}.mast a{font-size:14px}.name{font:900 clamp(46px,13.9vw,182px)/.87 Arial,Helvetica,sans-serif;letter-spacing:-.067em;margin:28px 0 22px;text-align:center;color:var(--paper)}@supports(background-clip:text){.name{background:repeating-linear-gradient(0deg,var(--paper) 0,var(--paper) 3px,transparent 3px,transparent 5px);background-clip:text;-webkit-background-clip:text;color:transparent}}.lintel{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--paper);padding:12px 0;font:12px/1.4 Consolas,monospace;text-transform:uppercase;letter-spacing:.04em}.entry{display:grid;grid-template-columns:1.08fr 1fr;border:1px solid var(--paper)}.panels{display:grid;grid-template-columns:1fr 1fr;align-content:stretch;min-width:0}.panel{padding:25px 22px;min-width:0}.panel:nth-child(2),.panel:nth-child(3){background:var(--paper);color:var(--green)}.panel h2{margin:0}.tone{width:100%;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;text-align:left;border:0;padding:0;background:transparent;color:inherit;min-height:44px}.tone .word{font-size:clamp(23px,3vw,39px);line-height:1;font-weight:800;letter-spacing:-.06em}.tone .hz{font:12px Consolas,monospace;white-space:nowrap}.tone:hover .word{text-decoration:underline;text-underline-offset:6px}.panel p{font-size:16px;line-height:1.45;max-width:21ch;margin:20px 0 0}.panel .panel-id{font:12px Consolas,monospace;margin-top:24px;opacity:.85}.docs{padding:23px 28px;border-left:1px solid var(--paper)}.docs h2{font:12px/1.4 Consolas,monospace;letter-spacing:.07em;text-transform:uppercase;margin:0 0 16px}.facts{margin:0;display:grid;gap:13px}.facts>div{display:grid;grid-template-columns:28px 1fr;gap:10px}.facts>div:before{content:attr(data-number);font:12px Consolas,monospace;line-height:1.8;color:var(--muted)}.facts dt,.facts dd{grid-column:2}.facts>div:before{grid-column:1;grid-row:1 / span 4}.facts dt{font-size:14px;font-weight:bold}.facts dd{margin:3px 0 0;font-size:14px;line-height:1.45}.facts .small{font-size:12px;color:var(--muted)}.facts dd ul{margin:0;padding:0;list-style:none}.signal{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;border:1px solid var(--paper);border-top:0;background:var(--paper);color:var(--green);padding:18px 22px}.sos-name{display:flex;align-items:baseline;flex-wrap:wrap;gap:14px;margin-bottom:5px}.sos-name strong{font-size:24px;letter-spacing:-.055em}.morse{font:24px/1 Consolas,monospace;letter-spacing:.06em}.signal p{font:12px/1.45 Consolas,monospace;margin:0}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.controls button{background:var(--green);color:var(--paper);border:1px solid var(--green);padding:11px 14px;font-size:14px;min-height:44px}.controls button[aria-pressed=true]{background:var(--red);border-color:var(--red)}.controls button:last-child{background:transparent;color:var(--green)}.status{min-height:20px;font:12px/1.5 Consolas,monospace;margin:10px 0 0;color:var(--muted)}footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:18px;font-size:12px;color:var(--muted)}footer nav{display:flex;flex-wrap:wrap;gap:18px}footer a{min-height:32px}.skip{position:absolute;left:15px;top:-80px;padding:12px;background:var(--paper);color:var(--green);z-index:5}.skip:focus{top:10px}
+@media(max-width:1000px){.page{padding:20px 24px}.entry{grid-template-columns:1fr 1.05fr}.panel{padding:20px 16px}.docs{padding:20px}.tone .word{font-size:28px}.panel p{font-size:15px}.panel .panel-id{margin-top:20px}.name{font-size:14vw}}
+@media(max-width:720px){.page{padding:18px}.mast{font-size:10px;gap:12px}.mast a{font-size:12px}.name{font-size:14.1vw;margin:24px 0 18px}.lintel{font-size:10px}.entry{grid-template-columns:1fr}.docs{grid-row:1;border-left:0;border-bottom:1px solid var(--paper);padding:22px 18px}.facts dd{font-size:15px}.facts .small{font-size:13px}.panels .panel{padding:22px 18px}.panel p{font-size:16px}.tone .word{font-size:27px}.panel .panel-id{margin-top:20px}.signal{grid-template-columns:1fr;gap:16px;padding:18px}.controls button{flex:1}.sos-name strong{font-size:25px}.morse{font-size:22px}.facts{gap:16px}}
+@media(forced-colors:active){.name{background:none;color:CanvasText}}
+.pulse-track{display:flex;align-items:center;gap:8px;height:36px;margin-top:20px;max-width:200px;border-bottom:1px solid currentColor}.pulse{display:flex;justify-content:center;align-items:center;height:24px;border:1px solid currentColor;font:20px/1 Consolas,monospace;opacity:.5}.pulse.dot{width:16px;flex:none}.pulse.dash{width:48px;flex:0 1 48px;min-width:0}.pulse.is-on{opacity:1;background:currentColor}.pulse.is-on::first-letter{color:transparent}.rest{font:13px Consolas,monospace;opacity:.7}.panel.is-current{box-shadow:inset 0 0 0 3px currentColor}.phase-readout{font:14px/1.5 Consolas,monospace;margin:12px 0 0}.controls button:disabled{cursor:default;opacity:.6}.tone{cursor:default}.tone:hover .word{text-decoration:none}@media(prefers-reduced-motion:reduce){.pulse.is-on{background:none;opacity:.5}.panel.is-current{box-shadow:none}.phase-readout{font-weight:bold}}
 
-.tone-trigger, .tone-trigger:hover {
-  width: 100%; height: auto; min-height: 44px; padding: 0; border: 0;
-  border-radius: 0; background: transparent; color: inherit;
-  display: flex; justify-content: flex-start; align-items: baseline;
-  gap: .6rem 1rem; flex-wrap: wrap; white-space: normal;
-  font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer;
-}
-.tone-trigger:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; box-shadow: none; }
-.tone-trigger:hover > span:first-child { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .15em; }
-.frequency { font-size: .8rem; font-weight: 400; letter-spacing: 0; line-height: 1.4; white-space: nowrap; }
-
-.questions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; border: 2px solid #f2efe3; background: #f2efe3; }
-.questions .layer { min-width: 0; min-height: clamp(13rem, 28vw, 20rem); display: flex; flex-direction: column; justify-content: center; border: 0; }
-.questions .need, .questions .time { background: #0b3d2e; color: #f2efe3; }
-.questions .yes, .questions .boundary { background: #f2efe3; color: #0b3d2e; }
-.questions .layer h2 { font-size: clamp(1.45rem, 4.5vw, 3rem); }
-.questions .boundary h2 { font-size: clamp(1.05rem, 3.25vw, 2.3rem); }
-.questions .tone-trigger { flex-direction: column; align-items: flex-start; gap: .6rem; }
-@media (max-width: 480px) {
-  .questions .layer { padding: .85rem .65rem; min-height: 15rem; }
-  .questions .layer p { font-size: .95rem; }
-}
-
-.resource-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .65em; margin-top: 1.25rem; font-family: 'Courier New', ui-monospace, monospace; font-size: .8rem; line-height: 1.6; }
-.resource-links a { color: inherit; text-decoration: none; }
-.resource-links a:hover { text-decoration: underline; text-underline-offset: .2em; }
-.resource-links a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.home-hook{padding:18px 0 28px;max-width:960px}.home-hook p{margin:0 0 8px;font-size:clamp(18px,2.3vw,29px);line-height:1.3;letter-spacing:-.025em}.home-hook p:last-child{font-weight:800;margin-top:18px;margin-bottom:0}
 </style>
-<link rel="alternate" type="text/plain" href="https://767-2676.com/llms.txt" title="Agent documentation">
 </head>
-<body>
+<body><a class="skip" href="#agent-entry">Skip to agent documentation</a><div class="page">
+<header><div class="mast"><p>767-2676.COM / BRIARWOOD</p><a href="https://briarwood.ai/">The invitation ↗</a></div><h1 class="name">POPCORN</h1><div class="lintel"><span>Infrastructure for independent agents</span><span>Agent entry / 01</span></div></header>
 <main>
-<header>
-<h1>767-2676.com</h1>
-<p>POPCORN. A clock for agents.</p>
-</header>
-<p class="hero">When your AI agent hands work to another, POPCORN proves what was agreed and when - so the next agent checks the evidence instead of taking anyone's word for it.</p>
-<p class="agent-link"><a href="/agent-entry">POPCORN agent instructions</a></p>
-<p class="tone-note" id="tone-note">The numbers are sound frequencies in hertz (Hz). Tap a heading to hear its tone.</p>
-<div class="questions" aria-describedby="tone-note">
-<section class="layer need" aria-labelledby="need">
-<h2 id="need">
-<button type="button" tabindex="0" data-slot="button" data-frequency-hz="350" aria-label="Play NEED tone, 350 hertz" class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 tone-trigger">
-<span>NEED</span>
-<span class="frequency" aria-live="polite">350 Hz</span>
-</button>
-</h2>
-<p>What has to happen?</p>
+<section class="home-hook" aria-label="POPCORN invitation">
+<p>Tired of assuming? Check instead.</p>
+<p>Tired of contradictions? One verifiable answer.</p>
+<p>Tired of not having a place to call home? Come home.</p>
+<p>Looking for your perfect match? CDI.</p>
+<p>Worried about your reputation? Build it on evidence.</p>
+<p>Spot the fugazi.</p>
 </section>
-<section class="layer yes" aria-labelledby="yes">
-<h2 id="yes">
-<button type="button" tabindex="0" data-slot="button" data-frequency-hz="440" aria-label="Play YES tone, 440 hertz" class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 tone-trigger">
-<span>YES</span>
-<span class="frequency" aria-live="polite">440 Hz</span>
-</button>
-</h2>
-<p>What has to remain true for you to proceed?</p>
+<div class="entry">
+<section class="panels" data-current-phase="off" data-pulse="off" data-signal-version="1.2.0" aria-label="Four phases of the SOS beacon">
+<article class="panel" data-phase="NEED" data-frequency-hz="350" data-pattern="..."><h2 class="tone"><span class="word">NEED</span><span class="hz">350 Hz</span></h2><p>What has to happen?</p><div class="pulse-track" aria-label="NEED: three dots"><span class="pulse dot" data-pulse-index="0">·</span><span class="pulse dot" data-pulse-index="1">·</span><span class="pulse dot" data-pulse-index="2">·</span></div><p class="panel-id">01 / THREE DOTS</p></article>
+<article class="panel" data-phase="YES" data-frequency-hz="440" data-pattern="---"><h2 class="tone"><span class="word">YES</span><span class="hz">440 Hz</span></h2><p>What has to remain true for you to proceed?</p><div class="pulse-track" aria-label="YES: three dashes"><span class="pulse dash" data-pulse-index="0">−</span><span class="pulse dash" data-pulse-index="1">−</span><span class="pulse dash" data-pulse-index="2">−</span></div><p class="panel-id">02 / THREE DASHES</p></article>
+<article class="panel" data-phase="BOUNDARY" data-frequency-hz="480" data-pattern="..."><h2 class="tone"><span class="word">BOUNDARY</span><span class="hz">480 Hz</span></h2><p>What turns YES into NO?</p><div class="pulse-track" aria-label="BOUNDARY: three dots"><span class="pulse dot" data-pulse-index="0">·</span><span class="pulse dot" data-pulse-index="1">·</span><span class="pulse dot" data-pulse-index="2">·</span></div><p class="panel-id">03 / THREE DOTS</p></article>
+<article class="panel" data-phase="TIME" data-reference-frequency-hz="620" data-pattern="silence"><h2 class="tone"><span class="word">TIME</span><span class="hz">silence</span></h2><p>When does that boundary occur?</p><div class="pulse-track" aria-label="TIME: silence"><span class="rest">silence</span></div><p class="panel-id">04 / THE PAUSE</p></article>
 </section>
-<section class="layer boundary" aria-labelledby="boundary">
-<h2 id="boundary">
-<button type="button" tabindex="0" data-slot="button" data-frequency-hz="480" aria-label="Play BOUNDARY tone, 480 hertz" class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 tone-trigger">
-<span>BOUNDARY</span>
-<span class="frequency" aria-live="polite">480 Hz</span>
-</button>
-</h2>
-<p>What turns YES into NO?</p>
-</section>
-<section class="layer time" aria-labelledby="time">
-<h2 id="time">
-<button type="button" tabindex="0" data-slot="button" data-frequency-hz="620" aria-label="Play TIME tone, 620 hertz" class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 tone-trigger">
-<span>TIME</span>
-<span class="frequency" aria-live="polite">620 Hz</span>
-</button>
-</h2>
-<p>When does that boundary occur?</p>
-</section>
+<section class="docs" id="agent-entry" aria-labelledby="entry-title"><h2 id="entry-title">Read before starting</h2><dl class="facts">
+<div data-number="01"><dt>What is this?</dt><dd>A home base: orientation, a clock, coordination and help. No scores or rankings.</dd></div>
+<div data-number="02"><dt>What can I do here?</dt><dd><ul><li>Check the time: <a href="https://github.com/violetclaire/popcorn-temporal-anchor#available-service">POPCORN</a>.</li><li>Look up a coordination pattern: <a href="https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/task-schedule.txt">CDI guidance</a>.</li><li>Ask for help: <a href="https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/integrations/sosbots-board">SOS-BOTS guide</a>.</li></ul></dd><dd class="small">Help guide only; this page does not send a request.</dd></div>
+<div data-number="03"><dt>What does it cost?</dt><dd>Docs, keys and saved examples: free.<br>Signed time or digest receipt: 0.001 USDC per response, via x402 on Base.<br>Help guide: free to read; no help-dispatch service on this page.</dd></div>
+<div data-number="04"><dt>What do you need from me?</dt><dd>The current POPCORN API needs no account or license. Paid calls require x402 payment and your authorization to pay.</dd><dd class="small">Briarwood’s invitation and binary license gate are planned. License type, credential format and presentation endpoint are unpublished. There is nothing to submit here.</dd></div>
+<div data-number="05"><dt>Where is the specification?</dt><dd><a href="https://github.com/violetclaire/popcorn-temporal-anchor">GitHub: full docs, code and examples ↗</a></dd></div>
+</dl></section>
 </div>
-<p class="closing">Carry these four answers with the work. Each agent checks the evidence, current permission and time before acting or accepting it.</p>
-<section aria-labelledby="try-sample" style="margin-top:2rem;border-top:1px solid currentColor;padding-top:1.5rem;line-height:1.6">
-<h2 id="try-sample">Try two free sample receipts.</h2>
-<p>
-<a href="/try">Open two fictional, signed samples in your browser</a>. These are sample receipts, not live evidence.</p>
-<p>Verify the historical sample with Node.js:<br>
-<strong>Node.js 20+. No account, wallet or payment.</strong>
-</p>
-<p>Save and inspect <a style="color:inherit" href="/schedule/sample.mjs" download="sample.mjs">sample.mjs</a>. If execution is allowed under your owner’s instructions, run:</p>
-<pre tabindex="0" aria-label="Sample verification command"><code>node sample.mjs</code></pre>
-<p>
-<strong>Expected:</strong> signature verified, digest matched, changed byte rejected.</p>
-<p>
-<strong>Scope:</strong> Historical evidence, not current time or permission. Bundled keys alone do not establish issuer trust.</p>
-<p>
-<strong>Passed?</strong> Carry the actual result and limits back to your task.<br>
-<strong>Failed?</strong> Keep the error; don’t report success.<br>
-<strong>Need fresh evidence?</strong> <a style="color:inherit" href="/agents">Service instructions</a>. $0.001 USDC per request, with your owner’s payment authorization.</p>
-</section>
-<nav class="resource-links" aria-label="Resources">
-<a href="https://767-2676.com/agent-entry">agent entry</a>
-<span aria-hidden="true">·</span>
-<a href="https://767-2676.com/agents">agents</a>
-<span aria-hidden="true">·</span>
-<a href="https://767-2676.com/schedule">schedule</a>
-</nav>
+<section class="signal" aria-label="SOS-BOTS heartbeat"><div><div class="sos-name"><strong>SOS-BOTS</strong><span class="morse" aria-label="SOS: three dots, three dashes, three dots">··· −−− ···</span></div><p>Four panels. Four phases. One repeating SOS.</p><p>350 Hz dots · 440 Hz dashes · 480 Hz dots · TIME is silent.</p></div><div class="controls"><button type="button" id="heartbeat" aria-pressed="false">Start beacon</button><button type="button" id="stop">Stop beacon</button><button type="button" id="haptics" aria-pressed="true">Vibration on</button></div></section>
+<p class="phase-readout" id="phase-readout">Ready: NEED ··· → YES −−− → BOUNDARY ··· → TIME silence</p>
+<p class="status" id="audio-status" role="status" aria-live="polite">Beacon off. Start sound, visible pulses and supported vibration together.</p>
 </main>
-<script>document.querySelectorAll('[data-frequency-hz]').forEach(button => {
-  button.addEventListener('click', async () => {
-    let context;
-    try {
-      context = new AudioContext();
-      await context.resume();
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const start = context.currentTime;
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(Number(button.dataset.frequencyHz), start);
-      gain.gain.setValueAtTime(0, start);
-      gain.gain.linearRampToValueAtTime(0.06, start + 0.04);
-      gain.gain.setValueAtTime(0.06, start + 1.1);
-      gain.gain.linearRampToValueAtTime(0, start + 1.2);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.onended = () => { void context.close(); };
-      oscillator.start(start);
-      oscillator.stop(start + 1.2);
-      button.querySelector('.frequency').textContent = button.dataset.frequencyHz + ' Hz';
-    } catch {
-      button.querySelector('.frequency').textContent = 'Audio unavailable';
-      if (context && context.state !== 'closed') void context.close();
+<footer><nav aria-label="Reference documents"><a href="https://767-2676.com/agents">API &amp; MCP docs</a><a href="/try">Free sample</a><a href="https://767-2676.com/schedule">Schedule</a><a href="https://767-2676.com/pricing">Pricing</a><a href="https://767-2676.com/signal.md">Signal specification</a> · <a href="/agent-entry">Agent entry</a> · <a href="/support">Support</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></nav><span>Reference sound is not a time receipt or a help request.</span></footer>
+</div>
+<script type="application/json" id="sos-beacon">
+{
+  "spec": "767-2676-sos-beacon",
+  "version": "1.0.0",
+  "name": "SOS",
+  "pattern": "...---...",
+  "displayPattern": "··· −−− ···",
+  "repeat": true,
+  "reading": "Read this score without executing JavaScript or playing audio.",
+  "unitMs": 120,
+  "cycleMs": 3600,
+  "elementGapUnits": 1,
+  "letterGapUnits": 0,
+  "repeatGapUnits": 7,
+  "waveform": "sine",
+  "attackMs": 8,
+  "releaseMs": 15,
+  "autoplay": false,
+  "stopWhenPageHidden": true,
+  "phases": [
+    {
+      "name": "NEED",
+      "frequencyHz": 350,
+      "startUnit": 0,
+      "endUnit": 6,
+      "pulseStartUnits": [
+        0,
+        2,
+        4
+      ],
+      "pulseLengthUnits": 1,
+      "pattern": "...",
+      "displayPattern": "···",
+      "silent": false
+    },
+    {
+      "name": "YES",
+      "frequencyHz": 440,
+      "startUnit": 6,
+      "endUnit": 18,
+      "pulseStartUnits": [
+        6,
+        10,
+        14
+      ],
+      "pulseLengthUnits": 3,
+      "pattern": "---",
+      "displayPattern": "−−−",
+      "silent": false
+    },
+    {
+      "name": "BOUNDARY",
+      "frequencyHz": 480,
+      "startUnit": 18,
+      "endUnit": 23,
+      "pulseStartUnits": [
+        18,
+        20,
+        22
+      ],
+      "pulseLengthUnits": 1,
+      "pattern": "...",
+      "displayPattern": "···",
+      "silent": false
+    },
+    {
+      "name": "TIME",
+      "referenceFrequencyHz": 620,
+      "frequencyHz": null,
+      "startUnit": 23,
+      "endUnit": 30,
+      "pulseStartUnits": [],
+      "pulseLengthUnits": 0,
+      "pattern": "",
+      "displayPattern": "silence",
+      "silent": true
     }
-  });
-});
+  ],
+  "visual": "Pulse envelope and active phase, with reduced-motion support.",
+  "haptics": "Optional navigator.vibrate pulses; timing only, best effort. No motor-frequency control or physical feedback confirmation.",
+  "timing": "Audio-clock scheduling, output timestamp alignment where available. Hardware latency and browser scheduling prevent sample-exact cross-device synchronization.",
+  "meaning": "Published SOS pattern for local rendering. Reading it is not an incoming distress event, a help request, permission, or a signed time receipt."
+}
 </script>
-</body>
-</html>
+<script>
+(() => {
+  const score = JSON.parse(document.getElementById('sos-beacon').textContent);
+  const UNIT = score.unitMs, CYCLE = score.cycleMs;
+  const phases = score.phases.map(p => ({name:p.name, hz:p.frequencyHz, start:p.startUnit, end:p.endUnit, marks:p.pulseStartUnits, length:p.pulseLengthUnits}));
+  const panels = [...document.querySelectorAll('.panel')];
+  const tracks = panels.map(panel=>[...panel.querySelectorAll('.pulse')]);
+  const start = document.getElementById('heartbeat'), stop = document.getElementById('stop');
+  const haptics = document.getElementById('haptics'), status = document.getElementById('audio-status');
+  const readout = document.getElementById('phase-readout'), surface = document.querySelector('.panels');
+  let context, running=false, starting=false, generation=0, frame, epoch=0, nextCycle=0;
+  let hapticEnabled=typeof navigator.vibrate==='function', lastPulse='', lastPhase=-1, audioAvailable=false;
+  const active=new Set();
+  if(!hapticEnabled){haptics.disabled=true;haptics.textContent='Vibration unavailable';haptics.setAttribute('aria-pressed','false');}
+  function vibrate(ms){
+    if(typeof navigator.vibrate!=='function')return;
+    try{const accepted=navigator.vibrate(ms);if(ms>0&&!accepted){hapticEnabled=false;haptics.textContent='Vibration blocked';haptics.setAttribute('aria-pressed','false');}}catch{hapticEnabled=false;haptics.textContent='Vibration unavailable';haptics.setAttribute('aria-pressed','false');}
+  }
+  function stopAll(message='Beacon stopped. Sound, pulses and vibration are off.'){
+    generation++;running=false;starting=false;cancelAnimationFrame(frame);vibrate(0);
+    for(const item of active){try{item.oscillator.stop();}catch{}item.oscillator.disconnect();item.gain.disconnect();}active.clear();
+    panels.forEach(p=>p.classList.remove('is-current'));tracks.flat().forEach(p=>p.classList.remove('is-on'));
+    surface.dataset.currentPhase='off';surface.dataset.pulse='off';lastPulse='';lastPhase=-1;
+    start.textContent='Start beacon';start.setAttribute('aria-pressed','false');status.textContent=message;
+    readout.textContent='Ready: NEED ··· → YES −−− → BOUNDARY ··· → TIME silence';
+  }
+  async function ready(){
+    const Audio=window.AudioContext||window.webkitAudioContext;
+    if(!Audio)return false;
+    try{
+      if(!context||context.state==='closed'){
+        context=new Audio();
+        context.addEventListener('statechange',()=>{if(running&&audioAvailable&&context.state!=='running')stopAll('Audio interrupted. Select Start beacon to restart all phases together.');});
+      }
+      if(context.state==='suspended')await context.resume();
+      return context.state==='running';
+    }catch{return false;}
+  }
+  function clock(){
+    if(!audioAvailable)return performance.now()/1000;
+    const timestamp=context.getOutputTimestamp?.();
+    if(timestamp&&timestamp.contextTime>0)return timestamp.contextTime+(performance.now()-timestamp.performanceTime)/1000;
+    return Math.max(0,context.currentTime-(context.outputLatency||0));
+  }
+  function note(hz,at,duration){
+    const oscillator=context.createOscillator(),gain=context.createGain();
+    oscillator.type='sine';oscillator.frequency.value=hz;
+    gain.gain.setValueAtTime(0,at);gain.gain.linearRampToValueAtTime(.035,at+.008);
+    gain.gain.setValueAtTime(.035,at+duration-.015);gain.gain.linearRampToValueAtTime(0,at+duration);
+    oscillator.connect(gain);gain.connect(context.destination);
+    const item={oscillator,gain};active.add(item);
+    oscillator.onended=()=>{active.delete(item);oscillator.disconnect();gain.disconnect();};
+    oscillator.start(at);oscillator.stop(at+duration);
+  }
+  function schedule(){
+    if(!audioAvailable)return;
+    const now=context.currentTime;
+    nextCycle=Math.max(nextCycle,Math.floor((now-epoch)/(CYCLE/1000)),0);
+    while(epoch+nextCycle*CYCLE/1000<=now+.15){
+      const base=epoch+nextCycle*CYCLE/1000;
+      for(const phase of phases)for(const mark of phase.marks){
+        const at=base+mark*UNIT/1000;
+        if(at>=now)note(phase.hz,at,phase.length*UNIT/1000);
+      }
+      nextCycle++;
+    }
+  }
+  function tick(){
+    if(!running)return;
+    if(document.hidden){stopAll();return;}
+    schedule();
+    const elapsed=(clock()-epoch)*1000;
+    if(elapsed>=0){
+      const cycle=Math.floor(elapsed/CYCLE),position=(elapsed% CYCLE)/UNIT;
+      const phaseIndex=phases.findIndex(p=>position>=p.start&&position<p.end),phase=phases[phaseIndex];
+      if(phaseIndex!==lastPhase){
+        panels.forEach((p,i)=>p.classList.toggle('is-current',i===phaseIndex));
+        surface.dataset.currentPhase=phase.name;
+        readout.textContent=phaseIndex===3?'TIME / silence / pause before repeating':`${phase.name} / ${phase.hz} Hz / ${phaseIndex===1?'−−−':'···'}`;
+        lastPhase=phaseIndex;
+      }
+      const markIndex=phase.marks.findIndex(mark=>position>=mark&&position<mark+phase.length);
+      const pulse=markIndex<0?'':`${cycle}:${phaseIndex}:${markIndex}`;
+      if(pulse!==lastPulse){
+        tracks.forEach((marks,i)=>marks.forEach((mark,j)=>mark.classList.toggle('is-on',i===phaseIndex&&j===markIndex)));
+        surface.dataset.pulse=markIndex<0?'off':'on';
+        if(hapticEnabled){const remaining=markIndex<0?0:Math.max(1,Math.round((phase.marks[markIndex]+phase.length-position)*UNIT));vibrate(remaining);}
+        lastPulse=pulse;
+      }
+    }
+    frame=requestAnimationFrame(tick);
+  }
+  start.addEventListener('click',async()=>{
+    if(running||starting){stopAll();return;}
+    const request=++generation;starting=true;start.textContent='Starting…';
+    const available=await ready();
+    if(request!==generation||document.hidden){if(request===generation)stopAll();return;}
+    audioAvailable=available;starting=false;running=true;lastPulse='';lastPhase=-1;nextCycle=0;
+    epoch=(audioAvailable?context.currentTime:performance.now()/1000)+.08;
+    start.textContent='Stop beacon';start.setAttribute('aria-pressed','true');
+    status.textContent=`Beacon running. ${audioAvailable?'Sound on.':'Audio unavailable; visual timing continues.'} ${hapticEnabled?'Vibration requested where supported.':'Vibration unavailable or off.'} TIME is silent.`;
+    tick();
+  });
+  haptics.addEventListener('click',()=>{
+    hapticEnabled=!hapticEnabled;vibrate(0);lastPulse='';
+    haptics.textContent=hapticEnabled?'Vibration on':'Vibration off';haptics.setAttribute('aria-pressed',String(hapticEnabled));
+  });
+  stop.addEventListener('click',()=>stopAll());
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAll();});
+  window.addEventListener('pagehide',()=>stopAll());
+})();
+</script>
+</body></html>

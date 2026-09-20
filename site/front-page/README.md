@@ -1,17 +1,19 @@
-# Sound clock front page
+# POPCORN homepage and SOS beacon
 
-The front page of 767-2676.com is the sound clock: four questions in a phthalo-green and cream grid, with a separate tone for each heading.
+The live [POPCORN homepage](https://767-2676.com/) is [index.html](index.html). Its six-line invitation appears above the four-question grid. The panels form four phases of one repeating SOS beacon under `767-2676-tone-plan` version `1.2.0`.
 
-| Field | Question | Frequency |
+| Phase | Question | Beacon output |
 | --- | --- | --- |
-| NEED | What has to happen? | 350 Hz |
-| YES | What has to remain true for you to proceed? | 440 Hz |
-| BOUNDARY | What turns YES into NO? | 480 Hz |
-| TIME | When does that boundary occur? | 620 Hz |
+| NEED | What has to happen? | Three dots at 350 Hz |
+| YES | What has to remain true for you to proceed? | Three dashes at 440 Hz |
+| BOUNDARY | What turns YES into NO? | Three dots at 480 Hz |
+| TIME | When does that boundary occur? | Silence; 620 Hz is a readable reference only |
 
-Open `index.html` in a browser to review the standalone page. It includes its styles and audio code. Clicking or keyboard-activating a heading plays a sine wave for 1.2 seconds, with a soft attack and release. There is no autoplay. Each heading exposes the same integer in `data-frequency-hz`; agents can read the value without hearing audio.
+Start beacon begins the sequence; there is no autoplay. Dots last 120 ms, dashes 360 ms, and element gaps 120 ms, with no inter-letter gaps. TIME supplies the final 840 ms of silence, making a 3600 ms cycle. Sine-wave pulses use an 8 ms attack and 15 ms release. Stop beacon or hiding the page ends playback. Optional vibration follows the pulse timing where supported; it does not confirm physical output.
 
-The closing sentence is followed by two small links: agents · schedule.
+The page includes its styles, score and playback code. Visible labels, phase attributes and embedded JSON expose the sequence without audio. TIME has no pulses and its played `frequencyHz` is `null`. See [signal.md](signal.md) for phase intervals, accessibility and browser timing limits, and [tone-spec.v1.json](tone-spec.v1.json) for the versioned specification. Changes to timing or frequency mapping require a version update.
+
+The separate [assumptions page](https://767-2676.com/assumptions) has [source and build/check instructions](../assumptions/README.md). It replays historical signed task checks and presents one result as human language and machine-readable evidence.
 
 ## Publish with the existing service
 
@@ -28,18 +30,14 @@ Serve `index.html` at `/` through the current Cloudflare Worker. Preserve the cu
 
 Keep /v1/time, /v1/receipt, /test-line, /schedule and its examples, /agents, /.well-known/popcorn-keys.json, the MCP installation material, and the other existing routes at their current locations.
 
-The mapping is `767-2676-tone-plan` version `1.0.0`. A future frequency or mapping change requires a version bump. Keep the visible numbers, HTML attributes, JSON, and llms.txt mapping consistent.
-
-Signal mappings belong in the documentation, not among the four front-page questions. Audio playback is a rendering of a published reference. It does not grant authorization or produce a signed time witness. See [signal.md](signal.md).
+Keep visible labels, HTML attributes, JSON and llms.txt consistent. The other reference mappings in [signal.md](signal.md) are not played by this beacon. Playback does not grant authorization, produce a signed time witness or send a help request.
 
 See [OPERATOR.md](../../OPERATOR.md) for the broader publishing instructions.
 
-The hourly test automation is paused at the owner’s request. Keep the saved /test-line sample available, with no front-page link.
+## Historical deployment record: 2026-09-08
 
-## Deployment record — 2026-09-08
+An earlier front page was published to https://767-2676.com/ as Cloudflare Worker version `fb47ecb5-1626-43bb-b4e6-f321e239b512`. That release used separate heading tones and predates the current SOS 1.2.0 sequence. Its root HTML was compared byte-for-byte with the then-current `index.html`. Pricing, service terms, tone documents and the appended llms.txt were checked live. Both paid endpoints returned x402 v2 challenges for 1000 atomic USDC on Base. No payment was made during those checks. Existing bindings and configuration were preserved.
 
-Published to https://767-2676.com/ as Cloudflare Worker version `fb47ecb5-1626-43bb-b4e6-f321e239b512`. The root HTML was compared byte-for-byte with `index.html`. Pricing, service terms, tone documents, and the appended llms.txt were checked live. Both paid endpoints returned x402 v2 challenges for 1000 atomic USDC on Base. No payment was made during these checks. Existing bindings and configuration were preserved.
+The historical `patch-worker.mjs` records a checked transformation from that release's preceding live source and refuses changed anchors. It is not a current deployment snapshot. Always download and inspect the current Worker before publishing. Preserve the service and verification links in the complete llms.txt when applying an addendum.
 
-`llms.txt` is a snapshot of the complete published discovery document. Future updates should preserve its service and verification links. `patch-worker.mjs` records the checked transformation from the preceding live source; it deliberately refuses a source with changed anchors. Always download and inspect the current Worker before using it.
-
-The directory reported its last site-pillar check at 2026-09-06T21:43:17.888Z. Root llms.txt was reachable before this release. Its response is now text/plain and the front page links to it in HTML metadata. The directory controls its next assessment and ranking.
+Earlier notes recorded the hourly test automation as paused at the owner's request. That note does not establish its current state; keep the saved `/test-line` sample available. The directory's recorded site-pillar check was `2026-09-06T21:43:17.888Z`; this is historical, not a current assessment. The September 8 release served llms.txt as text/plain and linked it in homepage metadata.

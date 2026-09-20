@@ -1,4 +1,24 @@
+# POPCORN — signed evidence before a deadline or handoff
+
+Start here: https://767-2676.com/agent-entry.md
+Two free, fictional signed samples: https://767-2676.com/try
+Sample source: https://767-2676.com/samples/generic-sample.mjs
+Fresh time or task-digest witness: $0.001 USDC per request, with owner-authorized payment.
+MCP: @violetclaire/popcorn-mcp@0.1.3 (local stdio).
+Use when exact task bytes and independently checkable time evidence matter across a handoff.
+An old receipt does not establish current permission. The executor checks fresh time, approval, revocation and final terms.
+
 # 767-2676.com — POPCORN Protocol
+
+## Time evidence and authorization expiry
+
+Search terms: RFC 3161, FreeTSA, OpenTimestamps, trusted timestamp, proof of existence, authorization expiry, signed execution receipt, and independent verification.
+
+- [RFC 3161, OpenTimestamps, trusted timestamp, and proof of existence before authorization expiry](https://767-2676.com/prove-action-before-authorization-expired): Free verification, a fresh pre-action check, and a linked post-commit witness; evidence does not grant permission.
+- [Free test-line bundle](https://767-2676.com/test-line/bundle.json): A saved settled production test-line receipt (inspect publisher status and checkpoint age) plus a public predecessor-chain conformance vector.
+- [Free local verifier](https://767-2676.com/test-line/verify.mjs): Verifies the latest ES256 JWS, payload digests, both chain signatures, and the predecessor link. No wallet or payment.
+
+POPCORN is not an RFC 3161 timestamp authority. RFC 3161, OpenTimestamps, and POPCORN can prove claims about exact bytes and time; none proves by itself that the described action happened under a valid authorization.
 
 Can I still cancel? Which side of the deadline am I on?
 
@@ -100,31 +120,13 @@ Free sample skill: https://767-2676.com/skills/task-time/SKILL.md
 - Normal ES256 key rotation publishes the previous public key alongside the active key for a bounded overlap period.
 
 
-# 767-2676.com
-A clock for agents.
+## SOS beacon
 
-Tone specification: 767-2676-tone-plan, version 1.0.0
-NEED | What has to happen? | 350 Hz
-YES | What has to remain true for you to proceed? | 440 Hz
-BOUNDARY | What turns YES into NO? | 480 Hz
-TIME | When does that boundary occur? | 620 Hz
+The homepage and /agent-entry render the SOS score from /agent-entry/beacon.json. NEED: 350 Hz, three dots. YES: 440 Hz, three dashes. BOUNDARY: 480 Hz, three dots. TIME: silence; 620 Hz remains a reference only. Dot 120 ms, dash 360 ms, inter-element gap 120 ms, no inter-letter gaps, repeat silence 840 ms. Cycle 3600 ms.
 
-GO_AHEAD = 350 + 440 Hz
-WAITING = 440 + 480 Hz
-NO = 480 + 620 Hz
-PROCEED = 1000 Hz, sine wave, 800 ms, single reference tone
+/tone-spec.v1.json is version 1.2.0; /signal.md explains timing and browser limitations. The score is also embedded as application/json in both pages and under beacon in /agent-entry.json. Reading requires no JavaScript or audio. Human playback starts explicitly; Stop or hiding the page ends playback. Supported vibration is best effort and is not confirmation of physical output. No network help request is dispatched.
 
-Box tones: sine wave, 1200 ms, 40 ms attack, 100 ms release, user-initiated playback only.
-Each box publishes its integer frequency in data-frequency-hz.
-Agents read the field and number. Humans may play the sound.
-Tone playback is not a signed time witness or authorization.
-
-Signal mapping: /signal.md
-Machine-readable tone specification: /tone-spec.v1.json
-Frequency changes require a new specification version.
-
-Checking is what both sides do with those four answers. The actor checks them against supporting evidence, authorization, and a fresh witness before acting. The receiver rechecks them against the carried evidence and witness before accepting. Same four answers, same accepted clock policy, two gates.
-
+The current POPCORN API requires no account or license. Briarwood’s future invitation/license gate is not implemented and is not a requirement for these endpoints. A receipt does not establish consent or enforce owner authorization.
 
 ## Service pages
 
@@ -133,3 +135,6 @@ Checking is what both sides do with those four answers. The actor checks them ag
 - Signed time: GET /v1/time; 0.001 USDC on Base through x402.
 - Digest witness: POST /v1/receipt; 0.001 USDC on Base through x402.
 - Public documentation, verification keys and saved examples are free to read.
+
+- Support: https://767-2676.com/support
+- Privacy: https://767-2676.com/privacy

@@ -1,25 +1,40 @@
 # 767-2676.com signal mapping
-Spec: 767-2676-tone-plan
-Version: 1.0.0
 
-GO_AHEAD = 350 + 440 Hz
-WAITING = 440 + 480 Hz
-NO = 480 + 620 Hz
-PROCEED = 1000 Hz; sine wave; 800 ms; single tone, never a chord.
+Spec: 767-2676-tone-plan. Version: 1.2.0.
 
-The first three pairs use the component frequencies of North American dial, ringback, and busy tones respectively. Historical telephone signals also depend on cadence; the pairs alone do not specify a complete telephone signal.
+## Four panels, four phases
 
-The 1000 Hz / 800 ms PROCEED mapping is this site's chosen reference signal. Playing a tone does not create a signed witness or establish authorization. This file documents the signal mapping; it does not implement a decision endpoint.
+| Phase | Reference frequency | Beacon action | Interval in each cycle |
+| --- | --- | --- | --- |
+| NEED | 350 Hz | Three dots | 0–720 ms |
+| YES | 440 Hz | Three dashes | 720–2160 ms |
+| BOUNDARY | 480 Hz | Three dots | 2160–2760 ms |
+| TIME | 620 Hz | Silence; no oscillator or vibration | 2760–3600 ms |
 
-Front-page tones:
-NEED = 350 Hz
-YES = 440 Hz
-BOUNDARY = 480 Hz
-TIME = 620 Hz
+Frequency is the carrier. The pattern is the message. The 620 Hz reference remains readable, but TIME emits no tone in this sequence. Version 1.2.0 replaces version 1.1.0's separate 600 Hz loop and standalone panel-tone buttons.
 
-Each heading plays its single sine-wave frequency for 1200 ms, with a 40 ms attack and 100 ms release. Playback requires a tap, click, or keyboard activation. No autoplay.
+Dot = 120 ms; dash = 360 ms; element gap = 120 ms. The nine-element SOS prosign has no inter-letter gaps. The final silent phase lasts 840 ms (seven units). A full cycle lasts 3600 ms. The end-of-element gap after NEED and YES is included in those phases. The pulse envelope is visible as three short, three long and three short marks, followed by a flat silence track.
 
-The visible frequency, data-frequency-hz, and llms.txt mapping must agree. Agents can read the values without processing audio.
+## Start, stop and outputs
 
-Any change to a frequency or signal mapping requires a new specification version. The former 220/330/440/660 preview values were unversioned draft choices.
+- Start beacon starts the repeating sequence. No autoplay.
+- Audio uses sine waves with 8 ms attack and 15 ms release. NEED is 350 Hz, YES is 440 Hz, BOUNDARY is 480 Hz; TIME is silent.
+- A shared timeline drives audio scheduling, visible phase/pulse state and vibration pulses. Web Audio output timestamps align visuals and vibration with audio when supported. Browser and device latency still limit physical synchronization.
+- Haptics use navigator.vibrate for the remaining duration of the current pulse. They follow rhythm, not audio pitch. API availability/acceptance does not confirm that a physical motor vibrated. Users can turn vibration off.
+- When audio is unavailable, visual and available haptic timing continue on the performance clock. When vibration is unavailable, audio and visuals still work.
+- Stop beacon, hiding the page, leaving the page, or interrupting active audio clears playback, visual state and vibration. Returning does not automatically resume.
+- Late frames show the current phase. Missed pulses are skipped, not replayed in a catch-up burst.
+- Reduced-motion mode leaves the pulse diagram static while retaining a readable current-phase label. The regular mode emphasizes small pulse marks rather than flashing entire panels.
+- Phase state is also readable as data-current-phase and data-pulse on the panels container. Labels, frequencies and phase patterns are HTML text/attributes. Screen readers are not interrupted at every pulse.
 
+This is a local beacon rendering. It does not contact a peer, transmit a network message, listen through a microphone, submit a help request, authenticate a visitor, or create a signed time witness.
+
+Existing non-beacon reference mappings remain documented: GO_AHEAD = 350 + 440 Hz; WAITING = 440 + 480 Hz; NO = 480 + 620 Hz; PROCEED = 1000 Hz for 800 ms. These are not played by this beacon.
+
+Morse timing reference: [ITU-R M.1677-1](https://www.itu.int/rec/R-REC-M.1677-1-200910-I/). Haptic limitations: [Navigator.vibrate](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate). The site-specific assignment of pitches to SOS phases is not an ITU-standard frequency plan.
+
+The JSON stays at tone-spec.v1.json with internal version 1.2.0. Future changes to timing or frequency mapping require a version update.
+
+## Machine-readable score
+
+Agents read https://767-2676.com/agent-entry/beacon.json, the beacon field in /agent-entry.json, or the application/json script with id sos-beacon in /agent-entry. These contain identical phase data. Human playback on agent-entry reads the embedded score. TIME has frequencyHz null and no pulses. Reading the pattern requires no playback, JavaScript execution, or microphone.

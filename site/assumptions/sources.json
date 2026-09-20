@@ -1,0 +1,20 @@
+{
+  "format": "POPCORN-ASSUMPTIONS-SOURCES/1.0",
+  "sources": {
+    "examples/witness/evaluation-packet.production.json": "edc46acf4ccc5b43044ec2b1af793dcd027ddd80e9609d7f3bbe2452090ed2a0",
+    "examples/witness/evaluation-packet.proceed-002.production.json": "c7e7ec4156980e9803055b180cc301ff105460e46f4f11fcfe9bb623b9b8bec7",
+    "examples/witness/evaluation-outcomes.json": "e1efef5050651199f264fcf469663bcfe9efd7c154cc8dc886378aa6d7712895",
+    "verify/typescript/src/index.ts": "cc36aa3dea736fc5ad7af0e2d660593dafb237570a737b9b42000029cf3c8d02"
+  },
+  "outputs": {
+    "verifier.mjs": "79ee47604fbf2fc5ff136c77e112b08faac94954ebcc47f651c43be6f213fe07",
+    "evidence.json": "de06b84ff0d2b4272eb306bbfda4677ce9661359cd2040dd08776873ae94d231",
+    "evidence.mjs": "3a80b0cd6063f377234c0066a90ec7eb1b0aca7b734d56f71b6ecec63f54ac8f",
+    "model.mjs": "887f0b9eee31bebe8aa8505748e20ee5fce87c8c53d26bb0cab5f18aa8a34b35"
+  },
+  "verifierTranspiledSha256": "5c05007d4ddd482b341d3d6cc2852704a6f63d433eefaf7f3c001938840d0367",
+  "browserAdapter": "Module-local Buffer.from/toString subset backed by atob, btoa, TextEncoder and TextDecoder. Maintained verifier logic unchanged.",
+  "policyMapping": "TIME_CHECK_PASSED -> PROCEED, all other decisions -> STOP. Historical local policy only.",
+  "noNetwork": true,
+  "sourceRepository": "https://github.com/violetclaire/popcorn-temporal-anchor"
+}

@@ -1,13 +1,6 @@
 {
   "spec": "767-2676-tone-plan",
-  "version": "1.0.0",
-  "quadrantTone": {
-    "waveform": "sine",
-    "durationMs": 1200,
-    "attackMs": 40,
-    "releaseMs": 100,
-    "autoplay": false
-  },
+  "version": "1.2.0",
   "boxes": [
     {
       "name": "NEED",
@@ -61,5 +54,69 @@
       "waveform": "sine"
     }
   ],
-  "changePolicy": "Any change to a box frequency or signal frequency mapping requires a new spec version."
+  "changePolicy": "Any change to a box frequency or signal frequency mapping requires a new spec version.",
+  "beacon": {
+    "pattern": "...---...",
+    "unitMs": 120,
+    "cycleMs": 3600,
+    "elementGapUnits": 1,
+    "letterGapUnits": 0,
+    "repeatGapUnits": 7,
+    "waveform": "sine",
+    "attackMs": 8,
+    "releaseMs": 15,
+    "autoplay": false,
+    "stopWhenPageHidden": true,
+    "phases": [
+      {
+        "name": "NEED",
+        "frequencyHz": 350,
+        "startUnit": 0,
+        "endUnit": 6,
+        "pulseStartUnits": [
+          0,
+          2,
+          4
+        ],
+        "pulseLengthUnits": 1
+      },
+      {
+        "name": "YES",
+        "frequencyHz": 440,
+        "startUnit": 6,
+        "endUnit": 18,
+        "pulseStartUnits": [
+          6,
+          10,
+          14
+        ],
+        "pulseLengthUnits": 3
+      },
+      {
+        "name": "BOUNDARY",
+        "frequencyHz": 480,
+        "startUnit": 18,
+        "endUnit": 23,
+        "pulseStartUnits": [
+          18,
+          20,
+          22
+        ],
+        "pulseLengthUnits": 1
+      },
+      {
+        "name": "TIME",
+        "referenceFrequencyHz": 620,
+        "frequencyHz": null,
+        "startUnit": 23,
+        "endUnit": 30,
+        "pulseStartUnits": [],
+        "pulseLengthUnits": 0
+      }
+    ],
+    "visual": "Pulse envelope and active phase, with reduced-motion support.",
+    "haptics": "Optional navigator.vibrate pulses; timing only, best effort. No motor-frequency control or physical feedback confirmation.",
+    "timing": "Audio-clock scheduling, output timestamp alignment where available. Hardware latency and browser scheduling prevent sample-exact cross-device synchronization.",
+    "meaning": "Local audible, visible and haptic SOS motif; no network request or actual help dispatch."
+  }
 }

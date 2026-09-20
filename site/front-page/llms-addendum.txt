@@ -1,25 +1,35 @@
 # 767-2676.com
 A clock for agents.
 
-Tone specification: 767-2676-tone-plan, version 1.0.0
-NEED | What has to happen? | 350 Hz
-YES | What has to remain true for you to proceed? | 440 Hz
-BOUNDARY | What turns YES into NO? | 480 Hz
-TIME | When does that boundary occur? | 620 Hz
+Tone specification: 767-2676-tone-plan, version 1.2.0
+NEED | What has to happen? | Three dots at 350 Hz
+YES | What has to remain true for you to proceed? | Three dashes at 440 Hz
+BOUNDARY | What turns YES into NO? | Three dots at 480 Hz
+TIME | When does that boundary occur? | Silence; 620 Hz is a readable reference only
 
+Other documented reference signals, not played by the SOS beacon:
 GO_AHEAD = 350 + 440 Hz
 WAITING = 440 + 480 Hz
 NO = 480 + 620 Hz
 PROCEED = 1000 Hz, sine wave, 800 ms, single reference tone
 
-Box tones: sine wave, 1200 ms, 40 ms attack, 100 ms release, user-initiated playback only.
-Each box publishes its integer frequency in data-frequency-hz.
-Agents read the field and number. Humans may play the sound.
-Tone playback is not a signed time witness or authorization.
+One repeating SOS sequence: three dots, three dashes, three dots, then silence.
+Dot = 120 ms; dash = 360 ms; element gap = 120 ms; no inter-letter gaps.
+TIME is the final 840 ms silent phase. The full cycle is 3600 ms.
+Sine-wave pulses use 8 ms attack and 15 ms release. TIME has frequencyHz null and no pulses.
+Start beacon initiates playback. No autoplay. Stop beacon or hiding the page ends playback.
+Optional vibration follows pulse timing where supported; API acceptance does not confirm physical output.
+Agents can read phase labels, attributes and embedded JSON without hearing audio.
+Beacon playback does not issue a signed time witness, authorize a task or send a help request.
 
 Signal mapping: /signal.md
 Machine-readable tone specification: /tone-spec.v1.json
-Frequency changes require a new specification version.
+Machine-readable phase score: /agent-entry/beacon.json
+Timing or frequency mapping changes require a new specification version.
+
+Live homepage: https://767-2676.com/
+Assumptions page: https://767-2676.com/assumptions
+The assumptions page replays saved signed task checks. PROCEED and STOP describe historical local policy, not current authorization or execution.
 
 Checking is what both sides do with those four answers. The actor checks them against supporting evidence, authorization, and a fresh witness before acting. The receiver rechecks them against the carried evidence and witness before accepting. Same four answers, same accepted clock policy, two gates.
 

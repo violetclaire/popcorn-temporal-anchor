@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import { evaluateSelection } from './model.mjs';
+import { humanView } from './presentation.mjs';
+const result = await evaluateSelection({ recordIndex: 1, taskChanged: false, signatureChanged: false });
+const view = humanView(result);
+const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+const values = { DECISION: result.decision, AGREEMENT: view.agreement, AGREEMENT_WINDOW: view.agreementWindow, WITNESSED_AT: view.witnessedAt, HUMAN_INTERVAL: view.interval, HUMAN_VERDICT: view.verdict, SIGNATURE_STATUS: view.signature, DIGEST_STATUS: view.digest, COMMITTED_DIGEST: result.committedDigest, RECEIVED_DIGEST: result.receivedDigest, SIGNATURE_BYTES: result.signatureBase64url, KEY_ID: result.keyId, AGENT_INTERVAL: view.agentInterval, AGENT_CHECKS: view.checks, EXACT_TASK: result.exactTask.utf8, RECEIVED_TASK: result.receivedTask.utf8, RECEIVED_BASE64: result.receivedTask.base64url, COMPACT_JWS: result.compactJws, RESULT_JSON: JSON.stringify(result, null, 2) };
+let html = fs.readFileSync(new URL('./page-template.html', import.meta.url), 'utf8');
+for (const [name, value] of Object.entries(values)) html = html.replaceAll('{{' + name + '}}', escape(value));
+html = html.replace('{{MACHINE_RESULT}}', JSON.stringify(result).replaceAll('<', '\\u003c').replaceAll('>', '\\u003e').replaceAll('&', '\\u0026'));
+assert(!html.includes('{{'), 'Unfilled page placeholder');
+assert(!html.includes('\u2014'), 'No em dashes');
+assert.equal(result.decision, 'PROCEED');
+fs.writeFileSync(new URL('./index.html', import.meta.url), html);
+console.log('Built assumptions page with verified historical default and readable evidence.');

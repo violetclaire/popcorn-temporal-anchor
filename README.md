@@ -2,6 +2,8 @@
 
 **Licensing:** [component boundaries and earlier grants](LICENSING.md) · [evaluation terms](LICENSE.md) · [receipt carry-and-use permission](docs/RECEIPT_USE.md). The paid service is separate from code permissions.
 
+Live pages: [POPCORN homepage](https://767-2676.com/) ([source and SOS 1.2.0 notes](site/front-page/README.md)) and [Check the assumptions](https://767-2676.com/assumptions) ([source, build and verification checks](site/assumptions/README.md)). The assumptions page presents saved signed task checks in human language and machine-readable form. Its PROCEED and STOP results describe historical local policy, not current authorization or execution.
+
 ## Run the verification checks yourself
 
 [Offline checker and instructions](examples/verification-checks/README.md): 37 cases covering schedule boundaries, malformed input, exact bytes, and saved signed receipts. From this repository with Node.js 20+:
