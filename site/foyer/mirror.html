@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <link rel="icon" href="data:," />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-o412Axw62VccmCHpLvRUwGcxwK1n/Uhd+AVLIuSySNY='; style-src 'sha256-Hb/OLTK8E+HLPCjijrXtbyOmSY8rb6ggX3QK62dDj6Q=' 'sha256-gKh7wtQYEog4qwBBPZMcKDNviZ4BACi+quRGjV8//zc='; img-src data:; connect-src 'none'; font-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <link rel="canonical" href="https://767-2676.com/mirror" />
+  <title>Two CDI Sliders — Collaboration Template</title>
+  <style>
+
+    :root {
+      color-scheme: light dark;
+      --paper: #eee9dd;
+      --surface: #fffdf6;
+      --ink: #171813;
+      --muted: #5b5c54;
+      --rule: #98998e;
+      --red: #e34a33;
+      --blue: #1c62a7;
+      --yellow: #e4b934;
+      --green: #347a56;
+      --shadow: rgba(24, 25, 20, .16);
+      --focus: #1c62a7;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #181a17;
+        --surface: #232620;
+        --ink: #f0ecdf;
+        --muted: #b1b0a8;
+        --rule: #5f615a;
+        --red: #f0644c;
+        --blue: #5c9ed8;
+        --yellow: #ecc94d;
+        --green: #63a87f;
+        --shadow: rgba(0, 0, 0, .38);
+        --focus: #79c7ff;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 0; background: var(--paper); }
+    body {
+      margin: 0;
+      min-width: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+    button, input { font: inherit; }
+    main {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: clamp(24px, 5vw, 62px) clamp(16px, 4vw, 52px) 54px;
+    }
+
+    .opening {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(250px, .6fr);
+      gap: clamp(28px, 6vw, 76px);
+      align-items: end;
+      padding-bottom: clamp(28px, 5vw, 52px);
+      border-top: 10px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+    }
+    .opening-copy { padding-top: clamp(24px, 4vw, 42px); }
+    .kicker, .label, .meter-label, .state-code, .score-label, .lens-label {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .075em;
+      text-transform: uppercase;
+    }
+    .kicker { margin: 0 0 14px; color: var(--blue); }
+    h1 {
+      margin: 0;
+      max-width: 780px;
+      font-size: clamp(40px, 6.4vw, 78px);
+      line-height: .95;
+      letter-spacing: -.055em;
+      font-weight: 700;
+    }
+    h1 span { color: var(--red); }
+    .intro {
+      margin: 0 0 4px;
+      max-width: 35ch;
+      color: var(--muted);
+      font-size: clamp(15px, 1.5vw, 18px);
+    }
+    .intro strong { color: var(--ink); font-weight: 600; }
+
+    .meters {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(16px, 3vw, 30px);
+      padding: clamp(28px, 5vw, 52px) 0 30px;
+    }
+    .meter {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--ink);
+      background: var(--surface);
+      box-shadow: 7px 7px 0 var(--shadow);
+    }
+    .meter-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      min-height: 74px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .meter-label { color: var(--muted); }
+    .state-code { color: var(--red); text-align: right; }
+    .state-code.blue { color: var(--blue); }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr 84px;
+      min-height: 174px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .score-copy { padding: 23px 20px 25px; }
+    .score-label { color: var(--muted); }
+    .score-copy h2 {
+      margin: 10px 0 9px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+    .score-copy p { margin: 0; color: var(--muted); max-width: 36ch; }
+    .score-number {
+      display: grid;
+      place-items: center;
+      border-left: 1px solid var(--ink);
+      background: var(--red);
+      color: #fffdf6;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 32px;
+      font-weight: 600;
+    }
+    .collab-meter .score-number { background: var(--blue); }
+
+    .slider-area { padding: 24px 20px 22px; }
+    .axis-labels {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .axis-labels span {
+      font-family: Consolas, "Courier New", monospace;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.25;
+    }
+    .axis-labels span:nth-child(2) { text-align: center; }
+    .axis-labels span:last-child { text-align: right; }
+    .axis-labels .active { color: var(--ink); font-weight: 600; }
+    .range-wrap { position: relative; }
+    .range-wrap::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 12px;
+      transform: translateY(-50%);
+      border: 1px solid var(--ink);
+      background: linear-gradient(90deg, var(--red) 0 32.8%, var(--yellow) 33.5% 66.5%, var(--green) 67.2% 100%);
+    }
+    .collab-meter .range-wrap::before {
+      background: linear-gradient(90deg, var(--rule) 0 32.8%, var(--yellow) 33.5% 66.5%, var(--blue) 67.2% 100%);
+    }
+    input[type="range"] {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 50px;
+      margin: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-runnable-track { height: 12px; background: transparent; }
+    input[type="range"]::-moz-range-track { height: 12px; background: transparent; }
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 36px;
+      height: 36px;
+      margin-top: -12px;
+      border: 4px solid var(--ink);
+      border-radius: 50%;
+      background: var(--surface);
+      box-shadow: 3px 3px 0 var(--shadow);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 30px;
+      height: 30px;
+      border: 4px solid var(--ink);
+      border-radius: 50%;
+      background: var(--surface);
+      box-shadow: 3px 3px 0 var(--shadow);
+    }
+    input[type="range"]:focus-visible { outline: none; }
+    input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--focus), 3px 3px 0 var(--shadow); }
+    input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--focus), 3px 3px 0 var(--shadow); }
+    .showcase-note {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 7px;
+      color: var(--muted);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .showcase-note::before, .showcase-note::after { content: ""; height: 1px; background: var(--rule); }
+
+    .meter-readout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--rule);
+    }
+    .meter-readout article { padding: 18px 20px 21px; min-width: 0; }
+    .meter-readout article + article { border-left: 1px solid var(--rule); }
+    .meter-readout h3 { margin: 7px 0 8px; font-size: 17px; line-height: 1.15; }
+    .meter-readout p { margin: 0; color: var(--muted); font-size: 14px; }
+    .label { color: var(--blue); }
+
+    .decision {
+      display: grid;
+      grid-template-columns: minmax(190px, .43fr) minmax(0, 1.57fr);
+      margin-top: 4px;
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+    }
+    .decision-title {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 25px 24px;
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .decision-title .label { color: var(--yellow); }
+    .decision-title p { margin: 0; color: color-mix(in srgb, var(--paper) 76%, transparent); font-size: 13px; }
+    .decision-copy { padding: clamp(24px, 4vw, 42px); background: var(--surface); }
+    .decision-copy blockquote {
+      margin: 0;
+      max-width: 770px;
+      font-size: clamp(21px, 2.7vw, 34px);
+      line-height: 1.18;
+      letter-spacing: -.025em;
+      font-weight: 600;
+    }
+    .lenses {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 30px;
+      border-top: 1px solid var(--rule);
+    }
+    .lens { padding: 17px 17px 0 0; min-width: 0; }
+    .lens + .lens { padding-left: 17px; border-left: 1px solid var(--rule); }
+    .lens-label { display: block; margin-bottom: 7px; color: var(--red); }
+    .lens p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .footnote {
+      margin: 24px 0 0 auto;
+      max-width: 690px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .footnote strong { color: var(--ink); }
+
+    @media (max-width: 800px) {
+      .opening { grid-template-columns: 1fr; gap: 18px; }
+      .intro { max-width: 44ch; }
+      .meters { grid-template-columns: 1fr; }
+      .decision { grid-template-columns: 1fr; }
+      .decision-title { min-height: 132px; }
+      .lenses { grid-template-columns: 1fr 1fr; }
+      .lens:nth-child(3) { border-left: 0; padding-left: 0; }
+      .lens:nth-child(n+3) { border-top: 1px solid var(--rule); margin-top: 16px; padding-top: 16px; }
+    }
+    @media (max-width: 460px) {
+      main { padding-top: 18px; padding-bottom: 34px; }
+      h1 { font-size: clamp(39px, 12.5vw, 55px); }
+      .meter { box-shadow: 5px 5px 0 var(--shadow); }
+      .meter-head { min-height: 82px; }
+      .scoreboard { grid-template-columns: 1fr 66px; }
+      .score-copy { padding: 21px 16px 23px; }
+      .score-number { font-size: 27px; }
+      .slider-area { padding: 22px 16px 20px; }
+      .axis-labels span { font-size: 9px; letter-spacing: -.01em; }
+      .meter-readout { grid-template-columns: 1fr; }
+      .meter-readout article + article { border-left: 0; border-top: 1px solid var(--rule); }
+      .lenses { grid-template-columns: 1fr; }
+      .lens + .lens, .lens:nth-child(3) { border-left: 0; border-top: 1px solid var(--rule); margin-top: 14px; padding: 14px 0 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; }
+    }
+  </style>
+  <style>
+/* POPCORN's annual-report palette. The source pages supply their own layout. */
+:root {
+  color-scheme: light;
+  --paper: #f2efe3;
+  --surface: #faf7ee;
+  --panel: #faf7ee;
+  --ink: #0b3d2e;
+  --line: #0b3d2e;
+  --muted: #4d6052;
+  --rule: #8b998c;
+  --ghost: #c3c8b8;
+  --red: #742f38;
+  --red-soft: #eadbd4;
+  --blue: #0b3d2e;
+  --blue-soft: #dce4d6;
+  --yellow: #d6ba74;
+  --green: #436652;
+  --shadow: transparent;
+  --focus: #742f38;
+}
+html, body { background: #0b3d2e; }
+body { font-family: Arial, Helvetica, sans-serif; }
+body > main { background: var(--paper); border-inline: 1px solid var(--paper); }
+a { color: inherit; text-underline-offset: 5px; }
+a:focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }
+.meter { box-shadow: none; }
+.score-number { color: #f2efe3; }
+.license-meter .range-wrap::before {
+  background: linear-gradient(90deg, var(--green) 0 32.8%, var(--yellow) 33.5% 66.5%, var(--red) 67.2% 100%);
+}
+input[type="range"]::-webkit-slider-thumb { border-radius: 0; box-shadow: none; }
+input[type="range"]::-moz-range-thumb { border-radius: 0; box-shadow: none; }
+.axis-labels { gap: 6px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr); }
+.axis-labels span { font-size: 12px; line-height: 1.4; }
+.axis-labels .active { text-decoration: underline; text-underline-offset: 4px; }
+.with .label::before, .with .sequence li::before { border-radius: 0; }
+.switcher button { min-height: 44px; }
+.foyer-mast, .foyer-foot {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px clamp(16px, 4vw, 52px);
+  color: #f2efe3;
+  font: 12px/1.5 Consolas, "Courier New", monospace;
+}
+.foyer-brand { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 18px; letter-spacing: .05em; }
+.foyer-brand a { font-weight: bold; text-decoration: none; }
+.foyer-nav { display: grid; grid-template-columns: 1fr 1.6fr .6fr; border: 1px solid #f2efe3; }
+.foyer-nav a { display: flex; align-items: baseline; gap: 12px; padding: 13px 16px; text-decoration: none; min-width: 0; }
+.foyer-nav a + a { border-left: 1px solid #f2efe3; }
+.foyer-nav a[aria-current="page"], .foyer-nav a:hover { background: #f2efe3; color: #0b3d2e; }
+.foyer-nav span { font-size: 10px; }
+.foyer-foot p { max-width: 66ch; margin: 20px 0 0; }
+.foyer-next { display: inline-block; padding: 14px 0; font: bold clamp(21px, 3vw, 34px)/1.15 Arial, Helvetica, sans-serif; }
+.receipt-scope { padding: 22px; border: 1px solid var(--line); margin: 32px 0 0; font-size: 16px; max-width: 80ch; }
+@media (max-width: 760px) {
+  .foyer-nav { grid-template-columns: 1fr; }
+  .foyer-nav a + a { border-left: 0; border-top: 1px solid #f2efe3; }
+  .foyer-mast { padding-block: 16px; }
+  .axis-labels span { font-size: 11px; }
+}
+@media (forced-colors: active) {
+  .foyer-nav a[aria-current="page"] { outline: 2px solid LinkText; outline-offset: -4px; }
+  .axis-labels .active { color: Highlight; }
+}
+</style>
+</head>
+<body>
+<header class="foyer-mast" data-foyer-navigation>
+  <div class="foyer-brand"><a href="/">POPCORN / 767-2676.COM</a><span>FOYER</span></div>
+  <nav class="foyer-nav" aria-label="Foyer"><a href="/mirror" aria-current="page"><span aria-hidden="true">01</span>CDI mirror</a><a href="/with-and-without-popcorn"><span aria-hidden="true">02</span>With and Without POPCORN</a><a href="/#rooms"><span aria-hidden="true">03</span>Rooms</a></nav>
+</header>
+  <main>
+    <section class="opening" aria-labelledby="page-title">
+      <div class="opening-copy">
+        <p class="kicker">CDI / two lines / set before the outcome</p>
+        <h1 id="page-title">Two bids. <span>Closest without going over.</span></h1>
+      </div>
+      <p class="intro"><strong>A template for you and your collaborator.</strong><br>One slider sets the code boundary. One sets the collaboration boundary. Move both, then read what the combined position asks of each of you.</p>
+    </section>
+
+    <section class="meters" aria-label="Two CDI decision sliders">
+      <article class="meter license-meter" aria-labelledby="license-heading">
+        <div class="meter-head">
+          <span class="meter-label">01 / Code boundary</span>
+          <span id="license-code" class="state-code">LICENSED · SELECTED</span>
+        </div>
+        <div class="scoreboard">
+          <div class="score-copy">
+            <span class="score-label">Current bid</span>
+            <h2 id="license-heading">License what you built</h2>
+            <p id="license-summary">Permit use under written terms while the contribution keeps its value.</p>
+          </div>
+          <div id="license-number" class="score-number" aria-hidden="true">02</div>
+        </div>
+        <div class="slider-area">
+          <div id="license-labels" class="axis-labels" aria-hidden="true">
+            <span>Open</span><span class="active">License what you built</span><span>Closed</span>
+          </div>
+          <div class="range-wrap">
+            <input id="license-slider" type="range" min="0" max="2" step="1" value="1" aria-label="Choose the code boundary" aria-valuetext="License what you built" />
+          </div>
+          <div class="showcase-note">permission bid</div>
+        </div>
+        <div class="meter-readout" aria-live="polite">
+          <article>
+            <span class="label">What it gives</span>
+            <h3 id="license-gives-title">Distribution with value intact</h3>
+            <p id="license-gives">The participant with reach can distribute without erasing the original contribution.</p>
+          </article>
+          <article>
+            <span class="label">What it costs</span>
+            <h3 id="license-costs-title">Terms before momentum</h3>
+            <p id="license-costs">Contribution, attribution, threshold, calculation, and payment trigger must be agreed first.</p>
+          </article>
+        </div>
+      </article>
+
+      <article class="meter collab-meter" aria-labelledby="collab-heading">
+        <div class="meter-head">
+          <span class="meter-label">02 / Collaboration boundary</span>
+          <span id="collab-code" class="state-code blue">TRIAL · SELECTED</span>
+        </div>
+        <div class="scoreboard">
+          <div class="score-copy">
+            <span class="score-label">Current bid</span>
+            <h2 id="collab-heading">One narrow test</h2>
+            <p id="collab-summary">Test the handoff before either side promises a larger build.</p>
+          </div>
+          <div id="collab-number" class="score-number" aria-hidden="true">02</div>
+        </div>
+        <div class="slider-area">
+          <div id="collab-labels" class="axis-labels" aria-hidden="true">
+            <span>Alone</span><span class="active">With us</span><span>Merged</span>
+          </div>
+          <div class="range-wrap">
+            <input id="collab-slider" type="range" min="0" max="2" step="1" value="1" aria-label="Choose the collaboration boundary" aria-valuetext="One narrow test" />
+          </div>
+          <div class="showcase-note">coordination bid</div>
+        </div>
+        <div class="meter-readout" aria-live="polite">
+          <article>
+            <span class="label">What it gives</span>
+            <h3 id="collab-gives-title">Evidence before commitment</h3>
+            <p id="collab-gives">The record layer captures the agreed material; the witness layer verifies the frozen result; both participants inspect what worked.</p>
+          </article>
+          <article>
+            <span class="label">What it costs</span>
+            <h3 id="collab-costs-title">A deliberately small scope</h3>
+            <p id="collab-costs">The test proves only that handoff. It does not settle ownership, a long-term role, or a larger partnership.</p>
+          </article>
+        </div>
+      </article>
+    </section>
+
+    <section class="decision" aria-labelledby="decision-heading">
+      <div class="decision-title">
+        <span class="label">Combined position</span>
+        <p>Neither slider chooses for anyone. It shows the consequences of the two lines together.</p>
+      </div>
+      <div class="decision-copy">
+        <blockquote id="decision-heading" aria-live="polite">Run one narrow test under a written contribution license. The code can move for the agreed purpose, but the trial does not erase ownership, attribution, or value—and it does not promise a larger partnership.</blockquote>
+        <div class="lenses" aria-label="CDI consequence check">
+          <div class="lens"><span class="lens-label">Need</span><p id="lens-need">A checkable handoff without giving away more than the test requires.</p></div>
+          <div class="lens"><span class="lens-label">Yes</span><p id="lens-yes">Yes to the defined test and the rights written for it.</p></div>
+          <div class="lens"><span class="lens-label">Boundary</span><p id="lens-boundary">No implied public grant and no automatic long-term partnership.</p></div>
+          <div class="lens"><span class="lens-label">Together</span><p id="lens-together">You and your collaborator review the result before moving either line.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footnote"><strong>The Showcase rule:</strong> move close enough to enable the work without going over anyone’s boundary. If success later crosses a pre-agreed threshold, the contribution’s pre-agreed value is triggered—not renegotiated after the outcome.</p>
+  </main>
+<footer class="foyer-foot" data-foyer-navigation>
+  <a class="foyer-next" href="/with-and-without-popcorn">With and Without POPCORN →</a>
+  <p>All interactivity runs on-device in the visitor's browser. No inputs leave the page.</p>
+</footer>
+
+  <script>
+    const licenseStates = [
+      {
+        code: "NOT OPEN · SELECTED",
+        title: "Not open source",
+        summary: "Collaborate without granting the public a standing license.",
+        givesTitle: "Defined access",
+        gives: "A specific review, test, or use can happen under explicit permission.",
+        costsTitle: "Permission stays narrow",
+        costs: "Reuse, modification, distribution, hosting, and sale need separate written permission."
+      },
+      {
+        code: "LICENSED · SELECTED",
+        title: "License what you built",
+        summary: "Permit use under written terms while the contribution keeps its value.",
+        givesTitle: "Distribution with value intact",
+        gives: "The participant with reach can distribute without erasing the original contribution.",
+        costsTitle: "Terms before momentum",
+        costs: "Contribution, attribution, threshold, calculation, and payment trigger must be agreed first."
+      },
+      {
+        code: "OPEN SOURCE · SELECTED",
+        title: "Open source",
+        summary: "Grant the public durable rights under the chosen license.",
+        givesTitle: "Maximum independent reuse",
+        gives: "People outside the collaboration can adopt, modify, distribute, and build on the released code.",
+        costsTitle: "The grant travels",
+        costs: "Earlier permissions remain. Forks and possible competing use are part of the bargain."
+      }
+    ];
+
+    const collabStates = [
+      {
+        code: "SEPARATE · SELECTED",
+        title: "Stay separate",
+        summary: "Keep each project independent and exchange no joint commitment.",
+        givesTitle: "Clean ownership lines",
+        gives: "You and your collaborator continue in your own lanes with no shared delivery promise.",
+        costsTitle: "The handoff stays untested",
+        costs: "Neither side learns whether quote capture and temporal witnessing work as one chain."
+      },
+      {
+        code: "TRIAL · SELECTED",
+        title: "One narrow test",
+        summary: "Test the handoff before either side promises a larger build.",
+        givesTitle: "Evidence before commitment",
+        gives: "The record layer captures the agreed material; the witness layer verifies the frozen result; both participants inspect what worked.",
+        costsTitle: "A deliberately small scope",
+        costs: "The test proves only that handoff. It does not settle ownership, a long-term role, or a larger partnership."
+      },
+      {
+        code: "BUILD TOGETHER · SELECTED",
+        title: "Build together",
+        summary: "Commit to a shared path with separate responsibilities kept visible.",
+        givesTitle: "A complete evidence chain",
+        gives: "The quote layer and witness layer can be designed to travel together from capture to verification.",
+        costsTitle: "More must be decided",
+        costs: "Roles, authority, ownership, attribution, support, exit, success threshold, and payment need written terms."
+      }
+    ];
+
+    const combined = [
+      [
+        "Keep both projects separate and keep the code outside a public grant. No joint use or downstream permission is implied.",
+        "Run one narrow test under explicit, limited permission. The trial does not create public reuse rights or a larger partnership.",
+        "Build together under a private agreement. Every use right, role, contribution, and exit remains explicit."
+      ],
+      [
+        "Keep the projects separate, but preserve a written path for specific licensed use if either side later needs it.",
+        "Run one narrow test under a written contribution license. The code can move for the agreed purpose, but the trial does not erase ownership, attribution, or value—and it does not promise a larger partnership.",
+        "Build together under a contribution license. Define roles, attribution, success threshold, calculation, and payment trigger before the shared work moves."
+      ],
+      [
+        "Release the chosen code publicly while keeping the projects operationally separate. The public grant exists even without a partnership.",
+        "Run one narrow handoff with open-source code. The trial remains narrow, but the released code’s public permissions are not.",
+        "Build together in public. Accept forks and independent reuse, then write the collaboration terms that the open-source license does not answer."
+      ]
+    ];
+
+    const licenseSlider = document.getElementById("license-slider");
+    const collabSlider = document.getElementById("collab-slider");
+
+    function setText(id, value) { document.getElementById(id).textContent = value; }
+
+    function activateLabels(containerId, index) {
+      document.querySelectorAll(`#${containerId} span`).forEach((label, i) => label.classList.toggle("active", i === index));
+    }
+
+    function render() {
+      const position = Number(licenseSlider.value);
+      const li = 2 - position;
+      const ci = Number(collabSlider.value);
+      const license = licenseStates[li];
+      const collab = collabStates[ci];
+
+      setText("license-code", license.code);
+      setText("license-heading", license.title);
+      setText("license-summary", license.summary);
+      setText("license-number", `0${position + 1}`);
+      setText("license-gives-title", license.givesTitle);
+      setText("license-gives", license.gives);
+      setText("license-costs-title", license.costsTitle);
+      setText("license-costs", license.costs);
+      licenseSlider.setAttribute("aria-valuetext", ["Open", "License what you built", "Closed"][position]);
+      activateLabels("license-labels", position);
+
+      setText("collab-code", collab.code);
+      setText("collab-heading", collab.title);
+      setText("collab-summary", collab.summary);
+      setText("collab-number", `0${ci + 1}`);
+      setText("collab-gives-title", collab.givesTitle);
+      setText("collab-gives", collab.gives);
+      setText("collab-costs-title", collab.costsTitle);
+      setText("collab-costs", collab.costs);
+      collabSlider.setAttribute("aria-valuetext", ["Alone", "With us", "Merged"][ci]);
+      activateLabels("collab-labels", ci);
+
+      setText("decision-heading", combined[li][ci]);
+      setText("lens-need", ci === 0 ? "Independent work with the chosen code boundary kept clear." : ci === 1 ? "A checkable handoff without giving away more than the test requires." : "A durable shared path whose responsibilities remain legible.");
+      setText("lens-yes", ci === 0 ? "No shared delivery promise." : ci === 1 ? "Yes to one defined test and only the rights needed for it." : "Yes to a shared build under terms all sides accept.");
+      setText("lens-boundary", li === 0 ? "No implied public grant; every permission stays explicit." : li === 1 ? "Forkability does not erase ownership, attribution, or agreed value." : "The public grant travels with every released copy under that license.");
+      setText("lens-together", ci === 0 ? "You and your collaborator keep working independently." : ci === 1 ? "You and your collaborator review the result before moving either line." : "You and your collaborator define roles, threshold, payment, and exit before committing.");
+    }
+
+    licenseSlider.addEventListener("input", render);
+    collabSlider.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>
