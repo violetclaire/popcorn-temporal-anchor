@@ -1,6 +1,10 @@
 # POPCORN homepage and SOS beacon
 
-The live [POPCORN homepage](https://767-2676.com/) is [index.html](index.html). Its six-line invitation appears above the four-question grid. The panels form four phases of one repeating SOS beacon under `767-2676-tone-plan` version `1.2.0`.
+The [POPCORN homepage source](index.html) begins with the foyer: CDI mirror, then
+With and Without POPCORN, then the rooms. See [foyer sources and publishing
+instructions](../foyer/README.md). Its six-line invitation remains above the
+four-question grid. The panels form four phases of one repeating SOS beacon under
+`767-2676-tone-plan` version `1.2.0`.
 
 | Phase | Question | Beacon output |
 | --- | --- | --- |
@@ -22,6 +26,8 @@ Serve `index.html` at `/` through the current Cloudflare Worker. Preserve the cu
 | File | Destination |
 | --- | --- |
 | index.html | / |
+| ../foyer/mirror.html | /mirror and /mirror/ |
+| ../foyer/with-and-without-popcorn.html | /with-and-without-popcorn and /with-and-without-popcorn/ |
 | tone-spec.v1.json | /tone-spec.v1.json |
 | signal.md | /signal.md |
 | pricing.html | /pricing |

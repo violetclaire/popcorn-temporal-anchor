@@ -8,6 +8,17 @@ permissions:
   contents: read
 
 jobs:
+  foyer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node site/foyer/build.mjs
+      - run: node site/foyer/check.mjs
+      - run: git diff --exit-code -- site/foyer/mirror.html site/foyer/with-and-without-popcorn.html
+
   typescript:
     runs-on: ubuntu-latest
     steps:
