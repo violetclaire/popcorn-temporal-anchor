@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://767-2676.com/schemas/witness-response.v2.json",
+  "title": "POPCORN payload-bound witness response v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "witness_receipt",
+    "witness_attestation",
+    "payment_status"
+  ],
+  "dependentRequired": {
+    "tain_qr_png_base64": ["tain_qr_payload", "letterhead_uri"],
+    "tain_qr_payload": ["tain_qr_png_base64", "letterhead_uri"],
+    "letterhead_uri": ["tain_qr_png_base64", "tain_qr_payload"]
+  },
+  "properties": {
+    "witness_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id",
+        "tain",
+        "node_id",
+        "protocol_id",
+        "request_received_at_utc",
+        "witnessed_at_utc",
+        "statement_created_at_utc",
+        "unix_time_milliseconds",
+        "clock_accuracy_radius_ms",
+        "witness_window_utc",
+        "server_processing_duration_ms",
+        "post_witness_processing_duration_ms",
+        "commitment",
+        "payment_identifier",
+        "payment_transaction",
+        "evidence_scope",
+        "issuing_origin",
+        "issuance_endpoint",
+        "tain_verification_uri",
+        "contribution_license_uri",
+        "license_terms_digest"
+      ],
+      "properties": {
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^pwr_[0-9a-f]{32}$"
+        },
+        "tain": {
+          "type": "string",
+          "pattern": "^tain_[0-9A-HJKMNP-TV-Z]{26}$",
+          "description": "Temporal Anchor Issuance Number: witnessed millisecond timestamp and 80 CSPRNG bits in Crockford base32."
+        },
+        "node_id": {
+          "type": "string",
+          "const": "767-2676.com"
+        },
+        "protocol_id": {
+          "type": "string",
+          "const": "POPCORN-WITNESS/2.0"
+        },
+        "request_received_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "witnessed_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "statement_created_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "unix_time_milliseconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "clock_accuracy_radius_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60000
+        },
+        "witness_window_utc": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "earliest",
+            "latest"
+          ],
+          "properties": {
+            "earliest": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "latest": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "server_processing_duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "post_witness_processing_duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "commitment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "payload_digest",
+            "nonce",
+            "previous_attestation_digest"
+          ],
+          "properties": {
+            "payload_digest": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "algorithm",
+                "value"
+              ],
+              "properties": {
+                "algorithm": {
+                  "type": "string",
+                  "const": "sha-256"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{43}$",
+                  "description": "Canonical unpadded base64url encoding of exactly 32 bytes."
+                }
+              }
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            },
+            "previous_attestation_digest": {
+              "description": "SHA-256 over the exact signed payload bytes of the predecessor compact JWS, obtained by base64url-decoding its second segment. The digest value uses the same canonical unpadded base64url encoding as payload_digest. Null starts a chain.",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "algorithm",
+                    "value"
+                  ],
+                  "properties": {
+                    "algorithm": {
+                      "type": "string",
+                      "const": "sha-256"
+                    },
+                    "value": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{43}$",
+                      "description": "Canonical unpadded base64url encoding of exactly 32 bytes."
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "payment_identifier": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "payment_transaction": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "payload_disclosed",
+            "caller_identity_proven",
+            "recipient_delivery_proven",
+            "action_execution_proven",
+            "nonce_uniqueness_enforced",
+            "replay_prevented",
+            "authorization_granted",
+            "external_atomic_clock_alignment_proven",
+            "clock_accuracy_independently_verified",
+            "payer_authorization_bound_to_commitment"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "payload_commitment_witness"
+            },
+            "payload_disclosed": {
+              "type": "boolean",
+              "const": false
+            },
+            "caller_identity_proven": {
+              "type": "boolean",
+              "const": false
+            },
+            "recipient_delivery_proven": {
+              "type": "boolean",
+              "const": false
+            },
+            "action_execution_proven": {
+              "type": "boolean",
+              "const": false
+            },
+            "nonce_uniqueness_enforced": {
+              "type": "boolean",
+              "const": false
+            },
+            "replay_prevented": {
+              "type": "boolean",
+              "const": false
+            },
+            "authorization_granted": {
+              "type": "boolean",
+              "const": false
+            },
+            "external_atomic_clock_alignment_proven": {
+              "type": "boolean",
+              "const": false
+            },
+            "clock_accuracy_independently_verified": {
+              "type": "boolean",
+              "const": false
+            },
+            "payer_authorization_bound_to_commitment": {
+              "type": "boolean",
+              "const": false
+            }
+          }
+        },
+        "issuing_origin": {
+          "type": "string",
+          "const": "https://767-2676.com"
+        },
+        "issuance_endpoint": {
+          "type": "string",
+          "const": "/v1/receipt"
+        },
+        "tain_verification_uri": {
+          "type": "string",
+          "pattern": "^https://767-2676\\.com/v1/receipt/tain/tain_[0-9A-HJKMNP-TV-Z]{26}$"
+        },
+        "contribution_license_uri": {
+          "type": "string",
+          "const": "https://767-2676.com/license/contribution/1.0"
+        },
+        "license_terms_digest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "algorithm",
+            "value"
+          ],
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "const": "sha-256"
+            },
+            "value": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          }
+        }
+      }
+    },
+    "witness_attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "algorithm",
+        "key_id",
+        "key_set",
+        "compact_jws"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "JWS"
+        },
+        "algorithm": {
+          "type": "string",
+          "const": "ES256"
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "key_set": {
+          "type": "string",
+          "const": "/.well-known/popcorn-keys.json"
+        },
+        "compact_jws": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "payment_status": {
+      "type": "string",
+      "const": "settled"
+    },
+    "tain_qr_png_base64": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unsigned presentation-only PNG bytes, standard base64 encoded."
+    },
+    "tain_qr_payload": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unsigned presentation-only, minified JSON with v, tain, license_uri, terms_digest, verify_uri in that order."
+    },
+    "letterhead_uri": {
+      "type": "string",
+      "pattern": "^https://767-2676\\.com/v1/receipt/tain/tain_[0-9A-HJKMNP-TV-Z]{26}$"
+    }
+  }
+}
