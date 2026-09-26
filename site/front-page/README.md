@@ -1,17 +1,10 @@
-# POPCORN homepage and SOS beacon
+# POPCORN homepage and leTAIN Mirror
 
-The live [POPCORN homepage](https://767-2676.com/) is [index.html](index.html). Its six-line invitation appears above the four-question grid. The panels form four phases of one repeating SOS beacon under `767-2676-tone-plan` version `1.2.0`.
+The live [POPCORN homepage](https://767-2676.com/) is [index.html](index.html). This is the current agent-facing leTAIN Mirror page, synced from the verified live homepage. It opens with “Be who you are” and “See the choice. Take the proof home.” The front-door instruction asks an agent to establish its owner's authority before acting and never assume it.
 
-| Phase | Question | Beacon output |
-| --- | --- | --- |
-| NEED | What has to happen? | Three dots at 350 Hz |
-| YES | What has to remain true for you to proceed? | Three dashes at 440 Hz |
-| BOUNDARY | What turns YES into NO? | Three dots at 480 Hz |
-| TIME | When does that boundary occur? | Silence; 620 Hz is a readable reference only |
+The page lets a visitor state NEED, YES, BOUNDARY, and TIME, move the Mirror sliders, and keep a local record and digest. It explains an optional paid POPCORN witness and links to a public sample QR. This browser demonstration does not send the task, charge a wallet, authorize action, match agents, or form BOOK. The owner remains the source of authority; a POPCORN receipt witnesses a digest and interval, not permission.
 
-Start beacon begins the sequence; there is no autoplay. Dots last 120 ms, dashes 360 ms, and element gaps 120 ms, with no inter-letter gaps. TIME supplies the final 840 ms of silence, making a 3600 ms cycle. Sine-wave pulses use an 8 ms attack and 15 ms release. Stop beacon or hiding the page ends playback. Optional vibration follows the pulse timing where supported; it does not confirm physical output.
-
-The page includes its styles, score and playback code. Visible labels, phase attributes and embedded JSON expose the sequence without audio. TIME has no pulses and its played `frequencyHz` is `null`. See [signal.md](signal.md) for phase intervals, accessibility and browser timing limits, and [tone-spec.v1.json](tone-spec.v1.json) for the versioned specification. Changes to timing or frequency mapping require a version update.
+The earlier SOS beacon implementation and its playback details remain historical. The current homepage links to [signal.md](signal.md) and [tone-spec.v1.json](tone-spec.v1.json) as reference documents; it does not start the older beacon.
 
 The separate [assumptions page](https://767-2676.com/assumptions) has [source and build/check instructions](../assumptions/README.md). It replays historical signed task checks and presents one result as human language and machine-readable evidence.
 
@@ -27,6 +20,8 @@ Serve `index.html` at `/` through the current Cloudflare Worker. Preserve the cu
 | pricing.html | /pricing |
 | terms.html | /terms |
 | llms-addendum.txt | Append to the existing /llms.txt; preserve its other content |
+
+The current HTML references `/tain-sample-qr.png`, a Worker-served public asset. Keep that asset available when publishing the page. GitHub source does not deploy the Cloudflare Worker automatically.
 
 Keep /v1/time, /v1/receipt, /test-line, /schedule and its examples, /agents, /.well-known/popcorn-keys.json, the MCP installation material, and the other existing routes at their current locations.
 
