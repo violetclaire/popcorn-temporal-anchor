@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 // Reproduce the installed file layout away from the repository and dependencies.
-const isolated = await mkdtemp(join(tmpdir(), "popcorn-sample-"));
+const isolated = await mkdtemp(join(process.env.POPCORN_TEST_TMPDIR ?? tmpdir(), "popcorn-sample-"));
 try {
   await cp(new URL("../dist/", import.meta.url), join(isolated, "dist"), { recursive: true });
   await cp(new URL("../package.json", import.meta.url), join(isolated, "package.json"));

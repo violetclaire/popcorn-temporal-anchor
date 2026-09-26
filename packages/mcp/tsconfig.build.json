@@ -8,7 +8,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "../../verify/typescript/src/index.ts"
+    "../../verify/typescript/src/index.ts",
+    "../../verify/typescript/src/v2.ts"
   ],
   "exclude": ["test/**/*.ts"]
 }

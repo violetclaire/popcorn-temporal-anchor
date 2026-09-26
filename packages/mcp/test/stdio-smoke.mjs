@@ -19,7 +19,7 @@ transport.stderr?.on("data", (chunk) => { serverErrors += chunk.toString(); });
 try {
   await client.connect(transport);
   const listed = await client.listTools();
-  assert.equal(listed.tools.length, 6);
+  assert.equal(listed.tools.length, 7);
   const response = await client.callTool({
     name: "popcorn_hash",
     arguments: { payload_text: "stdio" },
