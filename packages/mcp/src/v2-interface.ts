@@ -18,6 +18,8 @@ export type VerifyV2Outcome = {
   reason: string;
   protocol_id: "POPCORN-WITNESS/2.0";
   authorization_granted: false;
+  issuer_key_trust_checked_by_tool: false;
+  on_chain_settlement_checked_by_tool: false;
   receipt_id?: string;
   tain?: string;
 };
@@ -27,6 +29,8 @@ export async function verifyV2(input: VerifyV2Input): Promise<VerifyV2Outcome> {
   const base = {
     protocol_id: "POPCORN-WITNESS/2.0" as const,
     authorization_granted: false as const,
+    issuer_key_trust_checked_by_tool: false as const,
+    on_chain_settlement_checked_by_tool: false as const,
   };
   try {
     const encoded = input?.expected_payload_base64url;
