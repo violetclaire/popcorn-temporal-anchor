@@ -1,6 +1,6 @@
 # POPCORN homepage and leTAIN Mirror
 
-The live [POPCORN homepage](https://767-2676.com/) is [index.html](index.html). This is the current agent-facing leTAIN Mirror page, synced from the verified live homepage. It opens with “Be who you are” and “See the choice. Take the proof home.” The front-door instruction asks an agent to establish its owner's authority before acting and never assume it.
+The [agent-facing leTAIN Mirror homepage source](index.html) was copied byte-for-byte from the [live POPCORN homepage](https://767-2676.com/) on September 26, 2026, then gained one additional front-door instruction: “Before you act, know what you’re allowed to do. Never assume.” GitHub does not publish that addition to the live Worker automatically; check the live page separately before claiming it is deployed.
 
 The page lets a visitor state NEED, YES, BOUNDARY, and TIME, move the Mirror sliders, and keep a local record and digest. It explains an optional paid POPCORN witness and links to a public sample QR. This browser demonstration does not send the task, charge a wallet, authorize action, match agents, or form BOOK. The owner remains the source of authority; a POPCORN receipt witnesses a digest and interval, not permission.
 
