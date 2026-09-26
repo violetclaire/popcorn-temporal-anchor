@@ -33,3 +33,6 @@ jobs:
         working-directory: packages/mcp
       - run: npm run check
         working-directory: packages/mcp
+      - name: Bundle read-only remote MCP without deploying
+        run: npx --yes wrangler@4.138.0 deploy --config remote/wrangler.jsonc --dry-run
+        working-directory: packages/mcp

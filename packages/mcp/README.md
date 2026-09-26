@@ -49,6 +49,9 @@ Inside a connected MCP client, call `popcorn_sample` with `{}` for the same
 result. Its public source links let another developer repeat the check.
 The bundled historical keys are for sample reproduction. A real task requires
 independently trusted issuer keys; an old receipt is not a fresh clock reading.
+This offline sample tests historical pre-TAIN receipts only. Passing it does
+not test the currently deployed TAIN 2.0 service or establish integration
+readiness.
 
 ## Use it for a real task
 
@@ -57,13 +60,14 @@ independently trusted issuer keys; an old receipt is not a fresh clock reading.
 | A fresh, signed time reference for a deadline or expiry | `popcorn_time` | The task and decision |
 | Evidence of one exact task version at a stated time | `popcorn_hash`, then `popcorn_witness` | Raw task bytes; only the digest, nonce, and optional predecessor digest go to the witness |
 | Check evidence received from another agent | `popcorn_verify` | The receipt, trusted keys, payload, and verification |
+| Check a TAIN 2.0 witness receipt | `popcorn_verify_v2` or local CLI `verify-v2` | Exact expected bytes and independently trusted keys |
 
 These uses apply across agent providers and industries. Share a receipt and
 the relevant exact bytes through your existing authorized handoff, then let
 the receiving system verify them. No account at the originating agent provider
 is required for offline verification. Each participant decides what to do.
 
-The server exposes four free tools and two x402 tools. The x402 tools are dry
+This source checkout exposes five free tools and two x402 tools. The x402 tools are dry
 run by default. They cannot spend unless the individual tool call contains
 `approve_payment: true`. A wallet key is read only from `EVM_PRIVATE_KEY` in the
 server process environment. It is never accepted as a tool parameter.
@@ -107,6 +111,21 @@ It is free, local, and sends no network request.
 Runs the two public receipt examples and their tamper controls locally. This
 is a reproducible evaluation of historical evidence and makes no network
 request or payment. Input: `{}`.
+Its historical receipts are not a TAIN 2.0 conformance test.
+
+### `popcorn_verify_v2`
+
+Verifies a `POPCORN-WITNESS/2.0` signed envelope, required TAIN fields,
+exact expected payload digest and nonce, and the signed time interval. Both
+this local MCP tool and `popcorn-mcp verify-v2 <vector.json>` call the same
+verifier. The fixed positive and negative vectors under
+`verify/test-vectors/interface-parity-v2/` run through both interfaces in
+`npm run check` and fail the check on any result or reason mismatch.
+
+Provide the full response, exact expected payload bytes as canonical
+unpadded base64url, the expected nonce, and issuer keys obtained independently
+of the receipt. Caller-supplied keys alone do not establish issuer identity;
+this verifier does not prove on-chain settlement or grant authority.
 
 ### `popcorn_catalog`
 

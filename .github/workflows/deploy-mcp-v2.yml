@@ -1,0 +1,58 @@
+name: Deploy read-only TAIN MCP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-read-only-tain-mcp
+  cancel-in-progress: false
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: packages/mcp/package-lock.json
+      - run: npm ci
+        working-directory: packages/mcp
+      - name: Verify both TAIN 2.0 interfaces and all package checks
+        run: npm run check
+        working-directory: packages/mcp
+      - name: Bundle remote Worker without deploying
+        run: npx --yes wrangler@4.138.0 deploy --config remote/wrangler.jsonc --dry-run
+        working-directory: packages/mcp
+
+  deploy:
+    needs: parity
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: remote-mcp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: packages/mcp/package-lock.json
+      - run: npm ci
+        working-directory: packages/mcp
+      - id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.138.0"
+          workingDirectory: packages/mcp
+          command: deploy --config remote/wrangler.jsonc
+      - name: Verify deployed /mcp with all six vectors
+        env:
+          MCP_URL: ${{ steps.deploy.outputs.deployment-url }}/mcp
+        run: node --import tsx remote/smoke.ts
+        working-directory: packages/mcp

@@ -1,0 +1,86 @@
+{
+  "test_only": true,
+  "id": "40-required-field-missing",
+  "category": "required fields",
+  "expected": {
+    "accepted": false,
+    "reason": "witness_receipt contains missing or unsupported fields"
+  },
+  "input": {
+    "response": {
+      "witness_receipt": {
+        "receipt_id": "pwr_00000000000000000000000000000001",
+        "node_id": "767-2676.com",
+        "protocol_id": "POPCORN-WITNESS/2.0",
+        "request_received_at_utc": "2026-09-22T18:00:01.000Z",
+        "witnessed_at_utc": "2026-09-22T18:00:01.010Z",
+        "statement_created_at_utc": "2026-09-22T18:00:01.020Z",
+        "unix_time_milliseconds": 1790100001010,
+        "clock_accuracy_radius_ms": 1000,
+        "witness_window_utc": {
+          "earliest": "2026-09-22T18:00:00.010Z",
+          "latest": "2026-09-22T18:00:02.010Z"
+        },
+        "server_processing_duration_ms": 20,
+        "post_witness_processing_duration_ms": 10,
+        "commitment": {
+          "payload_digest": {
+            "algorithm": "sha-256",
+            "value": "Rxq-1-qWHODHUM-_OcsN3w8t3BGUo8VXjsac7toEzI8"
+          },
+          "nonce": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+          "previous_attestation_digest": null
+        },
+        "payment_identifier": "test_vector_only_no_settlement_1",
+        "payment_transaction": null,
+        "evidence_scope": {
+          "type": "payload_commitment_witness",
+          "payload_disclosed": false,
+          "caller_identity_proven": false,
+          "recipient_delivery_proven": false,
+          "action_execution_proven": false,
+          "nonce_uniqueness_enforced": false,
+          "replay_prevented": false,
+          "authorization_granted": false,
+          "external_atomic_clock_alignment_proven": false,
+          "clock_accuracy_independently_verified": false,
+          "payer_authorization_bound_to_commitment": false
+        },
+        "issuing_origin": "https://767-2676.com",
+        "issuance_endpoint": "/v1/receipt",
+        "tain_verification_uri": "https://767-2676.com/v1/receipt/tain/tain_01M354CM7J0000000000000001",
+        "contribution_license_uri": "https://767-2676.com/license/contribution/1.0",
+        "license_terms_digest": {
+          "algorithm": "sha-256",
+          "value": "cR0ghOOH6DG3SEeoYxPw1b38oL2wf2IjTazGSxi-vIY"
+        }
+      },
+      "witness_attestation": {
+        "format": "JWS",
+        "algorithm": "ES256",
+        "key_id": "popcorn-witness-v2-deterministic-test-key",
+        "key_set": "/.well-known/popcorn-keys.json",
+        "compact_jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InBvcGNvcm4td2l0bmVzcy12Mi1kZXRlcm1pbmlzdGljLXRlc3Qta2V5IiwidHlwIjoicG9wY29ybi13aXRuZXNzK2p3cyJ9.eyJjbG9ja19hY2N1cmFjeV9yYWRpdXNfbXMiOjEwMDAsImNvbW1pdG1lbnQiOnsibm9uY2UiOiJBQUVDQXdRRkJnY0lDUW9MREEwT0R4QVJFaE1VRlJZWEdCa2FHeHdkSGg4IiwicGF5bG9hZF9kaWdlc3QiOnsiYWxnb3JpdGhtIjoic2hhLTI1NiIsInZhbHVlIjoiUnhxLTEtcVdIT0RIVU0tX09jc04zdzh0M0JHVW84Vlhqc2FjN3RvRXpJOCJ9LCJwcmV2aW91c19hdHRlc3RhdGlvbl9kaWdlc3QiOm51bGx9LCJjb250cmlidXRpb25fbGljZW5zZV91cmkiOiJodHRwczovLzc2Ny0yNjc2LmNvbS9saWNlbnNlL2NvbnRyaWJ1dGlvbi8xLjAiLCJldmlkZW5jZV9zY29wZSI6eyJhY3Rpb25fZXhlY3V0aW9uX3Byb3ZlbiI6ZmFsc2UsImF1dGhvcml6YXRpb25fZ3JhbnRlZCI6ZmFsc2UsImNhbGxlcl9pZGVudGl0eV9wcm92ZW4iOmZhbHNlLCJjbG9ja19hY2N1cmFjeV9pbmRlcGVuZGVudGx5X3ZlcmlmaWVkIjpmYWxzZSwiZXh0ZXJuYWxfYXRvbWljX2Nsb2NrX2FsaWdubWVudF9wcm92ZW4iOmZhbHNlLCJub25jZV91bmlxdWVuZXNzX2VuZm9yY2VkIjpmYWxzZSwicGF5ZXJfYXV0aG9yaXphdGlvbl9ib3VuZF90b19jb21taXRtZW50IjpmYWxzZSwicGF5bG9hZF9kaXNjbG9zZWQiOmZhbHNlLCJyZWNpcGllbnRfZGVsaXZlcnlfcHJvdmVuIjpmYWxzZSwicmVwbGF5X3ByZXZlbnRlZCI6ZmFsc2UsInR5cGUiOiJwYXlsb2FkX2NvbW1pdG1lbnRfd2l0bmVzcyJ9LCJpc3N1YW5jZV9lbmRwb2ludCI6Ii92MS9yZWNlaXB0IiwiaXNzdWluZ19vcmlnaW4iOiJodHRwczovLzc2Ny0yNjc2LmNvbSIsImxpY2Vuc2VfdGVybXNfZGlnZXN0Ijp7ImFsZ29yaXRobSI6InNoYS0yNTYiLCJ2YWx1ZSI6ImNSMGdoT09INkRHM1NFZW9ZeFB3MWIzOG9MMndmMklqVGF6R1N4aS12SVkifSwibm9kZV9pZCI6Ijc2Ny0yNjc2LmNvbSIsInBheW1lbnRfaWRlbnRpZmllciI6InRlc3RfdmVjdG9yX29ubHlfbm9fc2V0dGxlbWVudF8xIiwicGF5bWVudF90cmFuc2FjdGlvbiI6bnVsbCwicG9zdF93aXRuZXNzX3Byb2Nlc3NpbmdfZHVyYXRpb25fbXMiOjEwLCJwcm90b2NvbF9pZCI6IlBPUENPUk4tV0lUTkVTUy8yLjAiLCJyZWNlaXB0X2lkIjoicHdyXzAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAxIiwicmVxdWVzdF9yZWNlaXZlZF9hdF91dGMiOiIyMDI2LTA5LTIyVDE4OjAwOjAxLjAwMFoiLCJzZXJ2ZXJfcHJvY2Vzc2luZ19kdXJhdGlvbl9tcyI6MjAsInN0YXRlbWVudF9jcmVhdGVkX2F0X3V0YyI6IjIwMjYtMDktMjJUMTg6MDA6MDEuMDIwWiIsInRhaW5fdmVyaWZpY2F0aW9uX3VyaSI6Imh0dHBzOi8vNzY3LTI2NzYuY29tL3YxL3JlY2VpcHQvdGFpbi90YWluXzAxTTM1NENNN0owMDAwMDAwMDAwMDAwMDAxIiwidW5peF90aW1lX21pbGxpc2Vjb25kcyI6MTc5MDEwMDAwMTAxMCwid2l0bmVzc193aW5kb3dfdXRjIjp7ImVhcmxpZXN0IjoiMjAyNi0wOS0yMlQxODowMDowMC4wMTBaIiwibGF0ZXN0IjoiMjAyNi0wOS0yMlQxODowMDowMi4wMTBaIn0sIndpdG5lc3NlZF9hdF91dGMiOiIyMDI2LTA5LTIyVDE4OjAwOjAxLjAxMFoifQ.g7CZ_8S8MXRo5E2D8vxRrkQDtMOSiYLf8Ikjyktn2ZY2Mf974OiqTHdq1hqc1UM8PaiRe87qu04vlUEa7LuGnQ"
+      },
+      "payment_status": "settled"
+    },
+    "jwks": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "axfR8uEsQkf4vOblY6RA8ncDfYEt6zOg9KE5RdiYwpY",
+          "y": "T-NC4v4af5uO5-tKfA-eFivOM1drMV7Oy7ZAaDe_UfU",
+          "use": "sig",
+          "alg": "ES256",
+          "kid": "popcorn-witness-v2-deterministic-test-key",
+          "popcorn_protocol": "POPCORN-WITNESS/2.0"
+        }
+      ]
+    },
+    "expected_nonce": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+    "expected_payload_base64url": "eyJjaGVja3BvaW50X2lkIjoidjItMSIsInN0YXRlIjoicmVhZHkifQo",
+    "expected_node_id": "767-2676.com",
+    "max_clock_accuracy_radius_ms": 10000
+  }
+}
