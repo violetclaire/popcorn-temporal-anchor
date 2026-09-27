@@ -1,6 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
 import { popcornSample } from "./sample.js";
+import { verifyV2, type VerifyV2Input } from "./v2-interface.js";
+import { localVerifyV2Schema } from "./v2-schema.js";
 
 import {
   popcornCatalog,
@@ -54,7 +56,7 @@ export function createServer(): McpServer {
     {
       title: "Try Briarwood's signed witness for free",
       description:
-        "Try a clock for agents: hash an exact eight-line task schedule, verify its signed time witness, and reject a one-byte change to who must fulfill it. Also reproduce two legacy historical receipts. No inputs, wallet, payment, or network request. Free sample keys are for reproduction; this does not establish current time or grant permission.",
+        "Reproduce historical pre-TAIN receipts and one-byte tamper controls offline. No inputs, wallet, payment, or network request. This sample does not test a current TAIN 2.0 receipt, establish current time, or grant permission; use popcorn_verify_v2 for TAIN 2.0 evidence.",
       inputSchema: z.strictObject({}),
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
@@ -113,6 +115,18 @@ export function createServer(): McpServer {
       annotations: { readOnlyHint: true, destructiveHint: false },
     },
     async (input) => handle(() => popcornVerify(input)),
+  );
+
+  server.registerTool(
+    "popcorn_verify_v2",
+    {
+      title: "Verify a TAIN 2.0 witness receipt",
+      description:
+        "Verify a POPCORN-WITNESS/2.0 receipt against exact expected payload bytes, nonce, and independently trusted issuer keys. Offline and read-only. A valid signature does not grant authority, prove settlement on chain, or establish current time.",
+      inputSchema: localVerifyV2Schema,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
+    },
+    async (input) => handle(() => verifyV2(input as VerifyV2Input)),
   );
 
   server.registerTool(
