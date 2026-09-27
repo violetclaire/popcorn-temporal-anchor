@@ -14,6 +14,8 @@ node examples/verification-checks/check.mjs
 
 No wallet, payment, or network call. Expected results are separate from computation. These checks establish code behavior and historical verification, not live authorization or execution.
 
+[Inspect a fixed TAIN 2.0 receipt and its one-byte rejection](examples/developer-evidence-v2/README.md). This developer packet includes exact test-payload and license bytes, the original signed receipt, a pinned sample hash, and commands for the maintained verifier and eight shared CLI/MCP vectors. The included key is not its own trust anchor; the page states what remains unproven.
+
 
 Searching for **RFC 3161**, **OpenTimestamps**, a **trusted timestamp**, or
 **proof of existence** before an **authorization expiry**? Start with

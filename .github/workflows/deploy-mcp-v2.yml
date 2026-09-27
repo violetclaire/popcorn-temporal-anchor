@@ -25,6 +25,9 @@ jobs:
       - name: Verify both TAIN 2.0 interfaces and all package checks
         run: npm run check
         working-directory: packages/mcp
+      - name: Verify pinned TAIN 2.0 developer sample
+        run: node --import tsx ../../examples/developer-evidence-v2/check-sample.mjs
+        working-directory: packages/mcp
       - name: Bundle remote Worker without deploying
         run: npx --yes wrangler@4.138.0 deploy --config remote/wrangler.jsonc --dry-run
         working-directory: packages/mcp
@@ -51,7 +54,7 @@ jobs:
           wranglerVersion: "4.138.0"
           workingDirectory: packages/mcp
           command: deploy --config remote/wrangler.jsonc
-      - name: Verify deployed /mcp with all six vectors
+      - name: Verify deployed /mcp with all eight vectors
         env:
           MCP_URL: ${{ steps.deploy.outputs.deployment-url }}/mcp
         run: node --import tsx remote/smoke.ts
