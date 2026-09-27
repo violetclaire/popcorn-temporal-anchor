@@ -1,2 +1,6 @@
 * text=auto eol=lf
 *.png binary
+worker/production/index.js -text
+worker/production/bridge.mjs -text
+worker/production/tain-runtime.mjs -text
+worker/production/tain-qr.mjs -text

@@ -1,0 +1,22 @@
+name: POPCORN Worker payment wall gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  payment-wall:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify unpaid 402 ordering and isolated health route
+        run: npm test
+        working-directory: worker/production
