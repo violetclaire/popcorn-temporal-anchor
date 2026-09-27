@@ -72,6 +72,17 @@ test('unpaid /v1/receipt challenges before parsing valid unsupported JSON', asyn
   await assertChallenge(await quickFetch(unreadRequest('/v1/receipt', options), env), '/v1/receipt');
 });
 
+test('unpaid /v1/receipt challenges for an empty body', async () => {
+  const env = environment();
+  await assertChallenge(await quickFetch(unreadRequest('/v1/receipt', { method: 'POST' }), env), '/v1/receipt');
+});
+
+test('unpaid /v1/receipt challenges before parsing malformed JSON', async () => {
+  const env = environment();
+  const options = { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{' };
+  await assertChallenge(await quickFetch(unreadRequest('/v1/receipt', options), env), '/v1/receipt');
+});
+
 test('unpaid /v1/receipt challenges before parsing an ordinary request', async () => {
   const env = environment();
   const body = JSON.stringify({
