@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
 import { popcornSample } from "./sample.js";
 import { verifyV2, type VerifyV2Input } from "./v2-interface.js";
+import { localVerifyV2Schema } from "./v2-schema.js";
 
 import {
   popcornCatalog,
@@ -122,14 +123,7 @@ export function createServer(): McpServer {
       title: "Verify a TAIN 2.0 witness receipt",
       description:
         "Verify a POPCORN-WITNESS/2.0 receipt against exact expected payload bytes, nonce, and independently trusted issuer keys. Offline and read-only. A valid signature does not grant authority, prove settlement on chain, or establish current time.",
-      inputSchema: z.object({
-        response: jsonObject.describe("The complete TAIN 2.0 witness response."),
-        jwks: jsonObject.describe("Issuer keys established independently of the receipt."),
-        expected_nonce: z.string(),
-        expected_payload_base64url: z.string(),
-        expected_node_id: z.string().optional(),
-        max_clock_accuracy_radius_ms: z.number().int().min(0).optional(),
-      }),
+      inputSchema: localVerifyV2Schema,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
     },
     async (input) => handle(() => verifyV2(input as VerifyV2Input)),

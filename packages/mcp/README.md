@@ -122,10 +122,15 @@ verifier. The fixed positive and negative vectors under
 `verify/test-vectors/interface-parity-v2/` run through both interfaces in
 `npm run check` and fail the check on any result or reason mismatch.
 
-Provide the full response, exact expected payload bytes as canonical
+Provide the full response, expected SHA-256 payload digest as canonical
 unpadded base64url, the expected nonce, and issuer keys obtained independently
-of the receipt. Caller-supplied keys alone do not establish issuer identity;
-this verifier does not prove on-chain settlement or grant authority.
+of the receipt. The local CLI and stdio MCP also accept exact payload bytes as
+`expected_payload_base64url` instead of a digest; the remote HTTP MCP accepts
+only a digest, including for predecessor receipts, so private payload bytes
+need not leave the caller. Supply `previous_receipt` with its own response,
+JWKS, and verification inputs for a chained receipt, up to eight links.
+Caller-supplied keys alone do not establish issuer identity; this verifier
+does not prove on-chain settlement or grant authority.
 
 ### `popcorn_catalog`
 

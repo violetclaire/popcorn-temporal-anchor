@@ -1,8 +1,6 @@
 import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
-import * as z from "zod/v4";
 import { verifyV2, type VerifyV2Input } from "../src/v2-interface.js";
-
-const jsonObject = z.record(z.string(), z.unknown());
+import { remoteVerifyV2Schema } from "../src/v2-schema.js";
 
 function createRemoteServer(): McpServer {
   const server = new McpServer({ name: "popcorn-tain-verifier", version: "2.0.0" });
@@ -11,15 +9,8 @@ function createRemoteServer(): McpServer {
     {
       title: "Verify a TAIN 2.0 witness receipt",
       description:
-        "Verify a POPCORN-WITNESS/2.0 receipt against exact expected payload bytes, nonce, and issuer keys established independently of the receipt. This checks signed evidence only: it does not prove on-chain settlement, establish current time, or grant authority. Free and read-only.",
-      inputSchema: z.strictObject({
-        response: jsonObject,
-        jwks: jsonObject,
-        expected_nonce: z.string(),
-        expected_payload_base64url: z.string(),
-        expected_node_id: z.string().optional(),
-        max_clock_accuracy_radius_ms: z.number().int().min(0).optional(),
-      }),
+        "Verify a POPCORN-WITNESS/2.0 receipt against a caller-computed SHA-256 payload digest, nonce, and independently trusted issuer keys. Send only the digest, never private payload bytes. Caller-supplied keys do not establish issuer identity. This does not prove on-chain settlement, establish current time, or grant authority. Free and read-only.",
+      inputSchema: remoteVerifyV2Schema,
       annotations: {
         readOnlyHint: true,
         destructiveHint: false,
@@ -28,7 +19,7 @@ function createRemoteServer(): McpServer {
       },
     },
     async (input) => {
-      const outcome = await verifyV2(input as VerifyV2Input);
+      const outcome = await verifyV2(input as VerifyV2Input, { allowPayloadBytes: false });
       return {
         content: [{ type: "text" as const, text: JSON.stringify(outcome) }],
         structuredContent: outcome,

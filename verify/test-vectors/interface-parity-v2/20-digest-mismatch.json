@@ -80,7 +80,7 @@
       ]
     },
     "expected_nonce": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
-    "expected_payload_base64url": "eiJjaGVja3BvaW50X2lkIjoidjItMSIsInN0YXRlIjoicmVhZHkifQo",
+    "expected_payload_digest": "Axq-1-qWHODHUM-_OcsN3w8t3BGUo8VXjsac7toEzI8",
     "expected_node_id": "767-2676.com",
     "max_clock_accuracy_radius_ms": 10000
   }

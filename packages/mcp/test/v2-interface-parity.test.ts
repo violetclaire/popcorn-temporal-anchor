@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 import { Client, InMemoryTransport } from "@modelcontextprotocol/client";
 import { createServer } from "../src/server.js";
-import type { VerifyV2Outcome } from "../src/v2-interface.js";
+import { verifyV2, type VerifyV2Input, type VerifyV2Outcome } from "../src/v2-interface.js";
 
 type Packet = {
   test_only: true;
@@ -29,7 +29,7 @@ test("TAIN 2.0 CLI and local MCP tool accept and reject the same fixed vectors",
     const names = (await client.listTools()).tools.map(tool => tool.name);
     assert.ok(names.includes("popcorn_verify_v2"), "local MCP interface is not advertised");
     const files = (await readdir(vectorDir)).filter(name => name.endsWith(".json")).sort();
-    assert.equal(files.length, 6, "all six fixed conformance vectors must be present");
+    assert.equal(files.length, 8, "all eight fixed conformance vectors must be present");
     for (const file of files) {
       const url = new URL(file, vectorDir);
       const packet = JSON.parse(await readFile(url, "utf8")) as Packet;
@@ -74,4 +74,38 @@ test("TAIN 2.0 CLI and local MCP tool accept and reject the same fixed vectors",
     await client.close();
     await server.close();
   }
+});
+
+test("local exact-byte mode remains available and predecessor verification is bounded", async () => {
+  const packet = JSON.parse(await readFile(new URL("00-valid.json", vectorDir), "utf8")) as Packet;
+  const source = JSON.parse(await readFile(
+    new URL("../../../verify/test-vectors/popcorn-witness-receipt-v2.json", import.meta.url), "utf8",
+  )) as { exact_payload: { bytes: string } };
+  const raw = {
+    ...packet.input,
+    expected_payload_digest: undefined,
+    expected_payload_base64url: source.exact_payload.bytes,
+  } as VerifyV2Input;
+  assert.equal((await verifyV2(raw)).accepted, true);
+  const remotePolicy = await verifyV2(raw, { allowPayloadBytes: false });
+  assert.equal(remotePolicy.accepted, false);
+  assert.equal(remotePolicy.reason, "raw payload bytes are not accepted by the remote verifier");
+
+  const deep = structuredClone(packet.input);
+  let cursor: Record<string, unknown> = deep;
+  for (let link = 0; link < 9; link++) {
+    const verification: Record<string, unknown> = {
+      expected_nonce: packet.input.expected_nonce,
+      expected_payload_digest: packet.input.expected_payload_digest,
+    };
+    cursor.previous_receipt = {
+      response: packet.input.response,
+      jwks: packet.input.jwks,
+      verification,
+    };
+    cursor = verification;
+  }
+  const tooDeep = await verifyV2(deep as VerifyV2Input);
+  assert.equal(tooDeep.accepted, false);
+  assert.equal(tooDeep.reason, "previous_receipt chain exceeds 8 links");
 });

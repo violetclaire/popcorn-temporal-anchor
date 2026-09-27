@@ -86,7 +86,7 @@ export async function runHttpSmoke(
     throw new Error(`Remote tool surface differs: ${JSON.stringify(tools)}`);
   }
   const files = (await readdir(vectorDir)).filter(name => name.endsWith(".json")).sort();
-  if (files.length !== 6) throw new Error(`Expected six fixed vectors; found ${files.length}`);
+  if (files.length !== 8) throw new Error(`Expected eight fixed vectors; found ${files.length}`);
   const cases: HttpSmokeReport["cases"] = [];
   for (const [index, file] of files.entries()) {
     const vector = JSON.parse(await readFile(new URL(file, vectorDir), "utf8")) as Vector;
