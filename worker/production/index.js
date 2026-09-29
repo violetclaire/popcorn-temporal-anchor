@@ -612,7 +612,7 @@ var BriarwoodAgentEngine = class {
       temporal_attestation_state: getSigningConfigState(this.env),
       witness_service_state: getWitnessServiceState(this.env),
       witness_configuration_state: getWitnessConfiguration(this.env).configuration_state,
-      witness_protocol_id: WITNESS_PROTOCOL_ID,
+      witness_protocol_id: TAIN_WITNESS_PROTOCOL_ID,
       witness_endpoint: WITNESS_RECEIPT_PATH,
       payment_toll_usd: X402_PRICE_USD,
       peer_count: 0,
