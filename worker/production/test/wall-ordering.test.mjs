@@ -119,6 +119,7 @@ for (const bindingName of ['Agent_Engine', 'AGENT_ENGINE']) {
     const body = await response.json();
     assert.equal(body.engine_state, 'ready');
     assert.equal(body.payment_configuration_state, 'ready');
+    assert.equal(body.witness_protocol_id, 'POPCORN-WITNESS/2.0');
   });
 
   test(`TAIN lookup uses the existing ${bindingName} binding`, async () => {
