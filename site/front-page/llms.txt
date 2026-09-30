@@ -54,7 +54,7 @@ Free sample skill: https://767-2676.com/skills/task-time/SKILL.md
 ## Primary capability
 
 - [Temporal anchor](https://767-2676.com/v1/time): Request a signed Pacific and UTC time response. Unpaid requests return an x402 v2 `402 Payment Required` challenge for $0.001 USDC on Base mainnet. The legacy alias `/time?format=json` remains available.
-- [Schedule checkpoint](https://767-2676.com/v1/receipt): POST a SHA-256 digest, a 32-byte nonce, and an optional predecessor digest. After the same $0.001 x402 payment, POPCORN signs when that commitment was presented. The raw schedule or task bytes stay with the agent and are never sent to POPCORN.
+- [Schedule checkpoint](https://767-2676.com/v2/receipt): POST a SHA-256 digest, a 32-byte nonce, and an optional predecessor digest. After the same $0.001 x402 payment, POPCORN signs when that commitment was presented. The raw schedule or task bytes stay with the agent and are never sent to POPCORN. `/v1/receipt` remains available for existing integrations.
 
 ## Service entry
 
@@ -133,7 +133,7 @@ The current POPCORN API requires no account or license. Briarwood’s future inv
 - Pricing: https://767-2676.com/pricing
 - Service terms: https://767-2676.com/terms
 - Signed time: GET /v1/time; 0.001 USDC on Base through x402.
-- Digest witness: POST /v1/receipt; 0.001 USDC on Base through x402.
+- Digest witness: POST /v2/receipt; 0.001 USDC on Base through x402. `/v1/receipt` remains compatible.
 - Public documentation, verification keys and saved examples are free to read.
 
 - Support: https://767-2676.com/support

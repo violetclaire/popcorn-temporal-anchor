@@ -53,12 +53,12 @@ authorization issued by POPCORN. Recheck changed conditions before acting.
 Never use a local UTC/wall clock for steps 3 or 4. The /v1/time response contains
 signed time and duration fields; the verifier derives [L, U] using measured
 round-trip and elapsed durations from a monotonic timer. That timer measures
-duration only; it does not supply UTC. A witness_window_utc in a /v1/receipt
+duration only; it does not supply UTC. A witness_window_utc in a /v2/receipt
 response describes a past checkpoint and must not be substituted for now.
 If serializing interval bounds to whole milliseconds, round L down and U up.
 
 To witness the schedule's identity:
-Hash its exact bytes locally. POST to https://767-2676.com/v1/receipt with
+Hash its exact bytes locally. POST to https://767-2676.com/v2/receipt with
 payload_digest = {"algorithm":"sha-256","value":"<unpadded base64url SHA-256>"},
 a fresh 32-byte nonce encoded as unpadded base64url, and
 previous_attestation_digest = null (or the predecessor attestation's digest).
@@ -66,7 +66,8 @@ Send the digest and protocol metadata only. Never send the schedule fields.
 Verify the returned ES256 JWS and compare its signed commitment.payload_digest
 and commitment.nonce to what you submitted.
 
-Request binding means that /v1/receipt signs the submitted digest and nonce.
+Request binding means that /v2/receipt signs the submitted digest and nonce.
+The /v1/receipt purchase path remains available for existing integrations.
 It does not prove caller identity, enforce nonce uniqueness, prevent replay,
 prove task execution, reserve inventory, or authorize payment. /v1/time is
 bearer temporal evidence and is not bound to a task digest or request nonce.

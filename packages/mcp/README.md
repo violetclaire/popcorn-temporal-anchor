@@ -223,7 +223,8 @@ specific call.
 
 ### `popcorn_witness`
 
-Requests `POST /v1/receipt`. The default call is a free dry run:
+Requests `POST /v2/receipt`. `POST /v1/receipt` remains available to existing
+integrations. The default call is a free dry run:
 
 ```json
 {

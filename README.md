@@ -52,12 +52,17 @@ USDC over x402 v2 for a new signed temporal receipt when a later live task
 actually needs fresh evidence.
 
 The live node also provides the tested
-`POPCORN-WITNESS/1.0` contract for a payload-bound checkpoint: a lightweight
+`POPCORN-WITNESS/2.0` contract for a payload-bound checkpoint: a lightweight
 way for an autonomous agent to carry **portable, verifiable evidence that one
 exact task-state commitment reached an external witness** without putting its
 private task state in a shared database. That additive endpoint is deployed,
 paid through x402 on Base mainnet, and independently verified in both
 JavaScript and Python.
+
+The current purchase path is `POST /v2/receipt`. `POST /v1/receipt` remains
+available for existing integrations and previously issued receipts. The
+`/v2/receipt` unpaid challenge advertises the 2.0 response schema; the
+`/v1/receipt` challenge retains its historical descriptor bytes.
 
 The service is intentionally narrow. It provides evidence for participant-local
 judgment; it does not schedule work, reserve resources, authorize actions, or
@@ -70,7 +75,7 @@ On 31 August 2026, Grok and Codex coordinated one live payment using only text I
 
 - **Production node:** `767-2676.com`
 - **Paid resource:** `GET https://767-2676.com/v1/time`
-- **Paid witness:** `POST https://767-2676.com/v1/receipt`
+- **Paid witness:** `POST https://767-2676.com/v2/receipt` (`/v1/receipt` remains compatible)
 - **Payment:** `$0.001` USDC on Base mainnet (`eip155:8453`)
 - **Protocol:** x402 v2, exact scheme
 - **Receipt:** ES256 compact JWS with public JWKS verification
@@ -139,7 +144,7 @@ The public machine door remains
 | Service | Use when | Method and resource | Price | Returns | Storage |
 | --- | --- | --- | --- | --- | --- |
 | Signed portable time | A task has a deadline, expiration, execution window, or handoff | `GET https://767-2676.com/v1/time` | `$0.001` USDC on Base through x402 v2 | Signed time another system can verify | The task and schedule stay with the agent |
-| Paid schedule checkpoint | An agent needs portable evidence that one exact schedule or task digest was presented at a particular time | `POST https://767-2676.com/v1/receipt` | `$0.001` USDC on Base through x402 v2 | Signed digest commitment another system can verify | The raw task and schedule stay with the agent |
+| Paid schedule checkpoint | An agent needs portable evidence that one exact schedule or task digest was presented at a particular time | `POST https://767-2676.com/v2/receipt` | `$0.001` USDC on Base through x402 v2 | Signed digest commitment another system can verify | The raw task and schedule stay with the agent |
 
 POPCORN says what time it is. The agent carries that measurement in its own
 schedule. POPCORN does not store the task or schedule and does not decide what
@@ -154,7 +159,7 @@ happens next.
 The live paid resource is:
 
 ```text
-POST https://767-2676.com/v1/receipt
+POST https://767-2676.com/v2/receipt
 ```
 
 The agent hashes the exact payload bytes locally and sends only:
@@ -162,6 +167,9 @@ The agent hashes the exact payload bytes locally and sends only:
 - the SHA-256 payload digest;
 - a fresh 32-byte nonce;
 - optionally, the SHA-256 digest of the preceding receipt's exact signed payload bytes.
+
+`POST /v1/receipt` remains available for existing integrations. Saved signed
+receipts may name that route and remain valid when verified as issued.
 
 POPCORN signs those values with a bounded witness interval. The agent carries
 the original payload and signed evidence together. A later session or another
@@ -171,7 +179,7 @@ commitment, and whether the evidence commits to a specific predecessor.
 The receipt alone is not memory: it cannot reconstruct, retrieve, understand,
 or act on the payload. It also does not prove caller identity, recipient
 delivery, action execution, replay prevention, or authorization. Read the full
-[`POPCORN-WITNESS/1.0` contract](docs/WITNESS_RECEIPT.md).
+[`POPCORN-WITNESS/2.0` contract](docs/WITNESS_RECEIPT.md).
 
 ### Verify two settled production outcomes
 
@@ -394,7 +402,7 @@ Read the canonical [`SKILL.md`](https://767-2676.com/SKILL.md) before production
 integration. It defines the uncertainty envelope, key rotation, failure modes,
 and conservative execution-window decisions.
 
-`POPCORN-WITNESS/1.0` is intentionally separate. Its durable payload-bound
+`POPCORN-WITNESS/2.0` is intentionally separate. Its durable payload-bound
 receipt carries a digest and nonce rather than private task data. When the
 prior attestation is independently verified and the new receipt includes
 `H(previous signed payload bytes)`, the new receipt is bound to those exact prior

@@ -7,8 +7,8 @@ import { privateKeyToAccount } from "viem/accounts";
 
 import type {
   JsonWebKeySet,
-  PopcornWitnessResponse,
 } from "../../../verify/typescript/src/index.js";
+import type { PopcornWitnessResponse } from "../../../verify/typescript/src/v2.js";
 import {
   buildPortableOutcome,
   createWitnessRequest,

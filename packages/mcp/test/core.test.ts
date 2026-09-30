@@ -91,6 +91,7 @@ test("popcorn_witness dry run returns the exact request and sends no payment", a
   assert.equal(result.payment_sent, false);
   assert.equal(requests.length, 1);
   assert.equal(requests[0]?.init?.method, "POST");
+  assert.equal(requests[0]?.url, "https://767-2676.com/v2/receipt");
   assert.deepEqual(JSON.parse(result.request.body_utf8 ?? "null"), {
     payload_digest: { algorithm: "sha-256", value: digest },
     nonce,
@@ -143,6 +144,25 @@ test("popcorn_verify validates chained receipt 003 entirely offline", async () =
   });
   assert.equal(result.receipt_type, "witness");
   assert.equal(result.verified.previous_attestation_digest_matched, true);
+});
+
+test("popcorn_verify selects the v2 verifier for a signed TAIN receipt", async () => {
+  const vector = JSON.parse(await readFile(
+    new URL("../../../verify/test-vectors/popcorn-witness-receipt-v2.json", import.meta.url),
+    "utf8",
+  ));
+  const result = await popcornVerify({
+    receipt_type: "witness",
+    response: vector.paid_evidence,
+    jwks: { keys: [vector.public_verification_key] },
+    verification: {
+      expected_nonce: vector.submitted_request.nonce,
+      expected_payload_base64url: vector.exact_payload.bytes,
+    },
+  });
+  if (result.receipt_type !== "witness") throw new Error("expected witness verification");
+  assert.equal(result.verified.signature_verified, true);
+  assert.equal(result.verified.witness_receipt.protocol_id, "POPCORN-WITNESS/2.0");
 });
 
 test("core export verifies a chronological chain in one pass", async () => {

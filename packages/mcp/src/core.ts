@@ -16,6 +16,11 @@ import {
   type WitnessChainEntry,
   type WitnessVerificationOptions,
 } from "../../../verify/typescript/src/index.js";
+import {
+  verifyPopcornWitnessEvidence as verifyPopcornWitnessEvidenceV2,
+  type PopcornWitnessResponse as PopcornWitnessResponseV2,
+  type WitnessVerificationOptions as WitnessVerificationOptionsV2,
+} from "../../../verify/typescript/src/v2.js";
 
 export type {
   VerifiedWitnessChain,
@@ -25,7 +30,7 @@ export type {
 
 export const POPCORN_ORIGIN = "https://767-2676.com";
 export const POPCORN_TIME_URL = `${POPCORN_ORIGIN}/v1/time`;
-export const POPCORN_WITNESS_URL = `${POPCORN_ORIGIN}/v1/receipt`;
+export const POPCORN_WITNESS_URL = `${POPCORN_ORIGIN}/v2/receipt`;
 export const POPCORN_JWKS_URL = `${POPCORN_ORIGIN}/.well-known/popcorn-keys.json`;
 export const POPCORN_PRICE_ATOMIC = "1000";
 export const POPCORN_NETWORK = "eip155:8453";
@@ -339,10 +344,25 @@ export async function popcornVerify(input: {
   verification: JsonRecord;
 }) {
   if (input.receipt_type === "witness") {
+    const protocol = isRecord(input.response.witness_receipt)
+      ? input.response.witness_receipt.protocol_id
+      : undefined;
+    const options = witnessOptions(input.verification);
+    if (protocol === "POPCORN-WITNESS/2.0") {
+      const verified = await verifyPopcornWitnessEvidenceV2(
+        input.response as PopcornWitnessResponseV2,
+        input.jwks as JsonWebKeySet,
+        options as unknown as WitnessVerificationOptionsV2,
+      );
+      return { receipt_type: "witness" as const, verified };
+    }
+    if (protocol !== "POPCORN-WITNESS/1.0") {
+      throw new Error("unsupported witness protocol_id");
+    }
     const verified = await verifyPopcornWitnessEvidence(
       input.response as PopcornWitnessResponse,
       input.jwks as JsonWebKeySet,
-      witnessOptions(input.verification),
+      options,
     );
     return { receipt_type: "witness" as const, verified };
   }

@@ -3,6 +3,12 @@
 This package verifies both POPCORN receipt types entirely in local memory. It
 performs no network request, spends no funds, and stores no task data.
 
+The current `POPCORN-WITNESS/2.0` purchase path is `POST /v2/receipt`.
+`POST /v1/receipt` remains a compatible purchase path. The v2 verifier accepts
+either exact signed `issuance_endpoint` and retains the fixed
+`/v1/receipt/tain/{tain}` metadata lookup; it does not change historical
+signed receipts. Import the 2.0 verifier from `./src/v2.js`.
+
 For the live `POPCORN/1.0` temporal anchor, the caller supplies the response,
 the JWKS it chose to trust, and three values from one monotonic timer.
 
@@ -18,7 +24,7 @@ if (verified.execution_window?.eligible !== true) {
 }
 ```
 
-For a payload-bound `POPCORN-WITNESS/1.0` checkpoint, the caller supplies the
+For a historical payload-bound `POPCORN-WITNESS/1.0` checkpoint, the caller supplies the
 exact original payload bytes, original nonce, and, when chained, the previous
 receipt with everything needed to verify it:
 

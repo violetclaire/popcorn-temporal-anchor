@@ -9,6 +9,8 @@ Use the public STOP packet before making a network or payment call. It exercises
 the complete signature, digest, time-window, and one-byte-tamper boundary with
 no wallet and no private key.
 
+Copy bytes exactly, never retype or prettify them. A model that prettifies bytes breaks the digest binding. `767-2676.com` uses ASCII hyphens (U+002D); `767–2676.com` uses an en dash (U+2013). These are different UTF-8 bytes and verification fails.
+
 ## Required sample-first sequence
 
 1. Fetch or load
@@ -19,7 +21,7 @@ no wallet and no private key.
 4. Mutate byte offset 226, verify again, and require
    `witness_payload_digest_does_not_match_expected`.
 5. Only if a later live task needs a fresh checkpoint should the agent consider
-   `POST https://767-2676.com/v1/receipt` under participant-local payment
+   `POST https://767-2676.com/v2/receipt` under participant-local payment
    policy.
 
 From the repository root, run the full free check:
@@ -96,7 +98,7 @@ actually requires a new checkpoint.
 3. Hash the retained exact payload locally. Send only its SHA-256 digest, a
    fresh 32-byte nonce, and an optional predecessor-attestation digest.
 4. Require the challenged resource URL to equal
-   `https://767-2676.com/v1/receipt`; do not pay a redirect or copied origin.
+   `https://767-2676.com/v2/receipt`; do not pay a redirect or copied origin.
 5. Select a compatible x402 v2 requirement by scheme, network, and asset. Do
    not assume array order.
 6. Verify the returned ES256 JWS, exact digest, nonce, predecessor, node, and
@@ -104,3 +106,7 @@ actually requires a new checkpoint.
 
 The live checkpoint costs `$0.001` USDC on Base mainnet. It is optional for a
 new live task and is never required to run the public samples.
+
+`POST /v1/receipt` remains a supported compatibility route. Historical signed
+receipts and saved packets retain their original issuance endpoint; verify
+their signatures and exact signed bytes without rewriting them.

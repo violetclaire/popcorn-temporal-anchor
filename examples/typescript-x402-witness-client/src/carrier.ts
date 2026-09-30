@@ -11,8 +11,16 @@ import {
   type WitnessVerificationOptions,
   type WitnessScheduleDecision,
 } from "../../../verify/typescript/src/index.js";
+import {
+  verifyPopcornWitnessEvidence as verifyPopcornWitnessEvidenceV2,
+  type PopcornWitnessResponse as PopcornWitnessResponseV2,
+  type WitnessVerificationOptions as WitnessVerificationOptionsV2,
+  type VerifiedWitnessEvidence as VerifiedWitnessEvidenceV2,
+} from "../../../verify/typescript/src/v2.js";
+import type { VerifiedWitnessEvidence } from "../../../verify/typescript/src/index.js";
 
-export const DEFAULT_SERVICE_URL = "https://767-2676.com/v1/receipt";
+export const DEFAULT_SERVICE_URL = "https://767-2676.com/v2/receipt";
+export const LEGACY_SERVICE_URL = "https://767-2676.com/v1/receipt";
 export const DEFAULT_JWKS_URL =
   "https://767-2676.com/.well-known/popcorn-keys.json";
 
@@ -43,7 +51,7 @@ export type PortableScheduleOutcome = {
   };
   submitted_request: WitnessRequest;
   previous_receipt: WitnessVerificationOptions["previous_receipt"] | null;
-  paid_evidence: PopcornWitnessResponse;
+  paid_evidence: PopcornWitnessResponse | PopcornWitnessResponseV2;
   payment_exchange: PaymentExchange;
   reported_judgment: WitnessScheduleDecision;
   payload_remained_outside_popcorn: true;
@@ -51,6 +59,32 @@ export type PortableScheduleOutcome = {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export async function verifyWitnessForCarrier(
+  response: PopcornWitnessResponse | PopcornWitnessResponseV2,
+  jwks: JsonWebKeySet,
+  options: WitnessVerificationOptions,
+): Promise<VerifiedWitnessEvidence | VerifiedWitnessEvidenceV2> {
+  const protocol = response.witness_receipt?.protocol_id;
+  if (protocol === "POPCORN-WITNESS/2.0") {
+    return verifyPopcornWitnessEvidenceV2(
+      response as PopcornWitnessResponseV2,
+      jwks,
+      options as unknown as WitnessVerificationOptionsV2,
+    );
+  }
+  if (protocol === "POPCORN-WITNESS/1.0") {
+    return verifyPopcornWitnessEvidence(response as PopcornWitnessResponse, jwks, options);
+  }
+  throw new Error("unsupported witness protocol_id");
+}
+
+function signedServiceUrl(verified: VerifiedWitnessEvidence | VerifiedWitnessEvidenceV2): string {
+  if (verified.witness_receipt.protocol_id === "POPCORN-WITNESS/2.0") {
+    return `https://767-2676.com${(verified.witness_receipt as VerifiedWitnessEvidenceV2["witness_receipt"]).issuance_endpoint}`;
+  }
+  return LEGACY_SERVICE_URL;
 }
 
 export function sha256Base64Url(value: string | Uint8Array): string {
@@ -130,12 +164,12 @@ export async function buildPortableOutcome(input: {
   keySetUrl: string;
   scheduleBytes: Uint8Array;
   submittedRequest: WitnessRequest;
-  paidEvidence: PopcornWitnessResponse;
+  paidEvidence: PopcornWitnessResponse | PopcornWitnessResponseV2;
   paymentExchange: PaymentExchange;
   jwks: JsonWebKeySet;
   previousReceipt?: WitnessVerificationOptions["previous_receipt"];
 }): Promise<PortableScheduleOutcome> {
-  const verified = await verifyPopcornWitnessEvidence(
+  const verified = await verifyWitnessForCarrier(
     input.paidEvidence,
     input.jwks,
     {
@@ -145,6 +179,9 @@ export async function buildPortableOutcome(input: {
       max_clock_accuracy_radius_ms: 10_000,
     },
   );
+  if (input.serviceUrl !== signedServiceUrl(verified)) {
+    throw new Error("outcome service_url does not match signed issuance endpoint");
+  }
   const reportedJudgment = evaluateWitnessAgainstSchedule(
     verified.witness_window_utc,
     parseScheduleWindow(input.scheduleBytes),
@@ -192,7 +229,10 @@ export async function verifyPortableOutcome(
     throw new Error("outcome protocol_id is invalid");
   }
   const outcome = value as PortableScheduleOutcome;
-  if (outcome.service_url !== (options.expectedServiceUrl ?? DEFAULT_SERVICE_URL)) {
+  const trustedServices = options.expectedServiceUrl
+    ? [options.expectedServiceUrl]
+    : [DEFAULT_SERVICE_URL, LEGACY_SERVICE_URL];
+  if (!trustedServices.includes(outcome.service_url)) {
     throw new Error("outcome service_url is not the trusted service");
   }
   if (outcome.key_set_url !== (options.expectedKeySetUrl ?? DEFAULT_JWKS_URL)) {
@@ -241,7 +281,7 @@ export async function verifyPortableOutcome(
     throw new Error("outcome previous_receipt is invalid");
   }
 
-  const verified = await verifyPopcornWitnessEvidence(
+  const verified = await verifyWitnessForCarrier(
     outcome.paid_evidence,
     jwks,
     {
@@ -252,6 +292,9 @@ export async function verifyPortableOutcome(
       max_clock_accuracy_radius_ms: 10_000,
     },
   );
+  if (outcome.service_url !== signedServiceUrl(verified)) {
+    throw new Error("outcome service_url does not match signed issuance endpoint");
+  }
   const judgment = evaluateWitnessAgainstSchedule(
     verified.witness_window_utc,
     parseScheduleWindow(scheduleBytes),

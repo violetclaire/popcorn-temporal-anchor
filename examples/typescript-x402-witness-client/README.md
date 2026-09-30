@@ -7,7 +7,7 @@ The producing client:
 
 1. reads the exact schedule bytes from a local file or HTTPS URL;
 2. keeps those bytes local and sends only their SHA-256 digest and a fresh nonce;
-3. pays `POST /v1/receipt` through x402 v2, capped at `$0.001`;
+3. pays `POST /v2/receipt` through x402 v2, capped at `$0.001`;
 4. captures the `PAYMENT-REQUIRED`, `PAYMENT-SIGNATURE`, and `PAYMENT-RESPONSE` headers;
 5. fetches POPCORN's live JWKS and verifies the signed checkpoint;
 6. compares the complete signed witness interval with `execution_window_utc`;
@@ -77,7 +77,7 @@ npm run verify -- --outcome https://example.com/portable-outcome.json
 
 By default the verifier trusts only:
 
-- service: `https://767-2676.com/v1/receipt`
+- service: `https://767-2676.com/v2/receipt` (historical outcomes from `/v1/receipt` remain verifiable)
 - key set: `https://767-2676.com/.well-known/popcorn-keys.json`
 - node: `767-2676.com`
 

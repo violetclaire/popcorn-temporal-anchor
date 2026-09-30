@@ -16,7 +16,7 @@ are superseded for the front page.
 
 Retrieve the current deployed Worker before making the root-page change.
 Preserve its other routes, service logic, signing keys, bindings, and configuration.
-In particular, keep /v1/time, /v1/receipt, /test-line, /schedule and its
+In particular, keep /v1/time, /v2/receipt, the compatible /v1/receipt path, /test-line, /schedule and its
 examples, /agents, /.well-known/popcorn-keys.json, and the MCP installation
 material at their current locations.
 
@@ -37,7 +37,7 @@ Publish the three files in [`site/demo`](site/demo) at these exact routes:
 Serve the HTML with UTF-8 and a restrictive same-origin policy that still
 allows `connect-src https://raw.githubusercontent.com`. The page only fetches
 the checked-in public STOP packet and `evaluation-outcomes.json`. It never
-calls `/v1/time`, `/v1/receipt`, a wallet, or an x402 client.
+calls `/v1/time`, `/v2/receipt`, the compatible `/v1/receipt` path, a wallet, or an x402 client.
 
 ## 3. Publish the machine door
 

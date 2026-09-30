@@ -10,10 +10,12 @@ import {
   buildPortableOutcome,
   DEFAULT_JWKS_URL,
   DEFAULT_SERVICE_URL,
+  LEGACY_SERVICE_URL,
   type PaymentExchange,
   type PortableScheduleOutcome,
   type WitnessRequest,
   verifyPortableOutcome,
+  verifyWitnessForCarrier,
 } from "../src/carrier.js";
 
 const paymentExchange: PaymentExchange = {
@@ -39,7 +41,7 @@ async function outcomeFromPacket(name: string): Promise<{
   const scheduleBytes = Buffer.from(packet.exact_schedule.bytes, "base64url");
   const jwks = { keys: [packet.public_verification_key] } as JsonWebKeySet;
   const outcome = await buildPortableOutcome({
-    serviceUrl: DEFAULT_SERVICE_URL,
+    serviceUrl: packet.service_url,
     keySetUrl: DEFAULT_JWKS_URL,
     scheduleBytes,
     submittedRequest: packet.submitted_request as WitnessRequest,
@@ -56,8 +58,27 @@ test("a second client independently reaches STOP for packet 001", async () => {
   );
   const result = await verifyPortableOutcome(outcome, jwks);
   assert.equal(result.valid, true);
+  assert.equal(result.service_url, LEGACY_SERVICE_URL);
   assert.equal(result.judgment.decision, "STOP");
   assert.equal(result.judgment.authorization_granted, false);
+});
+
+test("the client verifies a signed v2 checkpoint and binds its route", async () => {
+  const vector = JSON.parse(await readFile(
+    new URL("../../../verify/test-vectors/popcorn-witness-receipt-v2.json", import.meta.url),
+    "utf8",
+  ));
+  const verified = await verifyWitnessForCarrier(
+    vector.paid_evidence,
+    { keys: [vector.public_verification_key] },
+    {
+      expected_payload: Buffer.from(vector.exact_payload.bytes, "base64url"),
+      expected_nonce: vector.submitted_request.nonce,
+    },
+  );
+  assert.equal(verified.signature_verified, true);
+  assert.equal(verified.witness_receipt.protocol_id, "POPCORN-WITNESS/2.0");
+  assert.equal(DEFAULT_SERVICE_URL, "https://767-2676.com/v2/receipt");
 });
 
 test("a second client independently reaches TIME_CHECK_PASSED for packet 002", async () => {

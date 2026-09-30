@@ -23,7 +23,7 @@ Serve `index.html` at `/` through the current Cloudflare Worker. Preserve the cu
 
 The current HTML references `/tain-sample-qr.png`, a Worker-served public asset. Keep that asset available when publishing the page. GitHub source does not deploy the Cloudflare Worker automatically.
 
-Keep /v1/time, /v1/receipt, /test-line, /schedule and its examples, /agents, /.well-known/popcorn-keys.json, the MCP installation material, and the other existing routes at their current locations.
+Keep /v1/time, /v2/receipt, the compatible /v1/receipt path, /test-line, /schedule and its examples, /agents, /.well-known/popcorn-keys.json, the MCP installation material, and the other existing routes at their current locations.
 
 Keep visible labels, HTML attributes, JSON and llms.txt consistent. The other reference mappings in [signal.md](signal.md) are not played by this beacon. Playback does not grant authorization, produce a signed time witness or send a help request.
 
