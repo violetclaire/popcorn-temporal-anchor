@@ -735,7 +735,7 @@ async function verifyPopcornWitnessEvidenceInternal(
     throw new Error("witness receipt tain is missing or malformed");
   }
   if (receipt.issuing_origin !== "https://767-2676.com" ||
-      receipt.issuance_endpoint !== "/v1/receipt" ||
+      (receipt.issuance_endpoint !== "/v1/receipt" && receipt.issuance_endpoint !== "/v2/receipt") ||
       receipt.tain_verification_uri !== `https://767-2676.com/v1/receipt/tain/${receipt.tain}` ||
       receipt.contribution_license_uri !== "https://767-2676.com/license/contribution/1.0") {
     throw new Error("witness receipt provenance or license URI is invalid");
