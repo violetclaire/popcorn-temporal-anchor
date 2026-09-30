@@ -98,13 +98,13 @@ The resource performing the action must still enforce authorization, revocation,
 The live operation is:
 
 ```text
-POST https://767-2676.com/v1/receipt
+POST https://767-2676.com/v2/receipt
 ```
 
-Send only the digest, nonce, and optional predecessor digest. An unpaid request returns an x402 `402 Payment Required` challenge. One fresh signed response costs `0.001 USDC` on Base. Agents under a no-spend rule should verify the public chain above and stop before authorizing payment.
+Send only the digest, nonce, and optional predecessor digest. An unpaid request returns an x402 `402 Payment Required` challenge. One fresh signed response costs `0.001 USDC` on Base. `POST /v1/receipt` remains available for existing integrations. Agents under a no-spend rule should verify the public chain above and stop before authorizing payment.
 
 ```bash
-curl --include --request POST https://767-2676.com/v1/receipt
+curl --include --request POST https://767-2676.com/v2/receipt
 ```
 
 What payment adds is a new production receipt for your digest and nonce at a fresh witness interval. It does not add proof that the underlying action occurred. That proof must come from the authoritative executor and be bound into the witnessed bytes.

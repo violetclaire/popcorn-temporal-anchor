@@ -1,5 +1,10 @@
 # POPCORN-WITNESS/1.0
 
+This is the historical 1.0 protocol reference. POPCORN-WITNESS/2.0 uses
+`POST /v2/receipt` as its current purchase path; `POST /v1/receipt` remains
+available for compatibility. Existing 1.0 signed receipts keep their exact
+bytes and are verified under the 1.0 contract.
+
 `POST /v1/receipt` is a paid, digest-only witness service. It signs evidence that a specific 32-byte SHA-256 commitment was presented to `767-2676.com` at the stated time.
 
 The agent keeps the schedule or other payload. POPCORN receives only:

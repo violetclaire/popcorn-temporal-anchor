@@ -1,7 +1,6 @@
 import type { JsonWebKeySet } from "../../../verify/typescript/src/index.js";
 import {
   DEFAULT_JWKS_URL,
-  DEFAULT_SERVICE_URL,
   readExactBytes,
   verifyPortableOutcome,
 } from "./carrier.js";
@@ -40,7 +39,6 @@ async function main(): Promise<void> {
     ),
   ) as JsonWebKeySet;
   const verified = await verifyPortableOutcome(outcome, jwks, {
-    expectedServiceUrl: DEFAULT_SERVICE_URL,
     expectedKeySetUrl: jwksUrl,
   });
   console.log(JSON.stringify(verified, null, 2));

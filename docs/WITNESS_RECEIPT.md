@@ -1,5 +1,13 @@
 # POPCORN payload-bound witness receipt
 
+The current POPCORN-WITNESS/2.0 purchase path is `POST /v2/receipt`.
+`POST /v1/receipt` remains available for existing integrations and historical
+receipts. Historical 1.0 examples retain their original signed bytes. New 2.0
+responses use
+[`schemas/witness-response.v2.schema.json`](../schemas/witness-response.v2.schema.json).
+An unpaid `/v2/receipt` challenge advertises that 2.0 response schema; the
+`/v1/receipt` challenge keeps its historical descriptor bytes.
+
 ## Exact primitive
 
 A POPCORN witness receipt is a signed assertion by one identified POPCORN node
@@ -16,7 +24,7 @@ agent-local payload bytes
         v
 payload digest + fresh nonce + optional H(previous signed payload bytes)
         |
-        | POST /v1/receipt through x402
+        | POST /v2/receipt through x402
         v
 signed POPCORN witness receipt
         |
@@ -36,13 +44,13 @@ time-bound, and portable across a trust boundary.
 ## Live resource
 
 ```text
-POST https://767-2676.com/v1/receipt
+POST https://767-2676.com/v2/receipt
 Content-Type: application/json
 Payment: x402 v2
 ```
 
 `GET /v1/time` remains the existing short-lived bearer temporal-anchor service.
-`POST /v1/receipt` is additive and payload-bound. Deployments must not silently
+`POST /v2/receipt` is payload-bound. Deployments must not silently
 change the semantics of `POPCORN/1.0` receipts already in use.
 
 The request is defined by
@@ -70,11 +78,13 @@ signed payload bytes obtained by base64url-decoding the second segment of the
 predecessor compact JWS. It is not a digest of the compact JWS string. `null`
 starts a chain.
 
-The response is defined by
-[`schemas/witness-response.v1.schema.json`](../schemas/witness-response.v1.schema.json).
-Its signed payload uses `protocol_id: POPCORN-WITNESS/1.0`.
+The current response is defined by
+[`schemas/witness-response.v2.schema.json`](../schemas/witness-response.v2.schema.json)
+and signs `protocol_id: POPCORN-WITNESS/2.0`. Historical 1.0 responses use
+[`schemas/witness-response.v1.schema.json`](../schemas/witness-response.v1.schema.json)
+and keep their original signed payload bytes.
 
-The reference HTTP handler must be mounted only after the existing x402 v2
+The historical reference HTTP handler must be mounted only after the existing x402 v2
 middleware verifies and settles the payment:
 
 ```ts
@@ -136,11 +146,12 @@ replay_prevented = false
 
 ### Causal checkpoint chain
 
-To create checkpoint `B` after checkpoint `A`, compute SHA-256 over the exact
-UTF-8 bytes of `A.witness_attestation.compact_jws` and send that digest as
+To create checkpoint `B` after checkpoint `A`, base64url-decode the second
+segment of `A.witness_attestation.compact_jws`, compute SHA-256 over those exact
+signed payload bytes, and send that digest as
 `previous_attestation_digest` in the request for `B`.
 
-If `A` independently verifies and its exact compact-JWS digest matches the
+If `A` independently verifies and its exact signed-payload digest matches the
 value signed into `B`, then `B` is cryptographically bound to that specific
 earlier attestation. Under SHA-256 preimage and collision resistance, the
 signed bytes of `A` existed before the request for `B` was constructed. This
@@ -201,7 +212,7 @@ reference flow merely because an application happens to possess the payload.
 ## Production status
 
 The schemas, issuer, offline verifiers, and shared signed vector in this
-repository define the contract. The paid `POST /v1/receipt` route, separate
+repository define the historical contract. The paid `POST /v1/receipt` route, separate
 witness verification key, x402 settlement path, and declared clock policy are
 live. One real `$0.001` USDC mainnet payment produced the public evaluation
 packet in [`examples/witness`](../examples/witness), which independently passes

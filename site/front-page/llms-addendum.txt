@@ -39,5 +39,5 @@ Checking is what both sides do with those four answers. The actor checks them ag
 - Pricing: https://767-2676.com/pricing
 - Service terms: https://767-2676.com/terms
 - Signed time: GET /v1/time; 0.001 USDC on Base through x402.
-- Digest witness: POST /v1/receipt; 0.001 USDC on Base through x402.
+- Digest witness: POST /v2/receipt; 0.001 USDC on Base through x402. `/v1/receipt` remains compatible.
 - Public documentation, verification keys and saved examples are free to read.

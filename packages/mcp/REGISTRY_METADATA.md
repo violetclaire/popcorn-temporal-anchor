@@ -34,7 +34,7 @@ POPCORN by Briarwood AI provides signed time and task-version evidence for indep
 ### Paid tools
 
 - `popcorn_time`: Request signed time from `GET https://767-2676.com/v1/time`.
-- `popcorn_witness`: Request a signed digest checkpoint from `POST https://767-2676.com/v1/receipt`.
+- `popcorn_witness`: Request a signed digest checkpoint from `POST https://767-2676.com/v2/receipt`; `/v1/receipt` remains compatible.
 
 ## Payment invariants
 

@@ -1,5 +1,10 @@
 # Python verifiers
 
+The current `POPCORN-WITNESS/2.0` purchase path is `POST /v2/receipt`.
+`POST /v1/receipt` remains compatible. `popcorn_verify_v2.py` accepts either
+exact signed `issuance_endpoint` while retaining the
+`/v1/receipt/tain/{tain}` metadata lookup and historical signed bytes.
+
 `popcorn_verify.py` verifies POPCORN/1.0 ES256 temporal evidence without any
 network call. The caller supplies the response, a JWKS selected by local
 policy, and timestamps from one monotonic timer. The function returns the
@@ -14,7 +19,7 @@ python -m unittest -v test_popcorn_verify.py
 The tests consume the exact same public vector as the TypeScript verifier.
 
 `verify_popcorn_witness_evidence` additionally verifies a
-`POPCORN-WITNESS/1.0` state checkpoint against the exact original payload,
+historical `POPCORN-WITNESS/1.0` state checkpoint against the exact original payload,
 nonce, and optional verified predecessor receipt:
 
 ```python

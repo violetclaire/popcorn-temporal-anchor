@@ -1,5 +1,9 @@
 # Production deployment gate for `POST /v1/receipt`
 
+This records the historical 1.0 deployment gate. The current 2.0 purchase
+path is `POST /v2/receipt`; `POST /v1/receipt` remains available for
+compatibility. Keep the historical signed examples unchanged.
+
 The repository contract is live on the canonical node. This document preserves
 the production gate that was completed before public discovery was enabled.
 
