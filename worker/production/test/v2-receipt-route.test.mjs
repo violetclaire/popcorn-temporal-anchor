@@ -68,11 +68,16 @@ for (const [label, payload] of [
 }
 
 test('a v1 payment proof cannot be replayed at the v2 resource', async () => {
+  const pair = await crypto.subtle.generateKey({name: 'ECDSA', namedCurve: 'P-256'}, true, ['sign', 'verify']);
+  const privateJwk = await crypto.subtle.exportKey('jwk', pair.privateKey);
   let facilitatorCalls = 0;
-  const env = testEnv({X402_FACILITATOR: {fetch() {
-    facilitatorCalls++;
-    throw new Error('mismatched proof reached facilitator');
-  }}});
+  const env = testEnv({
+    POPCORN_WITNESS_SIGNING_KEY_JWK: JSON.stringify(privateJwk),
+    X402_FACILITATOR: {fetch() {
+      facilitatorCalls++;
+      throw new Error('mismatched proof reached facilitator');
+    }}
+  });
   const v1Response = await worker.fetch(new Request(v1, {method: 'POST'}), env, {});
   assert.equal(v1Response.status, 402);
   const requirement = challenge(v1Response);
