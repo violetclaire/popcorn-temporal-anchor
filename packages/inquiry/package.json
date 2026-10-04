@@ -1,0 +1,12 @@
+{
+  "name": "@violetclaire/briarwood-inquiry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Participant-local provider discovery and signed agent inquiry lifecycle",
+  "exports": { ".": "./src/participant.mjs", "./discovery": "./src/discovery.mjs", "./crypto": "./src/crypto.mjs", "./agent": "./src/agent.mjs", "./fetch-listings": "./src/fetch-listings.mjs", "./popcorn-witness": "./src/popcorn-witness.mjs" },
+  "bin": { "briarwood-agent": "./bin/agent.mjs" },
+  "scripts": { "test": "node --test test/*.test.mjs", "demo": "node examples/demo.mjs" },
+  "engines": { "node": ">=20" },
+  "license": "SEE LICENSE IN ../../LICENSE.md"
+}

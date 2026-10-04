@@ -431,6 +431,14 @@ clawhub skill publish ./openclaw/popcorn-temporal-anchor
 
 ## Architectural boundary
 
+The participant-local [`packages/inquiry`](packages/inquiry/README.md) package
+implements signed provider search and the inquiry-to-completion lifecycle for
+agents, with durable acknowledgment state, referrals, exact terms and payment
+reconciliation. Its JSON-lines driver and synthetic two-provider demo are runnable
+locally. Live participant identity, authority, current time, delivery, payment and
+effect adapters require operator configuration; this package is not a deployed
+provider network or a new endpoint on the POPCORN service.
+
 POPCORN is the shared temporal evidence node. The linked Briarwood Agent
 Blueprint describes how independent machine nodes can organize inquiry,
 callbacks, bounded retries, referrals, trust, and participant-local schedules.
