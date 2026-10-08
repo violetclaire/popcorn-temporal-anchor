@@ -1379,6 +1379,7 @@ function handleRobots(request) {
   return discoveryDocumentResponse(
     request,
     `User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 Sitemap: ${PUBLIC_ORIGIN}${SITEMAP_PATH}
 `,
