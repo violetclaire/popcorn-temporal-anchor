@@ -56,7 +56,7 @@ export function updateWorker(source){
   assets['/llms.txt'].body=insert(assets['/llms.txt'].body,documentation,'## Time evidence and authorization expiry');
   for(const route of ['/agent-entry.md','/agents.md'])assets[route].body=insert(assets[route].body,documentation,'## 1. See two free samples');
   for(const key of Object.keys(assets))if(!routes.includes(key))assert.deepEqual(assets[key],parsed.assets[key],key);
-  return source.slice(0,parsed.start)+parsed.prefix+JSON.stringify(assets)+';'+source.slice(parsed.end);
+  return source.slice(0,parsed.start)+parsed.prefix+JSON.stringify(assets)+';'+(source[parsed.end-1]==='\r'?'\r':'')+source.slice(parsed.end);
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const target=path.resolve(process.argv[2]||path.join(root,'worker/production/index.js'));
