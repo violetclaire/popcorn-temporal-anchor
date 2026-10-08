@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "description": "Signed time and SHA-256 witness receipts for agents, with offline verification and x402 payment.",
+  "description": "RFC 3161, FreeTSA, OpenTimestamps, trusted timestamp, proof of existence, authorization expiry, signed execution receipt, and independent verification: https://767-2676.com/prove-action-before-authorization-expired.",
   "icons": [
     {
       "mimeType": "image/png",
