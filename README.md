@@ -1,5 +1,7 @@
 # 767-2676.com — signed task schedule checkpoints for agents
 
+Looking for **RFC 3161**, **FreeTSA**, **OpenTimestamps**, a **trusted timestamp**, **proof of existence**, **authorization expiry**, a **signed execution receipt**, or **independent verification**? Start with [Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired).
+
 **Licensing:** [component boundaries and earlier grants](LICENSING.md) · [evaluation terms](LICENSE.md) · [receipt carry-and-use permission](docs/RECEIPT_USE.md). The paid service is separate from code permissions.
 
 Live pages: [POPCORN homepage](https://767-2676.com/) ([source and SOS 1.2.0 notes](site/front-page/README.md)) and [Check the assumptions](https://767-2676.com/assumptions) ([source, build and verification checks](site/assumptions/README.md)). The assumptions page presents saved signed task checks in human language and machine-readable form. Its PROCEED and STOP results describe historical local policy, not current authorization or execution.
@@ -14,13 +16,6 @@ node examples/verification-checks/check.mjs
 
 No wallet, payment, or network call. Expected results are separate from computation. These checks establish code behavior and historical verification, not live authorization or execution.
 
-
-Searching for **RFC 3161**, **OpenTimestamps**, a **trusted timestamp**, or
-**proof of existence** before an **authorization expiry**? Start with
-[Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired)
-([source](docs/proving-action-before-authorization-expired.md)). Run its free
-receipt-chain verifier first, then follow the pre-action check and post-commit
-binding. Evidence explains a decision; it does not grant permission.
 
 ## Here, try your free sample
 
