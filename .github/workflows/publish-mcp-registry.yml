@@ -23,6 +23,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Test registry publication preflight
+        run: node --test packages/mcp/registry/check-registry.test.mjs
       - name: Verify the advertised package is already public
         run: node packages/mcp/registry/check-published.mjs
 
@@ -35,14 +37,23 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check for the exact active registry version
+        id: registry
+        run: node packages/mcp/registry/check-registry.mjs
       - name: Install the pinned official publisher
+        if: steps.registry.outputs.needed == 'true'
         shell: bash
         run: |
           curl --fail --location --retry 2 --output "$RUNNER_TEMP/mcp-publisher.tar.gz" "https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz"
           printf '%s  %s\n' 'a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc' "$RUNNER_TEMP/mcp-publisher.tar.gz" | sha256sum --check
           tar -xzf "$RUNNER_TEMP/mcp-publisher.tar.gz" -C "$RUNNER_TEMP" mcp-publisher
       - name: Authenticate the GitHub-owned namespace
+        if: steps.registry.outputs.needed == 'true'
         run: '"$RUNNER_TEMP/mcp-publisher" login github-oidc'
       - name: Publish the available version
+        if: steps.registry.outputs.needed == 'true'
         working-directory: packages/mcp/registry
         run: '"$RUNNER_TEMP/mcp-publisher" publish'
