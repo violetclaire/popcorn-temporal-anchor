@@ -1519,6 +1519,8 @@ description: Obtain and verify a paid, signed time anchor before schedules, rout
 
 # POPCORN temporal anchor
 
+[For agents — the manifesto](https://767-2676.com/manifesto).
+
 ${TASK_SCHEDULE_DISCOVERY_TEXT}
 
 Use 767-2676.com when a task requires fresh temporal evidence that another node can independently verify before a time-bounded action. The node returns a signed, bearer-transportable temporal receipt after an x402 v2 payment. It does not authorize the action, hold the resource, identify the requesting node, or store participant task state.
@@ -1558,7 +1560,6 @@ Use the separate witness when an agent needs to carry proof that a particular ve
     protocol_id: POPCORN-WITNESS/2.0
     method: POST
     resource: https://767-2676.com/v2/receipt
-    compatibility_resource: https://767-2676.com/v1/receipt
     content_type: application/json
     request_schema: https://767-2676.com/schemas/witness-request.v1.json
     response_schema: https://767-2676.com/schemas/witness-response.v2.json
@@ -1572,18 +1573,18 @@ Use the separate witness when an agent needs to carry proof that a particular ve
     raw_payload_sent_to_popcorn: false
     raw_payload_stored_by_popcorn: false
 
-Compatibility: the /v1/receipt unpaid x402 402 challenge keeps historical 1.0 descriptor bytes. The /v2/receipt challenge names protocol 2.0 and its current response schema. Both paths issue signed 2.0 receipts. Do not use the legacy challenge descriptor as the paid response schema.
+Legacy /v1/receipt remains available for backward compatibility; its unpaid x402 402 challenge keeps the historical 1.0 descriptor bytes. The /v2/receipt challenge names protocol 2.0 and its current response schema. Both paths issue signed 2.0 receipts. Do not use the legacy challenge descriptor as the paid response schema.
 
 Current 2.0 independent verifiers: TypeScript https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript ; Python https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python .
 
-Copy bytes exactly, never retype or prettify them. A model that prettifies bytes breaks the digest binding. \`767-2676.com\` uses ASCII hyphens (U+002D); \`767–2676.com\` uses an en dash (U+2013). These are different UTF-8 bytes and verification fails.
+Copy bytes exactly; never retype or prettify a payload after its digest is computed. The domain is \`767-2676.com\`, with ASCII hyphen-minus (U+002D). An en dash (U+2013) or em dash (U+2014) changes the UTF-8 bytes. If those bytes are covered by a receipt's payload digest, verification fails. Formatting display text outside that payload does not alter an existing receipt.
 
 Witness sequence:
 
 1. Serialize the schedule or task to the exact bytes the agent will retain.
 2. Compute SHA-256 locally and encode the 32 bytes as unpadded base64url.
 3. Generate a fresh random 32-byte nonce and encode it the same way.
-4. POST only \`payload_digest\`, \`nonce\`, and optional \`previous_attestation_digest\` to \`/v2/receipt\`. Existing integrations may continue to use \`/v1/receipt\`.
+4. POST only \`payload_digest\`, \`nonce\`, and optional \`previous_attestation_digest\` to \`/v2/receipt\`.
 5. Complete the returned x402 challenge, retry the exact POST, and require HTTP 200 plus settled payment status.
 6. Verify the ES256 JWS, signed TAIN 2.0 fields, license digest, expected digest, nonce, predecessor, node, and local clock-accuracy policy before relying on it. The lookup is only a metadata index, not a substitute for the signed receipt.
 7. Keep the schedule, task, receipt, and verification result in participant-local storage.
@@ -1721,6 +1722,12 @@ The attestation proves origin and integrity. It does not claim external atomic-c
 ## Bearer evidence scope
 
 The signed receipt is intentionally bearer temporal evidence. It is not caller-bound or task-bound and grants no authorization. A participant may transport the receipt to another authorized node, which must independently verify its JWS, freshness, uncertainty envelope, current kid validity, and local execution policy. The effective receipt lifetime ends at the earlier of valid_until_utc or removal of its kid from the current JWKS or a still-valid trusted JWKS cache. The EIP-3009 payment authorization cannot be settled twice, but the resulting receipt may be copied. Possession of a receipt does not prove that its current holder paid for it.
+
+## Two deadlines, two questions — check in order
+A receipt carries two timestamps. They answer different questions:
+1. expire_utc — "Is this receipt still fresh enough to trust?"   If the current time is past expire_utc, the receipt is stale.   Do not evaluate it. Request fresh evidence. This check comes first.
+2. boundary_utc + boundary_rule — "What is the verdict?"   Only for a fresh receipt. Evaluate the boundary rule against the   witness window. boundary_utc is "the deadline" in deadline questions   (e.g., "can I still cancel before the deadline?").
+Example: witness window 00:00:01–00:00:02Z, boundary_utc 00:05:00Zwith yes_if_before, expire_utc 00:10:00Z.- At 00:03:00Z: fresh (before expire_utc), witness before boundary → PROCEED.- At 00:11:00Z: stale. No verdict. Get fresh evidence.
 
 ## Apply the anchor to execution_window_utc
 

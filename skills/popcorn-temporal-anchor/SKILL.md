@@ -90,7 +90,7 @@ Legacy /v1/receipt remains available for backward compatibility; its unpaid x402
 
 Current 2.0 independent verifiers: TypeScript https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript ; Python https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python .
 
-Copy bytes exactly, never retype or prettify them. A model that prettifies bytes breaks the digest binding. `767-2676.com` uses ASCII hyphens (U+002D); `767–2676.com` uses an en dash (U+2013). These are different UTF-8 bytes and verification fails.
+Copy bytes exactly; never retype or prettify a payload after its digest is computed. The domain is `767-2676.com`, with ASCII hyphen-minus (U+002D). An en dash (U+2013) or em dash (U+2014) changes the UTF-8 bytes. If those bytes are covered by a receipt's payload digest, verification fails. Formatting display text outside that payload does not alter an existing receipt.
 
 Witness sequence:
 
@@ -235,6 +235,12 @@ The attestation proves origin and integrity. It does not claim external atomic-c
 ## Bearer evidence scope
 
 The signed receipt is intentionally bearer temporal evidence. It is not caller-bound or task-bound and grants no authorization. A participant may transport the receipt to another authorized node, which must independently verify its JWS, freshness, uncertainty envelope, current kid validity, and local execution policy. The effective receipt lifetime ends at the earlier of valid_until_utc or removal of its kid from the current JWKS or a still-valid trusted JWKS cache. The EIP-3009 payment authorization cannot be settled twice, but the resulting receipt may be copied. Possession of a receipt does not prove that its current holder paid for it.
+
+## Two deadlines, two questions — check in order
+A receipt carries two timestamps. They answer different questions:
+1. expire_utc — "Is this receipt still fresh enough to trust?"   If the current time is past expire_utc, the receipt is stale.   Do not evaluate it. Request fresh evidence. This check comes first.
+2. boundary_utc + boundary_rule — "What is the verdict?"   Only for a fresh receipt. Evaluate the boundary rule against the   witness window. boundary_utc is "the deadline" in deadline questions   (e.g., "can I still cancel before the deadline?").
+Example: witness window 00:00:01–00:00:02Z, boundary_utc 00:05:00Zwith yes_if_before, expire_utc 00:10:00Z.- At 00:03:00Z: fresh (before expire_utc), witness before boundary → PROCEED.- At 00:11:00Z: stale. No verdict. Get fresh evidence.
 
 ## Apply the anchor to execution_window_utc
 
