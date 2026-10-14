@@ -86,7 +86,7 @@ export async function runHttpSmoke(
     throw new Error(`Remote tool surface differs: ${JSON.stringify(tools)}`);
   }
   const files = (await readdir(vectorDir)).filter(name => name.endsWith(".json")).sort();
-  if (files.length !== 8) throw new Error(`Expected eight fixed vectors; found ${files.length}`);
+  if (files.length !== 10) throw new Error(`Expected ten fixed vectors; found ${files.length}`);
   const cases: HttpSmokeReport["cases"] = [];
   for (const [index, file] of files.entries()) {
     const vector = JSON.parse(await readFile(new URL(file, vectorDir), "utf8")) as Vector;
@@ -95,9 +95,16 @@ export async function runHttpSmoke(
       name: "popcorn_verify_v2",
       arguments: vector.input,
     });
-    const outcome = called.structuredContent as { accepted?: boolean; reason?: string } | undefined;
+    const outcome = called.structuredContent as {
+      accepted?: boolean;
+      reason?: string;
+      issuer_key_trust_checked_by_tool?: boolean;
+    } | undefined;
     if (typeof outcome?.accepted !== "boolean" || typeof outcome.reason !== "string") {
       throw new Error(`${file}: missing structured verifier result`);
+    }
+    if (outcome.issuer_key_trust_checked_by_tool !== false) {
+      throw new Error(`${file}: remote verifier overstated issuer key trust`);
     }
     const http = { accepted: outcome.accepted, reason: outcome.reason };
     cases.push({

@@ -29,7 +29,7 @@ test("TAIN 2.0 CLI and local MCP tool accept and reject the same fixed vectors",
     const names = (await client.listTools()).tools.map(tool => tool.name);
     assert.ok(names.includes("popcorn_verify_v2"), "local MCP interface is not advertised");
     const files = (await readdir(vectorDir)).filter(name => name.endsWith(".json")).sort();
-    assert.equal(files.length, 8, "all eight fixed conformance vectors must be present");
+    assert.equal(files.length, 10, "all ten fixed conformance vectors must be present");
     for (const file of files) {
       const url = new URL(file, vectorDir);
       const packet = JSON.parse(await readFile(url, "utf8")) as Packet;
@@ -46,12 +46,15 @@ test("TAIN 2.0 CLI and local MCP tool accept and reject the same fixed vectors",
       const difference = JSON.stringify(cliResult) !== JSON.stringify(mcpResult);
       const expectedMatch = JSON.stringify(cliResult) === JSON.stringify(packet.expected)
         && JSON.stringify(mcpResult) === JSON.stringify(packet.expected);
+      const trustFlagMatch = cliOutcome?.issuer_key_trust_checked_by_tool === false
+        && mcpOutcome?.issuer_key_trust_checked_by_tool === false;
       const exitMatch = cli.status === (packet.expected.accepted ? 0 : 2);
       rows.push({
         id: packet.id, category: packet.category, expected: packet.expected,
         cli: cliResult ?? { error: cli.stderr, exit_status: cli.status },
         mcp: mcpResult ?? { error: mcp.content },
         cli_exit_status: cli.status, difference, expected_match: expectedMatch,
+        trust_flag_match: trustFlagMatch,
         exit_match: exitMatch,
       });
     }
@@ -63,11 +66,12 @@ test("TAIN 2.0 CLI and local MCP tool accept and reject the same fixed vectors",
       interfaces: ["local CLI verify-v2", "local MCP popcorn_verify_v2"],
       remote_mcp_connected: false,
       cases: rows,
-      passed: rows.every(row => !row.difference && row.expected_match && row.exit_match),
+      passed: rows.every(row => !row.difference && row.expected_match && row.trust_flag_match && row.exit_match),
     }, null, 2)}\n`);
     for (const row of rows) {
       assert.equal(row.difference, false, `${row.id}: interfaces differ`);
       assert.equal(row.expected_match, true, `${row.id}: expected accept/reject reason differs`);
+      assert.equal(row.trust_flag_match, true, `${row.id}: issuer key trust was overstated`);
       assert.equal(row.exit_match, true, `${row.id}: CLI exit status differs`);
     }
   } finally {
