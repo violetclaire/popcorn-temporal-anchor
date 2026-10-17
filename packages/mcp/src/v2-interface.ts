@@ -29,7 +29,7 @@ export type VerifyV2Outcome = {
   reason: string;
   protocol_id: "POPCORN-WITNESS/2.0";
   authorization_granted: false;
-  issuer_key_trust_checked_by_tool: false;
+  issuer_key_trust_checked_by_tool: boolean;
   on_chain_settlement_checked_by_tool: false;
   receipt_id?: string;
   tain?: string;
@@ -94,7 +94,7 @@ function verificationOptions(
 /** Shared fail-closed verification entry point for the local CLI and MCP tool. */
 export async function verifyV2(
   input: VerifyV2Input,
-  { allowPayloadBytes = true }: { allowPayloadBytes?: boolean } = {},
+  { allowPayloadBytes = true, issuerKeysFetchedByTool = false }: { allowPayloadBytes?: boolean; issuerKeysFetchedByTool?: boolean } = {},
 ): Promise<VerifyV2Outcome> {
   const base = {
     protocol_id: "POPCORN-WITNESS/2.0" as const,
@@ -111,6 +111,7 @@ export async function verifyV2(
     return {
       ...base,
       accepted: true,
+      issuer_key_trust_checked_by_tool: issuerKeysFetchedByTool,
       reason: "signature, digest, time interval, and required fields verified",
       receipt_id: verified.witness_receipt.receipt_id,
       tain: verified.witness_receipt.tain,
