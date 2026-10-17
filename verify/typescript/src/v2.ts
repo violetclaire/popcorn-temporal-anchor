@@ -602,13 +602,9 @@ async function verifyPopcornWitnessEvidenceInternal(
   if (!isRecord(response.witness_attestation)) {
     throw new Error("response is missing witness_attestation");
   }
-  requireExactKeys(
-    response,
-    "tain_qr_png_base64" in response || "tain_qr_payload" in response || "letterhead_uri" in response
-      ? ["witness_receipt", "witness_attestation", "payment_status", "tain_qr_png_base64", "tain_qr_payload", "letterhead_uri"]
-      : ["witness_receipt", "witness_attestation", "payment_status"],
-    "response",
-  );
+  // Presentation metadata is unsigned and must not prevent verification of
+  // the complete, cryptographically bound witness_receipt.
+  // Required envelope members are checked explicitly above and below.
   requireExactKeys(
     response.witness_attestation,
     ["format", "algorithm", "key_id", "key_set", "compact_jws"],
@@ -741,31 +737,7 @@ async function verifyPopcornWitnessEvidenceInternal(
     throw new Error("witness receipt provenance or license URI is invalid");
   }
   requireSha256Digest(receipt.license_terms_digest, "license_terms_digest");
-  if (response.tain_qr_payload !== undefined) {
-    if (typeof response.tain_qr_png_base64 !== "string" || !response.tain_qr_png_base64 ||
-        typeof response.letterhead_uri !== "string" || response.letterhead_uri !== receipt.tain_verification_uri ||
-        typeof response.tain_qr_payload !== "string") {
-      throw new Error("TAIN presentation fields are invalid");
-    }
-    let qr: unknown;
-    try { qr = JSON.parse(response.tain_qr_payload); } catch { throw new Error("TAIN QR payload is invalid JSON"); }
-    if (!isRecord(qr)) throw new Error("TAIN QR payload is invalid");
-    requireExactKeys(qr, ["v", "tain", "license_uri", "terms_digest", "verify_uri"], "TAIN QR payload");
-    if (qr.v !== 1 || qr.tain !== receipt.tain || qr.license_uri !== receipt.contribution_license_uri ||
-        qr.terms_digest !== receipt.license_terms_digest.value || qr.verify_uri !== receipt.tain_verification_uri) {
-      throw new Error("TAIN QR payload does not match the signed receipt");
-    }
-    const expectedQrPayload = JSON.stringify({
-      v: 1,
-      tain: receipt.tain,
-      license_uri: receipt.contribution_license_uri,
-      terms_digest: receipt.license_terms_digest.value,
-      verify_uri: receipt.tain_verification_uri,
-    });
-    if (response.tain_qr_payload !== expectedQrPayload) {
-      throw new Error("TAIN QR payload is not minified in canonical key order");
-    }
-  }
+  // Optional QR/letterhead data is presentation-only; it is not signed evidence.
 
   const requestReceivedMs = parseUtc(
     receipt.request_received_at_utc,
