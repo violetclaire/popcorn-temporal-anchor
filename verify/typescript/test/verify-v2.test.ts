@@ -131,7 +131,7 @@ test("new verifier rejects historical 1.0 and signed missing or malformed TAIN",
   }
 });
 
-test("new verifier checks provenance, license, and top-level presentation against signed data", async () => {
+test("new verifier checks signed provenance and license but ignores unsigned presentation", async () => {
   for (const mutate of [
     (receipt: Record<string, unknown>) => { receipt.issuing_origin = "https://copy.example"; },
     (receipt: Record<string, unknown>) => { receipt.tain_verification_uri = "https://copy.example/verify"; },
@@ -144,29 +144,40 @@ test("new verifier checks provenance, license, and top-level presentation agains
   }
   const full = {
     ...vector.paid_evidence,
-    tain_qr_png_base64: "iVBORw0KGgo=", // Presentation image bytes are checked by the Worker QR test.
-    tain_qr_payload: vector.expected_qr_payload,
-    letterhead_uri: vector.paid_evidence.witness_receipt.tain_verification_uri,
+    tain_qr_png_base64: "arbitrary unsigned image data",
+    tain_qr_payload: "not even JSON",
+    letterhead_uri: "https://example.com/unsigned-display",
+    optional_display_field: { version: 3 },
   };
-  const result = await verifyPopcornWitnessEvidence(full, jwks, {
-    expected_payload: payload,
-    expected_nonce: vector.submitted_request.nonce,
-  });
-  assert.equal(result.signature_verified, true);
-  const tampered = { ...full, tain_qr_payload: full.tain_qr_payload.replace("license_uri", "wrong_uri") };
+  for (const response of [
+    full,
+    { ...full, tain_qr_payload: "changed" },
+    { ...full, tain_qr_payload: "{\"verify_uri\":\"wrong\"}" },
+    { ...full, tain_qr_payload: undefined, letterhead_uri: undefined },
+  ]) {
+    const verified = await verifyPopcornWitnessEvidence(response, jwks, {
+      expected_payload: payload,
+      expected_nonce: vector.submitted_request.nonce,
+    });
+    assert.equal(verified.signature_verified, true);
+  }
+  // A modified signed receipt must never be accepted merely because presentation is ignored.
+  const changedSignedReceipt = structuredClone(full);
+  changedSignedReceipt.witness_receipt.commitment.nonce = "A".repeat(43);
   await assert.rejects(
-    verifyPopcornWitnessEvidence(tampered, jwks, { expected_payload: payload, expected_nonce: vector.submitted_request.nonce }),
-    /TAIN QR payload contains missing or unsupported fields/,
+    verifyPopcornWitnessEvidence(changedSignedReceipt, jwks, {
+      expected_payload: payload,
+      expected_nonce: vector.submitted_request.nonce,
+    }),
+    /response witness_receipt does not equal the signed payload/,
   );
-  const reordered = { ...full, tain_qr_payload: JSON.stringify(JSON.parse(full.tain_qr_payload), ["verify_uri", "terms_digest", "license_uri", "tain", "v"]) };
+  const missingAttestation = { ...full } as Record<string, unknown>;
+  delete missingAttestation.witness_attestation;
   await assert.rejects(
-    verifyPopcornWitnessEvidence(reordered, jwks, { expected_payload: payload, expected_nonce: vector.submitted_request.nonce }),
-    /TAIN QR payload is not minified in canonical key order/,
-  );
-  const partial = { ...full } as Record<string, unknown>;
-  delete partial.letterhead_uri;
-  await assert.rejects(
-    verifyPopcornWitnessEvidence(partial as unknown as PopcornWitnessResponse, jwks, { expected_payload: payload, expected_nonce: vector.submitted_request.nonce }),
-    /response contains missing or unsupported fields/,
+    verifyPopcornWitnessEvidence(missingAttestation as unknown as PopcornWitnessResponse, jwks, {
+      expected_payload: payload,
+      expected_nonce: vector.submitted_request.nonce,
+    }),
+    /response is missing witness_attestation/,
   );
 });
