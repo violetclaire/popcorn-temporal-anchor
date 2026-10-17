@@ -19,7 +19,33 @@ function createRemoteServer(): McpServer {
       },
     },
     async (input) => {
-      const outcome = await verifyV2(input as VerifyV2Input, { allowPayloadBytes: false });
+      // Fetch trusted keys from the fixed issuer origin, not from the receipt or caller.
+      // Fail closed if the issuer keys are unavailable, malformed, or redirected.
+      let outcome;
+      try {
+        const keysResponse = await fetch("https://767-2676.com/.well-known/popcorn-keys.json", {
+          redirect: "error",
+          headers: { accept: "application/json" },
+        });
+        if (!keysResponse.ok) throw new Error("issuer JWKS endpoint unavailable");
+        const jwks: unknown = await keysResponse.json();
+        if (!jwks || typeof jwks !== "object" || !Array.isArray((jwks as { keys?: unknown }).keys)) {
+          throw new Error("issuer JWKS is malformed");
+        }
+        outcome = await verifyV2(
+          { ...(input as VerifyV2Input), jwks: jwks as VerifyV2Input["jwks"] },
+          { allowPayloadBytes: false, issuerKeysFetchedByTool: true },
+        );
+      } catch (error) {
+        outcome = {
+          accepted: false,
+          reason: error instanceof Error ? error.message : "issuer key verification failed",
+          protocol_id: "POPCORN-WITNESS/2.0" as const,
+          authorization_granted: false as const,
+          issuer_key_trust_checked_by_tool: false as const,
+          on_chain_settlement_checked_by_tool: false as const,
+        };
+      }
       return {
         content: [{ type: "text" as const, text: JSON.stringify(outcome) }],
         structuredContent: outcome,
