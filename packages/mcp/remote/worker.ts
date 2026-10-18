@@ -24,7 +24,7 @@ function createRemoteServer(): McpServer {
       let outcome;
       try {
         const keysResponse = await fetch("https://767-2676.com/.well-known/popcorn-keys.json", {
-          redirect: "error",
+          redirect: "manual",
           headers: { accept: "application/json" },
         });
         if (!keysResponse.ok) throw new Error("issuer JWKS endpoint unavailable");
