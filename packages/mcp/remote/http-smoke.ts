@@ -72,6 +72,7 @@ async function requestRpc(
 export async function runHttpSmoke(
   endpoint: string,
   send: (request: Request) => Promise<Response>,
+  beforeVector?: (input: Record<string, unknown>) => void,
 ): Promise<HttpSmokeReport> {
   const initialized = await requestRpc(endpoint, send, 1, "initialize", {
     protocolVersion: "2025-11-25",
@@ -91,6 +92,7 @@ export async function runHttpSmoke(
   for (const [index, file] of files.entries()) {
     const vector = JSON.parse(await readFile(new URL(file, vectorDir), "utf8")) as Vector;
     if (vector.test_only !== true) throw new Error(`${file}: not marked test_only`);
+    beforeVector?.(vector.input);
     const called = await requestRpc(endpoint, send, index + 3, "tools/call", {
       name: "popcorn_verify_v2",
       arguments: vector.input,
