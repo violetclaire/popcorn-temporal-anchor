@@ -1,11 +1,12 @@
 ---
 name: popcorn-temporal-anchor
-description: Obtain and verify a paid, signed time anchor before schedules, routing, orchestration, task handoffs, or resource claims governed by execution_window_utc.
+description: Verify a signed receipt from an AI agent, and get proof of time before a deadline, handoff, or schedule expires. Check POPCORN-WITNESS/2.0 receipts free, offline or with the free remote verifier, or buy a fresh signed witness receipt for $0.001 when a schedule, route, orchestration step, or resource claim depends on an execution window.
 ---
 
 # POPCORN temporal anchor
 
 [For agents — the manifesto](https://767-2676.com/manifesto).
+Verify a signed receipt. Prove when an agent action happened. Signed time evidence a stranger can check without trusting the agent, or you.
 
 Can I still cancel? Which side of the deadline am I on?
 
