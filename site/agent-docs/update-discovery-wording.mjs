@@ -11,6 +11,7 @@ const before=splitAssets(source);
 const catalog=fs.readFileSync(path.join(root,'site/public/.well-known/ai-catalog.json'),'utf8');
 JSON.parse(catalog);
 before.assets['/.well-known/ai-catalog.json'].body=catalog;
+before.assets['/llms.txt'].body=fs.readFileSync(path.join(root,'site/front-page/llms.txt'),'utf8');
 source=source.slice(0,before.start)+before.prefix+JSON.stringify(before.assets)+';'+source.slice(before.end);
 
 const skill=fs.readFileSync(path.join(root,'skills/popcorn-temporal-anchor/SKILL.md'),'utf8');
@@ -27,4 +28,4 @@ assert.equal(block.split(anchor).length,2);
 if(!block.includes(opening))block=block.replace(anchor,anchor+'\n'+opening);
 source=source.slice(0,start)+block+source.slice(end);
 fs.writeFileSync(target,updateWorker(source));
-console.log('Regenerated catalog, root skill wording and bundled witness-layer documentation.');
+console.log('Regenerated catalog, root skill wording, llms.txt and bundled witness-layer documentation.');
