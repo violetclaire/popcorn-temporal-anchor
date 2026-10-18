@@ -118,13 +118,16 @@ verifier. The fixed positive and negative vectors under
 
 Provide the full response, expected SHA-256 payload digest as canonical
 unpadded base64url, the expected nonce, and issuer keys obtained independently
-of the receipt. The local CLI and stdio MCP also accept exact payload bytes as
+of the receipt. To reject a same-`kid` substitution, also provide an expected
+RFC 7638 SHA-256 JWK thumbprint as `expected_issuer_key_thumbprint_sha256`,
+obtained through a separately trusted channel. The local CLI and stdio MCP also accept exact payload bytes as
 `expected_payload_base64url` instead of a digest; the remote HTTP MCP accepts
 only a digest, including for predecessor receipts, so private payload bytes
 need not leave the caller. Supply `previous_receipt` with its own response,
 JWKS, and verification inputs for a chained receipt, up to eight links.
 Caller-supplied keys alone do not establish issuer identity; this verifier
-does not prove on-chain settlement or grant authority.
+does not authenticate the source of a caller-supplied pin, prove on-chain
+settlement, or grant authority.
 
 ### `popcorn_catalog`
 

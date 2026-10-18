@@ -21,6 +21,7 @@ function verifySchema(depth: number, remote: boolean, top: boolean): z.ZodTypeAn
     ...(!remote ? { expected_payload_base64url: z.string().optional() } : {}),
     expected_node_id: z.string().optional(),
     max_clock_accuracy_radius_ms: z.number().int().min(0).optional(),
+    expected_issuer_key_thumbprint_sha256: z.string().regex(/^[A-Za-z0-9_-]{43}$/).optional(),
     ...previous,
   });
 }

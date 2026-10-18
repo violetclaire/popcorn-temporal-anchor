@@ -1,6 +1,6 @@
 // Rebuild the synthetic interface conformance packets. Never use this fixture key
 // for a real receipt; all output files are marked test_only and prove no payment.
-import { createHash, createPrivateKey, sign } from 'node:crypto';
+import { createECDH, createHash, createPrivateKey, sign } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 
 const source = JSON.parse(await readFile(new URL('./popcorn-witness-receipt-v2.json', import.meta.url), 'utf8'));
@@ -62,6 +62,42 @@ const changedSignature = structuredClone(input);
 const segments = changedSignature.response.witness_attestation.compact_jws.split('.');
 segments[2] = (segments[2][0] === 'A' ? 'B' : 'A') + segments[2].slice(1);
 changedSignature.response.witness_attestation.compact_jws = segments.join('.');
+// A valid JWS under a substitute key with the *same kid* must still fail when
+// the caller supplies the original key's independently obtained thumbprint.
+// Without that pin, this deliberately verifies and demonstrates the trust limit.
+const substituteScalar = Buffer.alloc(32);
+substituteScalar[31] = 2;
+const substituteEcdh = createECDH('prime256v1');
+substituteEcdh.setPrivateKey(substituteScalar);
+const substitutePoint = substituteEcdh.getPublicKey(undefined, 'uncompressed');
+const substituteJwk = {
+  kty: 'EC', crv: 'P-256',
+  x: substitutePoint.subarray(1, 33).toString('base64url'),
+  y: substitutePoint.subarray(33, 65).toString('base64url'),
+  d: substituteScalar.toString('base64url'),
+};
+const substituteKey = createPrivateKey({ format: 'jwk', key: substituteJwk });
+const substitutedKey = structuredClone(input);
+substitutedKey.jwks.keys[0].x = substituteJwk.x;
+substitutedKey.jwks.keys[0].y = substituteJwk.y;
+const substituteSegments = substitutedKey.response.witness_attestation.compact_jws.split('.');
+const substituteSigningInput = `${substituteSegments[0]}.${substituteSegments[1]}`;
+substituteSegments[2] = sign('sha256', Buffer.from(substituteSigningInput), {
+  key: substituteKey, dsaEncoding: 'ieee-p1363',
+}).toString('base64url');
+substitutedKey.response.witness_attestation.compact_jws = substituteSegments.join('.');
+const originalJwk = source.public_verification_key;
+const originalKeyThumbprint = createHash('sha256').update(JSON.stringify({
+  crv: originalJwk.crv, kty: originalJwk.kty, x: originalJwk.x, y: originalJwk.y,
+})).digest('base64url');
+const validPinnedInput = {
+  ...structuredClone(input),
+  expected_issuer_key_thumbprint_sha256: originalKeyThumbprint,
+};
+const substitutedKeyPinned = {
+  ...structuredClone(substitutedKey),
+  expected_issuer_key_thumbprint_sha256: originalKeyThumbprint,
+};
 const changedPayload = structuredClone(input);
 changedPayload.expected_payload_digest = (payloadDigest[0] === 'A' ? 'B' : 'A') + payloadDigest.slice(1);
 const changedInterval = { ...structuredClone(input), response: resigned(receipt => {
@@ -115,8 +151,10 @@ predecessorParts[2] = (predecessorParts[2][0] === 'A' ? 'B' : 'A') + predecessor
 brokenPredecessor.previous_receipt.response.witness_attestation.compact_jws = predecessorParts.join('.');
 
 const cases = [
-  ['00-valid', 'valid evidence', true, 'signature, digest, time interval, and required fields verified', input],
+  ['00-valid', 'valid evidence with issuer key pin', true, 'signature, digest, time interval, and required fields verified', validPinnedInput],
   ['10-signature-invalid', 'signature', false, 'ES256 witness receipt signature is invalid', changedSignature],
+  ['11-key-substitution-pinned', 'issuer key pin', false, 'JWKS key material does not match expected issuer key thumbprint', substitutedKeyPinned],
+  ['12-key-substitution-unpinned', 'issuer key trust limit', true, 'signature, digest, time interval, and required fields verified', substitutedKey],
   ['20-digest-mismatch', 'digest', false, 'receipt payload digest does not match the expected payload', changedPayload],
   ['30-time-interval-invalid', 'time interval', false, 'witness_window_utc signed relationship is invalid', changedInterval],
   ['31-time-policy-rejects', 'time interval', false, 'witness clock accuracy exceeds local policy', radiusPolicy],

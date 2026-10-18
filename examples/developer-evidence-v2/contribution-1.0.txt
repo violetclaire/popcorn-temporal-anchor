@@ -1,0 +1,36 @@
+POPCORN Contribution License 1.0
+
+This license accompanies a POPCORN witness receipt identified by its Temporal
+Anchor Issuance Number (TAIN). The receipt is evidence that a payload digest
+was witnessed at a stated time by a stated node. It is not a token, credit,
+identity credential, or authorization.
+
+1. Attribution. Any system that presents, relays, or relies on the receipt
+must attribute issuance to the POPCORN node named in the receipt's
+issuing_origin, and must reproduce the TAIN unchanged.
+
+2. Permitted use. The holder may use the receipt to prove that the digest it
+commits to was witnessed at the stated time, to link it into a predecessor
+chain, and to present it to counterparties, agents, or auditors. The holder
+may copy and transmit the receipt freely.
+
+3. Prohibited use. The holder may not alter any signed field, present the
+receipt as proof of caller identity, delivery, execution, truth, legality, or
+permission, or represent the receipt as an authorization or instruction.
+
+4. Success threshold and payment trigger. The witness fee is earned when the
+node returns a signed receipt for a settled payment. No further performance
+is promised. Payment for the witness service is triggered by the x402
+settlement that precedes issuance; the receipt is the deliverable.
+
+5. Calculation. Fees are denominated in USDC on the network named in the
+receipt's payment context. The amount due per issuance is the amount
+advertised by the node at the issuance endpoint at the time of the request.
+
+6. Exit. The holder may stop using the receipt at any time. The node may
+rotate its signing keys and publish revocation or key-compromise notices at
+its well-known key location. Verification against a rotated or revoked key
+is the verifier's responsibility under its local policy.
+
+This is a draft instrument, not legal advice. Questions of enforceability
+are the reader's own.
