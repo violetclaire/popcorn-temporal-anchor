@@ -7,7 +7,24 @@ import { remoteVerifyV2Schema } from "../src/v2-schema.js";
 
 test("read-only remote Worker initializes, lists one tool, and matches all TAIN 2.0 vectors", async () => {
   const endpoint = "https://mcp.local.test/mcp";
-  const report = await runHttpSmoke(endpoint, request => Promise.resolve(worker.fetch(request)));
+  // Isolate network access: the test's JWKS fixture stands in for the
+  // fixed-origin HTTPS key endpoint; production must still fetch that endpoint.
+  const originalFetch = globalThis.fetch;
+  let fixtureKeys: unknown;
+  globalThis.fetch = async (input: RequestInfo | URL) => {
+    assert.equal(String(input), "https://767-2676.com/.well-known/popcorn-keys.json");
+    return new Response(JSON.stringify(fixtureKeys), { status: 200, headers: { "content-type": "application/json" } });
+  };
+  let report;
+  try {
+    report = await runHttpSmoke(
+      endpoint,
+      request => Promise.resolve(worker.fetch(request)),
+      input => { fixtureKeys = input.jwks; },
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
   await mkdir(new URL("../test-results/", import.meta.url), { recursive: true });
   await writeFile(new URL("../test-results/remote-http-report.json", import.meta.url),
     `${JSON.stringify({ ...report, remote_mcp_connected: false }, null, 2)}\n`);
