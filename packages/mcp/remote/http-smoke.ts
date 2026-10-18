@@ -33,7 +33,7 @@ export type HttpSmokeReport = {
 
 const vectorDir = new URL("../../../verify/test-vectors/interface-parity-v2/", import.meta.url);
 
-async function requestRpc(
+export async function requestRpc(
   endpoint: string,
   send: (request: Request) => Promise<Response>,
   id: number,
