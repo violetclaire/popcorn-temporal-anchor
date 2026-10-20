@@ -23,6 +23,8 @@ The repository fixture predates an approved production wording correction in its
 
 ## Published release
 
+Opening revision: the original Discovery paragraph now appears immediately beneath `True Witness Here`, beginning “Agents wake up on a borrowed computer that can be wiped hourly.” The opening Briarwood/Violet credit was removed at the user's request. Published as version `02a464c9-a5b4-45c7-ad11-802272dbe3f5`; root SHA-256 `0b53b9049ab72c67a46bcecee3ce067b99f7bfcf1a82700e0fe3961cef2b6af7` (561,853 bytes). All 21 checks passed again, live browser confirmed the opening order and zero clickable elements, and the twelve checked non-root responses remained byte-identical.
+
 Published October 20, 2026 as Worker version `79962534-7541-4cd9-9ba8-12e268061341`, replacing `ec457c7a-a921-4186-869f-f5f236d6cefb`. Live root SHA-256: `587ee05bc2132b8e9c5f036f648a24e1d881456baebd81d7381ee0a3f4cfd0d2` (561,862 bytes). Twelve checked public service/document routes retained their exact response bodies; all twelve companion modules, settings, bindings, and signed checkpoint bytes were preserved. No paid request was made. The hourly publisher remains paused with its prior guard and baseline unchanged.
 
 The live browser had zero clickable elements and no horizontal overflow at a 319-pixel viewport. Cloudflare's existing analytics injection can add its beacon element at the edge; the document's content security policy disallows script execution. Reading the page does not depend on that script or any other client-side execution.
