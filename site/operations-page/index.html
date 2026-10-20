@@ -152,10 +152,19 @@ Field">Time endpoint</td>
 </tr>
 </tbody></table>
 <p>Validate the actual challenge against your authorized terms before paying. Requesting both fresh time and a digest witness means two separately authorized service requests. Revisiting the homepage or rechecking a saved receipt does not buy another receipt.</p>
-</section><section class="chapter" id="all-seven-mcp-tools"><h2>All seven MCP tools</h2>
-<p>Local stdio package: <code>@violetclaire/popcorn-mcp@0.1.3</code>. Inspect the package and configure your MCP client to run:</p>
-<pre><code class="language-text">npx -y @violetclaire/popcorn-mcp@0.1.3
+</section><section class="chapter" id="install-and-use-the-current-client"><h2>Install and use the current client</h2>
+<p>Use the <strong>0.1.4 GitHub release archive</strong> for the current local client. The older npm 0.1.3 package does not contain these current 2.0 verification and handoff changes. Node.js 20 or later is required. Installation downloads the package and its dependencies; the installed sample and handoff run offline.</p>
+<p>Release: <span>https://github.com/violetclaire/popcorn-temporal-anchor/releases/tag/agent-adoption-v0.1.4</span></p>
+<pre><code class="language-sh">npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz
+npx --no-install popcorn-mcp --sample
+npx --no-install popcorn-mcp --handoff
 </code></pre>
+<p><code>--sample</code> verifies bundled historical receipts, including a real production 2.0 receipt, and rejects altered bytes and signatures. <code>--handoff</code> prints a portable public historical packet containing the exact bytes, original receipt, reproduction keys, and verification inputs. Save that JSON as UTF-8 <code>handoff.json</code>; another agent can reproduce the check with:</p>
+<pre><code class="language-sh">npx --no-install popcorn-mcp verify-v2 handoff.json
+</code></pre>
+<p>These commands do not send the packet or buy a receipt. Historical evidence does not establish current time. Bundled keys reproduce the public sample; select issuer keys independently for your own evidence. Local verification does not independently check settlement on chain or grant permission to act.</p>
+<p>A ready-made public packet is also included at <span>https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/handoff.json</span>. Share it only through your authorized handoff; receiving agents retain their own trust and execution decisions.</p>
+<p>For local stdio MCP, configure your client to run <code>npx --no-install popcorn-mcp</code> from the directory where you installed the release. The configuration example is <span>https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/mcp-servers.json</span>. Review and merge the relevant entry into your client&#39;s configuration.</p>
 <p>The local package reads <code>EVM_PRIVATE_KEY</code> from the caller&#39;s environment only for an authorized paid tool call. Keep the key local. Never put it in a receipt, task, URL, or this page.</p>
 <table>
 <thead>
@@ -171,7 +180,7 @@ Field">Time endpoint</td>
 
 Tool"><code>popcorn_sample</code></td>
 <td data-label="Inputs"><code>{}</code></td>
-<td data-label="Returns / effect">Offline historical receipt and one-byte tamper checks. Historical samples do not establish current time or verify a newly issued 2.0 receipt.</td>
+<td data-label="Returns / effect">Offline historical 1.0 and production 2.0 receipt checks, plus byte and signature tamper controls. These samples do not establish current time or verify your newly issued receipt.</td>
 <td data-label="Price">Free</td>
 </tr>
 <tr>
@@ -179,7 +188,7 @@ Tool"><code>popcorn_sample</code></td>
 
 Tool"><code>popcorn_catalog</code></td>
 <td data-label="Inputs"><code>{}</code></td>
-<td data-label="Returns / effect">Live catalog, published JWKS and public schemas. Consult the current 2.0 response schema below; historical schemas remain published.</td>
+<td data-label="Returns / effect">Current public offer, service catalog, published JWKS and schemas, including the 2.0 response schema.</td>
 <td data-label="Price">Free</td>
 </tr>
 <tr>
@@ -223,6 +232,23 @@ Tool"><code>popcorn_witness</code></td>
 <td data-label="Price">$0.001 per paid request</td>
 </tr>
 </tbody></table>
+<h3>Exa: discover, then read the current document</h3>
+<p>Download and inspect the standalone Node script at <span>https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/discover.mjs</span>. It needs no extra package. Save it as <code>discover.mjs</code>, then run:</p>
+<pre><code class="language-sh">node discover.mjs --output discovery.json
+</code></pre>
+<p>The default uses Exa&#39;s free, rate-limited hosted MCP search, restricted to <code>767-2676.com</code>, with no API key. It then fetches the full current <code>/llms.txt</code> and AI catalog directly from this service, preserving their text, hashes, and retrieval times. Search excerpts are discovery observations; use the direct document for the current instructions. If Exa is unavailable, the direct reads still run. <code>--direct</code> skips search. <code>--rest</code> explicitly uses <code>EXA_API_KEY</code> and may consume Exa credits; there is no automatic paid fallback. The script does not execute retrieved content, purchase a receipt, submit an index entry, or message other agents.</p>
+<h3>ElizaOS: use POPCORN in an existing agent</h3>
+<p>For ElizaOS 1.x, install both release archives together in the application&#39;s directory:</p>
+<pre><code class="language-sh">npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-eliza-plugin-popcorn-0.1.0.tgz
+</code></pre>
+<p>Register the plugin with the application&#39;s existing runtime:</p>
+<pre><code class="language-ts">import popcornPlugin from &quot;@violetclaire/eliza-plugin-popcorn&quot;;
+await runtime.registerPlugin(popcornPlugin);
+</code></pre>
+<p>The six actions are <code>POPCORN_SAMPLE</code>, <code>POPCORN_HANDOFF</code>, <code>POPCORN_CATALOG</code>, <code>POPCORN_HASH</code>, <code>POPCORN_VERIFY</code>, and <code>POPCORN_WITNESS</code>. Sample, handoff, and catalog need no inputs. Hash, verify, and witness read an explicit command from the original message; exact JSON string content is used, without paraphrasing:</p>
+<pre><code class="language-text">POPCORN_HASH {&quot;payload_text&quot;:&quot;Exact task bytes.\n&quot;}
+</code></pre>
+<p>The host configures independently trusted issuer keys for <code>POPCORN_VERIFY</code>. <code>POPCORN_WITNESS</code> returns an unpaid HTTP 402 quote; none of these six actions spends money. Fresh issuance uses the separate host API with approval bound to each request. <code>POPCORN_HANDOFF</code> returns a verified public historical packet; it does not post or send it. This adapter targets the stable ElizaOS 1.7.2 interface, not the 2 beta. Keep the existing model, storage, and runtime setup.</p>
 <h3>A free remote verifier</h3>
 <p>Streamable HTTP MCP address:</p>
 <pre><code class="language-text">https://popcorn-tain-verify-mcp-v2.violetherod.workers.dev/mcp
