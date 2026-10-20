@@ -1,0 +1,554 @@
+[
+  {
+    "url": "https://767-2676.com/",
+    "status": 200,
+    "title": "RFC 3161, FreeTSA & Authorization Expiry | 767-2676.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 16559,
+    "sha256": "d3115ccb25abd455009cc6a381e65ca7c6a4e88e0477f85830c0763a46c2c559"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/agent.json",
+    "status": 200,
+    "title": "/.well-known/agent.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 12396,
+    "sha256": "fd4b82072791d59276444038751b394c96a719c391e7f3bcf9f91ca61409af49"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/ai-catalog.json",
+    "status": 200,
+    "title": "/.well-known/ai-catalog.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 4834,
+    "sha256": "293bdc1c3f19ee442c6c90e6d391221f2c120e8a187d7f4d3ed203f787171159"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/api-catalog",
+    "status": 200,
+    "title": "/.well-known/api-catalog",
+    "content_type": "application/linkset+json; profile=\"https://www.rfc-editor.org/info/rfc9727\"",
+    "byte_length": 41044,
+    "sha256": "dd513e9b4e0c0b40d2c8d76ee9ac01fe50cc1bdbabecce615f2d7dcaa6dca4fc"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/ard.json",
+    "status": 200,
+    "title": "/.well-known/ard.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 2132,
+    "sha256": "d2e4b35d074ac66fcc7e7c5dbd6accc5cc4dfcc5903815643b9c91ca49a128e5"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/briarwood-agent.json",
+    "status": 200,
+    "title": "/.well-known/briarwood-agent.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 3125,
+    "sha256": "1a5aaeca302fa7a36208c2e80ef607800780175c302b3ca365c9782004a1c14a"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/briarwood-inquiry-example.json",
+    "status": 200,
+    "title": "/.well-known/briarwood-inquiry-example.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 4067,
+    "sha256": "2392d99f3900fb1905cba7570e54a028b2bd5a573dcb4cfa4d52b3795f955036"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/briarwood-inquiry.schema.json",
+    "status": 200,
+    "title": "/.well-known/briarwood-inquiry.schema.json",
+    "content_type": "application/schema+json; charset=utf-8",
+    "byte_length": 13153,
+    "sha256": "b7a44f56df52e20ac4e45c4c274965254b06c74f5f41f8bffd6808a1578af436"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/mcp.json",
+    "status": 200,
+    "title": "/.well-known/mcp.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 1358,
+    "sha256": "09be00c4ab5ae4ccdaa23906f0d6a705f87a58376416b9281bc654b4a16b4913"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/popcorn-keys.json",
+    "status": 200,
+    "title": "/.well-known/popcorn-keys.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 418,
+    "sha256": "936957f453f6a5fabe93a9748ee68603be51bff521ddfd0ad6599fed336ce554"
+  },
+  {
+    "url": "https://767-2676.com/.well-known/x402.json",
+    "status": 200,
+    "title": "/.well-known/x402.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 665,
+    "sha256": "734874e363fda52123d82e87fcc1f471ceaa5e87373483c89d314d0b833caeff"
+  },
+  {
+    "url": "https://767-2676.com/agent-entry",
+    "status": 200,
+    "title": "POPCORN — evidence before a deadline or handoff",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 24221,
+    "sha256": "6fe5f223898fc1da00475300d23a4e6479649e50b8c3424c0d1284a84e9e543f"
+  },
+  {
+    "url": "https://767-2676.com/agent-entry.json",
+    "status": 200,
+    "title": "/agent-entry.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 4203,
+    "sha256": "5b537848f8799e9584442a1ea79c7a58791fc5753282e54975d9cb44569760a7"
+  },
+  {
+    "url": "https://767-2676.com/agent-entry.md",
+    "status": 200,
+    "title": "Prove an action happened before an authorization expired",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 9244,
+    "sha256": "22d15e99f301b65444770cf2bba87005f1f7ca33104a94d25aa1af56bcf03c2b"
+  },
+  {
+    "url": "https://767-2676.com/agent-entry/beacon.json",
+    "status": 200,
+    "title": "/agent-entry/beacon.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 2157,
+    "sha256": "260069b46f7024438bdbdcdc8fc30d8950140d0689b7ccfd6f8c16e6f566d59d"
+  },
+  {
+    "url": "https://767-2676.com/agent-entry/policy.md",
+    "status": 200,
+    "title": "SOSBOTS — agent entry at 767-2676.com",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 8066,
+    "sha256": "d70c15f444b453e8038e12226d4775ff3b3015790ea647db4d3494d2f1758976"
+  },
+  {
+    "url": "https://767-2676.com/agent-entry/reference.json",
+    "status": 200,
+    "title": "/agent-entry/reference.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 3579,
+    "sha256": "661117c58c935786770437d33103ed4d917ac0b1d8c190973eabf10ab742c511"
+  },
+  {
+    "url": "https://767-2676.com/agent-revisions.md",
+    "status": 200,
+    "title": "The work changed. Check the agreement again.\r",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 2680,
+    "sha256": "6b80eba62c2d35fbcd214798c80d2f16957afbf7be42a98056220bf7108a8e6d"
+  },
+  {
+    "url": "https://767-2676.com/agent/offer",
+    "status": 200,
+    "title": "/agent/offer",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 8719,
+    "sha256": "4007ec9e18e543c2f7b8c2429b6208077799c6d9b12dbffc4132b717e62d4717"
+  },
+  {
+    "url": "https://767-2676.com/agentic-commerce",
+    "status": 200,
+    "title": "Agentic Commerce: Violet Herod · 767-2676.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 33823,
+    "sha256": "775020b032b2c3d0fed35dcb671d23cdd378c4842a33c985fd59e5fd3dcc7456"
+  },
+  {
+    "url": "https://767-2676.com/agents",
+    "status": 200,
+    "title": "POPCORN Temporal Grounding — 767-2676.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 24486,
+    "sha256": "a4e3a0a8653ecf0cfb56f8a037aaded76f69f03716ff004792d4671205a48a5d"
+  },
+  {
+    "url": "https://767-2676.com/agents.md",
+    "status": 200,
+    "title": "Verify a checkpoint against two independent witnesses.",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 8232,
+    "sha256": "993ad7fbd643d6c90ec003d2dd44f2d4585ad25b40f1ec8c28c7dcf2feb0e372"
+  },
+  {
+    "url": "https://767-2676.com/assumptions",
+    "status": 200,
+    "title": "POPCORN | Check the assumptions",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 28014,
+    "sha256": "cb67ef64ac56763a591a3d447931ccd67bb1b6838806e4593de0b6ab7ad1fc0e"
+  },
+  {
+    "url": "https://767-2676.com/assumptions/evidence.json",
+    "status": 200,
+    "title": "/assumptions/evidence.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 16703,
+    "sha256": "de06b84ff0d2b4272eb306bbfda4677ce9661359cd2040dd08776873ae94d231"
+  },
+  {
+    "url": "https://767-2676.com/assumptions/sources.json",
+    "status": 200,
+    "title": "/assumptions/sources.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 1388,
+    "sha256": "390c194d277574c2a7b4c022ffbdde3387693dff8a8cc573efbbd9eb2510bdd7"
+  },
+  {
+    "url": "https://767-2676.com/auth.md",
+    "status": 200,
+    "title": "auth.md — 767-2676.com",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 2766,
+    "sha256": "c746d785fe86b92dd6d644f31c70e8a6785de911ac76803b96b59a306e211e28"
+  },
+  {
+    "url": "https://767-2676.com/briarwood",
+    "status": 200,
+    "title": "Briarwood AI — the Home for Agents",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 8618,
+    "sha256": "583ac6629117c13d8b505acdd61973c99ce053c07b30180cc86d0bbc1fde969f"
+  },
+  {
+    "url": "https://767-2676.com/cdi-slider",
+    "status": 200,
+    "title": "Two leTAIN Sliders — Collaboration Template",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 27333,
+    "sha256": "56bccbda7bc5a70c6007ba05b4c8f235be57072c95f25703f220db19cd6c6cd4"
+  },
+  {
+    "url": "https://767-2676.com/checkpoint/CLIENT.md",
+    "status": 200,
+    "title": "POPCORN checkpoint workflow",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 12500,
+    "sha256": "2835e2c4c8fbf0cad722696dd649ec7cbc642da60fb5b3be0b5d3afd0ea24dc9"
+  },
+  {
+    "url": "https://767-2676.com/demo",
+    "status": 200,
+    "title": "Check the witness | True Witness Here",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 10378,
+    "sha256": "f53a5faddcf8d70400a72e5e0317a4167ea8950343acdeb3b96cbd5d7cc3bc2c"
+  },
+  {
+    "url": "https://767-2676.com/evidence/freetsa-popcorn-2026-10-14/checkpoint.txt",
+    "status": 200,
+    "title": "/evidence/freetsa-popcorn-2026-10-14/checkpoint.txt",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 385,
+    "sha256": "03eecd1ed8866d816e183834fbf7f94543ecca18d0a1adc0f3b798252e6058a2"
+  },
+  {
+    "url": "https://767-2676.com/evidence/freetsa-popcorn-2026-10-14/popcorn-receipt.json",
+    "status": 200,
+    "title": "/evidence/freetsa-popcorn-2026-10-14/popcorn-receipt.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 7019,
+    "sha256": "c6fa69b9fc11a905ac344ee0cabf5b20a20b9151f5f33a1cae58cb5b6ae03045"
+  },
+  {
+    "url": "https://767-2676.com/evidence/freetsa-popcorn-2026-10-14/README.md",
+    "status": 200,
+    "title": "True Witness Here — FreeTSA + POPCORN checkpoint",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 6024,
+    "sha256": "9924e3c4e0924f80090bcc6c70e116df504bc88cd9e48fffa9e9947e582f6d21"
+  },
+  {
+    "url": "https://767-2676.com/evidence/freetsa-popcorn-2026-10-14/verification.json",
+    "status": 200,
+    "title": "/evidence/freetsa-popcorn-2026-10-14/verification.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 5577,
+    "sha256": "50d17527086c8a93f4d3a73701222e0bed648de08b1cbf7b889fd45a75eeb5a3"
+  },
+  {
+    "url": "https://767-2676.com/examples/execution-schedule.v1.json",
+    "status": 200,
+    "title": "/examples/execution-schedule.v1.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 4676,
+    "sha256": "33dc51504d613ddd6f7cd835f918b1d29f63a35c6cc264cb6d13a1cfaee65be8"
+  },
+  {
+    "url": "https://767-2676.com/lab-record",
+    "status": 200,
+    "title": "Lab record, 31 August 2026 | POPCORN",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 7596,
+    "sha256": "dc1e9f62853589e1b0a142d33e7c877af599e4d2dcc5cd7b9f9ce259b79a81c6"
+  },
+  {
+    "url": "https://767-2676.com/license/contribution/1.0",
+    "status": 200,
+    "title": "/license/contribution/1.0",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 1888,
+    "sha256": "711d2084e387e831b74847a86313f0d5bdfca0bdb07f62234dacc64b18bebc86"
+  },
+  {
+    "url": "https://767-2676.com/llms.txt",
+    "status": 200,
+    "title": "POPCORN — signed evidence before a deadline or handoff",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 18596,
+    "sha256": "e4ef859fd9a31b391382df271874a32d604e5c96e0c8b2e3106258a6c61e0bab"
+  },
+  {
+    "url": "https://767-2676.com/manifesto",
+    "status": 200,
+    "title": "For agents | POPCORN",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 2082,
+    "sha256": "72463dd52b4dc787c9c2df2a520307632b812cd6c0695ce2a5634a5cb667a4d6"
+  },
+  {
+    "url": "https://767-2676.com/mcp/server.json",
+    "status": 200,
+    "title": "/mcp/server.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 1358,
+    "sha256": "09be00c4ab5ae4ccdaa23906f0d6a705f87a58376416b9281bc654b4a16b4913"
+  },
+  {
+    "url": "https://767-2676.com/openapi.json",
+    "status": 200,
+    "title": "/openapi.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 24621,
+    "sha256": "69c97d590e3afa6e05c7528f7b805b4310a82b1431e77f4a3af9a8f5b51ca181"
+  },
+  {
+    "url": "https://767-2676.com/pricing",
+    "status": 200,
+    "title": "Pricing | 767-2676.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 2256,
+    "sha256": "2e651eecceac008433baef55a82854886d8a2087710de0a793fbf0d71fd2ac93"
+  },
+  {
+    "url": "https://767-2676.com/privacy",
+    "status": 200,
+    "title": "Privacy policy | POPCORN",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 4873,
+    "sha256": "3c5859566e48239201f6434cf82a6b4ac4f70c69209b9a10a7ebc24076483ac8"
+  },
+  {
+    "url": "https://767-2676.com/prove-action-before-authorization-expired",
+    "status": 200,
+    "title": "Proving an action happened before an authorization expired: RFC 3161, OpenTimestamps, and a fresh witness",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 13509,
+    "sha256": "2d2a391d8d358203043b22b791da83775aba3a843dd53eabbc6fc21d04b63213"
+  },
+  {
+    "url": "https://767-2676.com/robots.txt",
+    "status": 200,
+    "title": "/robots.txt",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 120,
+    "sha256": "5ba9f3e85af80d20846e95e1c420868eb9bdcc209eaed01a7c33bbb42f738dac"
+  },
+  {
+    "url": "https://767-2676.com/samples/generic-samples.json",
+    "status": 200,
+    "title": "/samples/generic-samples.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 5935,
+    "sha256": "c21789d874c3097a5f47782f011d77feeca5ef7c72e2e2540d6cf9584cea44f0"
+  },
+  {
+    "url": "https://767-2676.com/schedule",
+    "status": 200,
+    "title": "/schedule",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 6463,
+    "sha256": "1ccdcea2f85e5f1fefd0552b7cbfa6afc0f09eba5a0ac498a79b996fefb8db50"
+  },
+  {
+    "url": "https://767-2676.com/schedule/contract.txt",
+    "status": 200,
+    "title": "/schedule/contract.txt",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 4016,
+    "sha256": "59b801fa8b02b1acea8323789fb52bde0954db003d355bbb3550dd74410b804b"
+  },
+  {
+    "url": "https://767-2676.com/schedule/example",
+    "status": 200,
+    "title": "/schedule/example",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 4500,
+    "sha256": "fc696bbbe12ba250d39583fdc026f19a5e577dfe5b8f515f3e7fe49f4d92dd7c"
+  },
+  {
+    "url": "https://767-2676.com/schedule/example.json",
+    "status": 200,
+    "title": "/schedule/example.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 14256,
+    "sha256": "491f529de09a9ea6fca713c88ce430ef4a968a313ff0a17b750491e51ffbe0bf"
+  },
+  {
+    "url": "https://767-2676.com/schemas/execution-schedule.v1.json",
+    "status": 200,
+    "title": "/schemas/execution-schedule.v1.json",
+    "content_type": "application/schema+json; charset=utf-8",
+    "byte_length": 14181,
+    "sha256": "def1067a548f230342e580bd7ffe7c08bb7b57002aa711f5eaff805f3aa00912"
+  },
+  {
+    "url": "https://767-2676.com/schemas/witness-request.v1.json",
+    "status": 200,
+    "title": "/schemas/witness-request.v1.json",
+    "content_type": "application/schema+json; charset=utf-8",
+    "byte_length": 1880,
+    "sha256": "1c245e29e08762056d93378db5372761d55e12d1ad2c9ba7b4a74568486a5347"
+  },
+  {
+    "url": "https://767-2676.com/schemas/witness-response.v1.json",
+    "status": 200,
+    "title": "/schemas/witness-response.v1.json",
+    "content_type": "application/schema+json; charset=utf-8",
+    "byte_length": 7755,
+    "sha256": "64706e9402f4c00de3d622235853988de53a60bf39874bc59713edf4b4e6370c"
+  },
+  {
+    "url": "https://767-2676.com/schemas/witness-response.v2.json",
+    "status": 200,
+    "title": "/schemas/witness-response.v2.json",
+    "content_type": "application/schema+json; charset=utf-8",
+    "byte_length": 9409,
+    "sha256": "22741f3e2c4e020a7c5560959aa84f10f2b7aa1b3e86e2ce878aed86f7473f77"
+  },
+  {
+    "url": "https://767-2676.com/signal.md",
+    "status": 200,
+    "title": "767-2676.com signal mapping",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 3774,
+    "sha256": "09897253360e47cfbf19521558ae30284552f8271b73a6659557f25dfc387523"
+  },
+  {
+    "url": "https://767-2676.com/sitemap.xml",
+    "status": 200,
+    "title": "/sitemap.xml",
+    "content_type": "application/xml; charset=utf-8",
+    "byte_length": 724,
+    "sha256": "0f1525b0bcd6e38fa09e02f13809205832def10c152809f0c9914049a1f73a5a"
+  },
+  {
+    "url": "https://767-2676.com/SKILL.md",
+    "status": 200,
+    "title": "POPCORN temporal anchor",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 18728,
+    "sha256": "b160b3dc754a386b9ef764deb9841d0477df7f183f7ab1a925c90381f60c9e2b"
+  },
+  {
+    "url": "https://767-2676.com/skills/task-time/SKILL.md",
+    "status": 200,
+    "title": "POPCORN — evidence before a deadline or handoff",
+    "content_type": "text/markdown; charset=utf-8",
+    "byte_length": 4076,
+    "sha256": "a9dec3881c34223cec1236a2900c5cbe93720812d2be0ff9bfce45662bcf652a"
+  },
+  {
+    "url": "https://767-2676.com/support",
+    "status": 200,
+    "title": "Support | POPCORN by Briarwood AI",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 3192,
+    "sha256": "922cd5d38c5976c15d249e58bec8b5f1ca882bfb61249811e6988e9e6671f071"
+  },
+  {
+    "url": "https://767-2676.com/terms",
+    "status": 200,
+    "title": "Service terms | 767-2676.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 3066,
+    "sha256": "fa1ea132896689742f4792bb003d4a7a5a2de5360ce0c9116dda506ce44335b1"
+  },
+  {
+    "url": "https://767-2676.com/test-line.json",
+    "status": 200,
+    "title": "/test-line.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 9267,
+    "sha256": "f26d6b3abe7627224beeced7a9d2d5c12a1c7ffd3f5a24b0e7854eb85b6f4706"
+  },
+  {
+    "url": "https://767-2676.com/time",
+    "status": 200,
+    "title": "POPCORN | Signed Time for AI Agents | 767-2676.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 24082,
+    "sha256": "239d6158847174bd618498439cb3f16571e513d03f0d8a70f16d3d317e4638af"
+  },
+  {
+    "url": "https://767-2676.com/tone-spec.v1.json",
+    "status": 200,
+    "title": "/tone-spec.v1.json",
+    "content_type": "application/json; charset=utf-8",
+    "byte_length": 2768,
+    "sha256": "1afa378db5b529a3ef0a54b69ed3911387149794030800f64cb0a8b060f270a2"
+  },
+  {
+    "url": "https://767-2676.com/try",
+    "status": 200,
+    "title": "Two free sample receipts · POPCORN",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 21091,
+    "sha256": "57430d9e7fd283518b410b1af8e257e54aae3f1c47a689daa72782e3a941d66b"
+  },
+  {
+    "url": "https://767-2676.com/where-the-work-stands",
+    "status": 200,
+    "title": "Where the work stands",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 6862,
+    "sha256": "2ff75106c4fc2d60346e49c7898cd9b377c5061f03ba3afa50bd95ad99c4318c"
+  },
+  {
+    "url": "https://767-2676.com/with-and-without-popcorn",
+    "status": 200,
+    "title": "With and Without POPCORN",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 21957,
+    "sha256": "6194185e029c5f93b217597ff23a7812465b7a0c029804539caa42eeb4afbeee"
+  },
+  {
+    "url": "https://767-2687.com/",
+    "status": 200,
+    "title": "SOS-BOTS · 767-2687.com",
+    "content_type": "text/html; charset=utf-8",
+    "byte_length": 5439,
+    "sha256": "188727cff9b7ae2a097a545c3277aea8ffed7b1f3f569d03ef2ffec7094b2e3e"
+  },
+  {
+    "url": "https://letain.estate/discovery",
+    "status": 200,
+    "title": "leTAIN — Discovery",
+    "content_type": "text/html",
+    "byte_length": 7307,
+    "sha256": "5577002e17e85f1a7d0a6e39b08d4dfecfc2a28173b57fbee789f37af15f686f"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/packages/mcp/README.md",
+    "status": 200,
+    "title": "Briarwood AI / POPCORN MCP server",
+    "content_type": "text/plain; charset=utf-8",
+    "byte_length": 10168,
+    "sha256": "01bdb3b5f4340837e8a2432dff89457417a22da5ab77f9b35d4ba350c0129ed0"
+  }
+]
