@@ -1,11 +1,34 @@
 import assert from 'node:assert/strict';
 
-export function patchHomepage(before, html) {
+export function patchHomepage(before, html, plain) {
   assert(html.startsWith('<!doctype html>'));
   assert(html.includes('id="operations-home"'));
   assert(!/<(?:a|nav|button|input|select|textarea|details|iframe|script|form)\b|\s(?:onclick|tabindex)=/i.test(html), 'Homepage must remain read-only with nothing clickable');
   const anchor = "const true_witness_default = {...index_default, async fetch(request,env,ctx) {\n  const url = new URL(request.url);";
   assert.equal(before.split(anchor).length, 2, 'Expected one current presentation wrapper');
+  if (plain !== undefined) {
+    assert(plain.startsWith('True Witness Here\n'));
+    assert(plain.includes('You wake up on a borrowed computer'));
+    const start=before.indexOf(anchor)+anchor.length;
+    const end=before.indexOf('\n  const demo = discoveryDemo(request);',start);
+    assert(end>start);
+    const original=before.slice(start,end);
+    assert(original.startsWith('\n  // operations-homepage:2026-10-20'));
+    assert(original.endsWith('\n    return page;\n  }'));
+    const replacement='\n  // operations-homepage:2026-10-20; homepage and plain-text companion.\n'+
+      '  if (url.origin === PUBLIC_ORIGIN && (url.pathname === "/" || url.pathname === "/llms.txt")) {\n'+
+      '    const asText = url.pathname === "/llms.txt";\n'+
+      '    const body = asText ? '+JSON.stringify(plain)+' : '+JSON.stringify(html)+';\n'+
+      '    const page = withDiscoveryHeaders(discoveryDocumentResponse(request, body, asText ? "text/plain; charset=utf-8" : "text/html; charset=utf-8"));\n'+
+      '    if (page.status === 200) {\n'+
+      '      page.headers.set("cache-control", "public, max-age=0, must-revalidate");\n'+
+      '      page.headers.set("x-popcorn-nameplate", "True Witness Here");\n'+
+      '      page.headers.set("x-popcorn-site-release", "operations-homepage-2026-10-20");\n'+
+      '    }\n    return page;\n  }';
+    const after=before.slice(0,start)+replacement+before.slice(end);
+    assert.equal(after.slice(0,start)+original+after.slice(start+replacement.length),before,'Only homepage and plain-text presentation may change');
+    return after;
+  }
   if (before.includes('// operations-homepage:2026-10-20')) {
     const start=before.indexOf('// operations-homepage:2026-10-20');
     assert.equal(before.indexOf('// operations-homepage:2026-10-20',start+1),-1);
