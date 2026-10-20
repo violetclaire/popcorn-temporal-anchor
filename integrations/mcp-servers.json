@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "popcorn": {
+      "command": "npx",
+      "args": ["--yes", "--package", "https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz", "popcorn-mcp"]
+    },
+    "exa": {
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_advanced_exa,web_fetch_exa"
+    }
+  }
+}

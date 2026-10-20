@@ -1,0 +1,34 @@
+{
+  "name": "@violetclaire/eliza-plugin-popcorn",
+  "version": "0.1.0",
+  "description": "Free POPCORN discovery, hashing and receipt verification for ElizaOS, with host-approved witness issuance.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "check": "npm run typecheck && npm test && npm run build",
+    "prepack": "npm run check"
+  },
+  "engines": { "node": ">=20" },
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/violetclaire/popcorn-temporal-anchor.git",
+    "directory": "integrations/eliza"
+  },
+  "peerDependencies": {
+    "@elizaos/core": ">=1.7.2 <2",
+    "@violetclaire/popcorn-mcp": "^0.1.4"
+  },
+  "devDependencies": {
+    "@elizaos/core": "1.7.2",
+    "@types/node": "26.4.0",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  }
+}

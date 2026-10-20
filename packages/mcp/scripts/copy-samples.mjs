@@ -6,6 +6,7 @@ await mkdir(destination, { recursive: true });
 for (const filename of [
   "evaluation-packet.production.json",
   "evaluation-packet.proceed-002.production.json",
+  "v2-production-sample.json",
 ]) {
   await copyFile(
     new URL(`../../../examples/witness/${filename}`, import.meta.url),
