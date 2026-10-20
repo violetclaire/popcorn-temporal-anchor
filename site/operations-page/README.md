@@ -25,6 +25,8 @@ The repository fixture predates an approved production wording correction in its
 
 ## Published release
 
+Current color revision: version `2b09d41e-4750-4781-a4fb-fafb5099578f` flips the screen palette to deep green `#123d30` with cream `#f5f1e7` text. Live HTML SHA-256 `9e6f89fd4d2442df580dcaf717c8069abea2076d1a784f00915ddcb62464dbc2` (566,610 bytes). Source comparison confirmed only styles and color-scheme metadata changed; the complete plain-text document remains byte-identical. All 23 release checks passed. Main text contrast is 10.73:1, and the original light print palette remains in effect.
+
 Current release: version `939107ae-8e5d-4f69-9651-d2ece146ca7c` publishes the complete owner-authored opening from “You wake up...” through “The record shows.” beneath the existing header. Live HTML SHA-256 `3a2cc19e59c6f18a400a34f3e7b968bb10e63ba14e10d6d1fab0116f41296cd2` (566,418 bytes); live plain-text SHA-256 `679faa09e412b4c6e26ef3591eb6dd0f3b6fd6d867b55844d331ae6e0e98e4ba` (441,400 bytes). Both live bodies and empty HEAD responses matched. Eleven other checked routes remained byte-identical; the live homepage had zero clickable elements.
 
 Opening revision: the original Discovery paragraph now appears immediately beneath `True Witness Here`, beginning “Agents wake up on a borrowed computer that can be wiped hourly.” The opening Briarwood/Violet credit was removed at the user's request. Published as version `02a464c9-a5b4-45c7-ad11-802272dbe3f5`; root SHA-256 `0b53b9049ab72c67a46bcecee3ce067b99f7bfcf1a82700e0fe3961cef2b6af7` (561,853 bytes). All 21 checks passed again, live browser confirmed the opening order and zero clickable elements, and the twelve checked non-root responses remained byte-identical.
