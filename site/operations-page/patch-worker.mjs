@@ -21,7 +21,7 @@ export function patchHomepage(before, html, plain) {
       '    const body = asText ? '+JSON.stringify(plain)+' : '+JSON.stringify(html)+';\n'+
       '    const page = withDiscoveryHeaders(discoveryDocumentResponse(request, body, asText ? "text/plain; charset=utf-8" : "text/html; charset=utf-8"));\n'+
       '    if (page.status === 200) {\n'+
-      '      page.headers.set("cache-control", "public, max-age=0, must-revalidate");\n'+
+      '      page.headers.set("cache-control", asText ? "public, max-age=0, must-revalidate" : "public, max-age=0, must-revalidate, no-transform");\n'+
       '      page.headers.set("x-popcorn-nameplate", "True Witness Here");\n'+
       '      page.headers.set("x-popcorn-site-release", "operations-homepage-2026-10-20");\n'+
       '    }\n    return page;\n  }';
@@ -64,7 +64,7 @@ export function patchHomepage(before, html, plain) {
     '  if (url.origin === PUBLIC_ORIGIN && url.pathname === "/") {\n' +
     '    const page = withDiscoveryHeaders(discoveryDocumentResponse(request, ' + JSON.stringify(html) + ', "text/html; charset=utf-8"));\n' +
     '    if (page.status === 200) {\n' +
-    '      page.headers.set("cache-control", "public, max-age=0, must-revalidate");\n' +
+    '      page.headers.set("cache-control", "public, max-age=0, must-revalidate, no-transform");\n' +
     '      page.headers.set("x-popcorn-nameplate", "True Witness Here");\n' +
     '      page.headers.set("x-popcorn-site-release", "operations-homepage-2026-10-20");\n' +
     '    }\n    return page;\n  }';
