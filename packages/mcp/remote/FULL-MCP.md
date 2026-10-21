@@ -54,6 +54,9 @@ this remote intermediary does not supply that measurement for the caller.
 service binding to `seven-six-seven-2676`. A narrow `/mcp*` route overlays the
 existing site. Paths other than `/mcp` and `/mcp/` pass through unchanged.
 The homepage and the existing one-tool verifier Worker are not replaced.
+`full-wrangler.jsonc` records the established canonical route so a future
+deployment preserves it. To stage a new, unrouted Worker, use a separate
+configuration; never deploy an empty route list over this live Worker.
 
 Requests are limited to 128 KiB and 10,000 tool-input elements. Predecessor
 chains are limited to eight links. Untrusted browser origins, unrelated hosts,

@@ -6,6 +6,6 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": false,
-  "routes": [],
+  "routes": [{ "pattern": "https://767-2676.com/mcp*", "zone_id": "7a02d892170f951fff1c8cda8d1cf35c" }],
   "services": [{ "binding": "POPCORN", "service": "seven-six-seven-2676", "environment": "production" }]
 }
