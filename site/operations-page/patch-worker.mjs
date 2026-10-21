@@ -32,6 +32,20 @@ export function patchHomepage(before, html, plain) {
   if (before.includes('// operations-homepage:2026-10-20')) {
     const start=before.indexOf('// operations-homepage:2026-10-20');
     assert.equal(before.indexOf('// operations-homepage:2026-10-20',start+1),-1);
+    const combinedStart=before.indexOf('    const body = asText ? ',start);
+    const branchEnd=before.indexOf('\n  const demo = discoveryDemo(request);',start);
+    if (combinedStart>start && combinedStart<branchEnd) {
+      const combinedEnd=before.indexOf('\n',combinedStart);
+      const original=before.slice(combinedStart,combinedEnd);
+      const match=original.match(/^    const body = asText \? ("(?:[^"\\]|\\.)*") : ("(?:[^"\\]|\\.)*");$/);
+      assert(match,'Expected exact existing plain/HTML literals');
+      assert(JSON.parse(match[1]).startsWith('True Witness Here\n'));
+      assert(JSON.parse(match[2]).includes('id="operations-home"'));
+      const replacement='    const body = asText ? '+match[1]+' : '+JSON.stringify(html)+';';
+      const after=before.slice(0,combinedStart)+replacement+before.slice(combinedEnd);
+      assert.equal(after.slice(0,combinedStart)+original+after.slice(combinedStart+replacement.length),before,'Only homepage HTML literal may change; plain text and routing stay exact');
+      return after;
+    }
     const lineStart=before.indexOf('    const page = withDiscoveryHeaders(discoveryDocumentResponse(request, ',start);
     const lineEnd=before.indexOf('\n',lineStart);
     assert(lineStart>start && lineEnd>lineStart);
