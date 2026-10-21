@@ -1,7 +1,7 @@
 {
   "name": "briarwood-specification",
   "account_id": "2777255435a3499dec85c6ec39ebeae4",
-  "main": "dist/worker.mjs",
+  "main": "dist/upload/worker.mjs",
   "compatibility_date": "2026-10-21",
   "workers_dev": true,
   "routes": [

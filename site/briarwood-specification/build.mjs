@@ -47,6 +47,10 @@ export function build() {
   const runtime = fs.readFileSync(path.join(root, 'handler.mjs'), 'utf8');
   const worker = runtime + '\nconst ASSETS = ' + JSON.stringify(assets) + ';\nexport default {fetch: createHandler(ASSETS)};\n';
   fs.writeFileSync(path.join(output, 'worker.mjs'), worker);
+  // Keep the deployment entry in its own directory: Wrangler's no-bundle
+  // discovery otherwise uploads adjacent HTML as an extra text module.
+  fs.mkdirSync(path.join(output, 'upload'), {recursive:true});
+  fs.writeFileSync(path.join(output, 'upload', 'worker.mjs'), worker);
   const buildRecord = {version:1, module:{name:'worker.mjs',bytes:Buffer.byteLength(worker),sha256:sha256(worker)},pages:manifest.pages,documents:manifest.documents,routes:Object.entries(assets).map(([suffix,{body,csp,...asset}])=>({suffix,...asset}))};
   fs.writeFileSync(path.join(output, 'build.json'), JSON.stringify(buildRecord,null,2)+'\n');
   return {assets, manifest, buildRecord};

@@ -21,7 +21,7 @@ node site/briarwood-specification/build.mjs
 node --test site/briarwood-specification/test.mjs
 ```
 
-There are no package dependencies. `source-lock.json` pins the private bridge's source commit, Git blob, SHA-256 and length for each document. The build refuses drift. `.gitattributes` prevents Git line-ending conversion of the source documents. Generated artifacts are under `dist/` and are not committed.
+There are no package dependencies. `source-lock.json` pins the private bridge's source commit, Git blob, SHA-256 and length for each document. The build refuses drift. `.gitattributes` prevents Git line-ending conversion of the source documents. Generated artifacts are under `dist/` and are not committed. The deployment entry is isolated at `dist/upload/worker.mjs` so Wrangler does not automatically attach the adjacent preview HTML as an additional module.
 
 ## Deployment boundary
 
