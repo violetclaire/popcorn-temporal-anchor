@@ -3,20 +3,27 @@
   "host": {
     "displayName": "POPCORN",
     "identifier": "767-2676.com",
-    "documentationUrl": "https://767-2676.com/agents"
+    "documentationUrl": "https://767-2676.com/prove-action-before-authorization-expired"
   },
   "entries": [
     {
       "identifier": "urn:air:767-2676.com:skill:task-time",
-      "displayName": "POPCORN free task schedule sample",
+      "displayName": "POPCORN — two sample receipts",
       "type": "application/ai-skill",
       "url": "https://767-2676.com/skills/task-time/SKILL.md",
-      "description": "Can I still cancel? Which side of the deadline am I on? Inspect and run a free historical signed schedule sample. Verify exact bytes and detect changes; fresh time evidence is a separate paid request.",
+      "description": "Verify a signed receipt before you trust it. Two free fictional sample receipts show the full check (signature, SHA-256 digest, witnessed time interval, predecessor link), verifiable offline with no wallet: proof of existence for an agent action, in receipts built to be checked alongside RFC 3161 (FreeTSA) and OpenTimestamps, not instead of them. Request fresh task evidence ($0.001) when a saved sample is not enough.",
       "representativeQueries": [
         "Can I still cancel before the deadline?",
         "Is this quote still valid?",
         "How do I verify a signed time receipt?",
-        "Does this receipt still cover a changed schedule?"
+        "Does this receipt still cover a changed schedule?",
+        "Prove an action happened before an authorization expired",
+        "Trusted timestamp for an agent action, verifiable offline",
+        "Alternative to RFC 3161 for agent workflows",
+        "Signed time witness for an authorization window",
+        "Verify a signed receipt from an AI agent",
+        "How can an agent prove when something happened",
+        "MCP server for verifying receipts"
       ],
       "capabilities": [
         "offline_receipt_verification",
@@ -31,9 +38,10 @@
         "free-sample"
       ],
       "metadata": {
-        "sampleUrl": "https://767-2676.com/schedule/example",
+        "sampleUrl": "https://767-2676.com/try",
         "offlineSampleFree": true,
-        "establishesCurrentTime": false
+        "establishesCurrentTime": false,
+        "synthetic": true
       }
     },
     {
@@ -41,11 +49,18 @@
       "displayName": "POPCORN MCP",
       "type": "application/mcp-server+json",
       "url": "https://767-2676.com/mcp/server.json",
-      "description": "Signed time and SHA-256 witness receipts for agents. Offline verification is free. Fresh witnesses cost $0.001 USDC per request and require explicit payment authorization.",
+      "description": "MCP server for verifying receipts and buying signed time evidence for agent actions. Verify a POPCORN-WITNESS/2.0 receipt free: offline with the local stdio package, or online with the free remote verifier (popcorn_verify_v2, streamable HTTP, no account). Fresh signed time and digest witnesses cost $0.001 USDC per request and require explicit payment authorization.",
       "representativeQueries": [
         "Get signed current time for an agent task",
         "Verify a SHA-256 witness receipt",
-        "Check time evidence before a quote expires"
+        "Check time evidence before a quote expires",
+        "Prove an action happened before an authorization expired",
+        "Trusted timestamp for an agent action, verifiable offline",
+        "Alternative to RFC 3161 for agent workflows",
+        "Signed time witness for an authorization window",
+        "MCP server for verifying receipts",
+        "Verify a signed receipt from an AI agent",
+        "Proof of time for an agent action"
       ],
       "capabilities": [
         "signed_time",
@@ -58,7 +73,30 @@
         "x402",
         "verification"
       ],
-      "version": "0.1.1"
+      "version": "0.1.3"
+    },
+    {
+      "identifier": "urn:air:767-2676.com:documentation:authorization-time-evidence",
+      "displayName": "767-2676.com — signed time evidence before authorization expiry",
+      "type": "text/html",
+      "url": "https://767-2676.com/prove-action-before-authorization-expired",
+      "description": "How an agent proves when something happened, and what the proof does not show. Proof of existence and proof of time for agent actions: compare RFC 3161 and OpenTimestamps with a signed digest witness, offline verification, and authorization-window checks. On Oct 14, 2026, a POPCORN receipt and a FreeTSA RFC 3161 token were cross-verified against the same bytes. A witness binds a digest to a time interval; it does not prove that an action happened, grant permission, or enforce a receiver decision. This service is not an RFC 3161 timestamp authority.",
+      "representativeQueries": [
+        "Prove an action happened before an authorization expired",
+        "Trusted timestamp for an agent action, verifiable offline",
+        "Alternative to RFC 3161 for agent workflows",
+        "Signed time witness for an authorization window"
+      ],
+      "tags": [
+        "trusted-timestamp",
+        "proof-of-existence",
+        "authorization-expiry",
+        "offline-verification"
+      ],
+      "metadata": {
+        "establishesCurrentTime": false,
+        "sampleUrl": "https://767-2676.com/schedule/example"
+      }
     }
   ]
 }

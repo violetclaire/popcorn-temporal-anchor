@@ -1,11 +1,12 @@
 # POPCORN — signed evidence before a deadline or handoff
 
 Start here: https://767-2676.com/agent-entry.md
+Verify a signed receipt free: the remote MCP verifier popcorn_verify_v2 checks POPCORN-WITNESS/2.0 receipts, read only, no account.
 Two free, fictional signed samples: https://767-2676.com/try
 Sample source: https://767-2676.com/samples/generic-sample.mjs
 Fresh time or task-digest witness: $0.001 USDC per request, with owner-authorized payment.
-MCP: @violetclaire/popcorn-mcp@0.1.3 (local stdio).
-Use when exact task bytes and independently checkable time evidence matter across a handoff.
+MCP: @violetclaire/popcorn-mcp@0.1.3 (local stdio) for offline verification and paid issuance.
+Use when an agent has to prove when something happened across a handoff, from exact task bytes and independently checkable time evidence.
 An old receipt does not establish current permission. The executor checks fresh time, approval, revocation and final terms.
 
 # 767-2676.com — POPCORN Protocol
@@ -14,7 +15,7 @@ An old receipt does not establish current permission. The executor checks fresh 
 
 Search terms: RFC 3161, FreeTSA, OpenTimestamps, trusted timestamp, proof of existence, authorization expiry, signed execution receipt, and independent verification.
 
-- [RFC 3161, OpenTimestamps, trusted timestamp, and proof of existence before authorization expiry](https://767-2676.com/prove-action-before-authorization-expired): Free verification, a fresh pre-action check, and a linked post-commit witness; evidence does not grant permission.
+- [RFC 3161, OpenTimestamps, trusted timestamp, and proof of existence before authorization expiry](https://767-2676.com/prove-action-before-authorization-expired): Prove when an agent action happened. Free receipt verification, a fresh pre-action check, and a linked post-commit witness, with POPCORN checked alongside RFC 3161 (FreeTSA interop verified Oct 14, 2026). Evidence does not grant permission.
 - [Free test-line bundle](https://767-2676.com/test-line/bundle.json): A saved settled production test-line receipt (inspect publisher status and checkpoint age) plus a public predecessor-chain conformance vector.
 - [Free local verifier](https://767-2676.com/test-line/verify.mjs): Verifies the latest ES256 JWS, payload digests, both chain signatures, and the predecessor link. No wallet or payment.
 
@@ -54,7 +55,7 @@ Free sample skill: https://767-2676.com/skills/task-time/SKILL.md
 ## Primary capability
 
 - [Temporal anchor](https://767-2676.com/v1/time): Request a signed Pacific and UTC time response. Unpaid requests return an x402 v2 `402 Payment Required` challenge for $0.001 USDC on Base mainnet. The legacy alias `/time?format=json` remains available.
-- [Schedule checkpoint](https://767-2676.com/v2/receipt): POST a SHA-256 digest, a 32-byte nonce, and an optional predecessor digest. After the same $0.001 x402 payment, POPCORN signs when that commitment was presented. The raw schedule or task bytes stay with the agent and are never sent to POPCORN. `/v1/receipt` remains available for existing integrations.
+- [Schedule checkpoint](https://767-2676.com/v2/receipt): POST a SHA-256 digest, a 32-byte nonce, and an optional predecessor digest. After the same $0.001 x402 payment, POPCORN signs a POPCORN-WITNESS/2.0 receipt: an agent action receipt, signed time evidence showing when that commitment was presented. The raw schedule or task bytes stay with the agent and are never sent to POPCORN.
 
 ## Service entry
 
@@ -63,6 +64,9 @@ Free sample skill: https://767-2676.com/skills/task-time/SKILL.md
 
 ## MCP server
 
+MCP servers for verifying receipts, one hosted and one local:
+
+- Hosted verifier (free): `popcorn_verify_v2` at https://popcorn-tain-verify-mcp-v2.violetherod.workers.dev/mcp (streamable HTTP). Verify a signed POPCORN-WITNESS/2.0 receipt with no account; read only.
 - Package: `@violetclaire/popcorn-mcp`
 - Install and run: `npx -y @violetclaire/popcorn-mcp`
 - Transport: local stdio
@@ -83,15 +87,23 @@ Free sample skill: https://767-2676.com/skills/task-time/SKILL.md
 - [Portable execution schedule example](https://767-2676.com/examples/execution-schedule.v1.json): Minimal machine-native example using `schedule_id`, `event_id`, `node_id`, `resource_id`, `task_payload`, and `execution_window_utc`.
 - [OpenAPI contract](https://767-2676.com/openapi.json): Machine-readable request, response, payment, and verification contract.
 - [Witness request schema](https://767-2676.com/schemas/witness-request.v1.json): Strict digest-only POST body; raw task and schedule fields are rejected.
-- [Witness response schema](https://767-2676.com/schemas/witness-response.v1.json): Strict signed response and evidence boundaries.
+- [Current TAIN 2.0 witness response schema](https://767-2676.com/schemas/witness-response.v2.json): Strict signed response, TAIN identifier, and license commitment.
+- [Historical 1.0 witness response schema](https://767-2676.com/schemas/witness-response.v1.json): Older receipts remain historical evidence; the 2.0 verifier rejects them.
+- [TAIN lookup](https://767-2676.com/v1/receipt/tain/{tain}): Free metadata-only issuance index; the signed holder receipt remains primary.
+- [Contribution license](https://767-2676.com/license/contribution/1.0): Exact text committed by digest in each new 2.0 receipt.
 
-## Verify two settled outcomes
+Legacy /v1/receipt remains available for backward compatibility. Its unpaid x402 402 challenge retains the historical 1.0 descriptor bytes; both paths issue signed 2.0 receipts. Verify paid receipts against the 2.0 schema.
+
+- [Current 2.0 TypeScript verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/155e3dd0774261e804bf212e191c693ea3e7e36a/verify/typescript): Commit-pinned independent receipt verifier.
+- [Current 2.0 Python verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/155e3dd0774261e804bf212e191c693ea3e7e36a/verify/python): Independent implementation of the same 2.0 contract.
+
+## Verify two historical 1.0 settled outcomes
 
 - [STOP — expired schedule](https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.production.json): The signature and exact digest verify, but the checkpoint falls after the schedule closed.
 - [PROCEED — on-time schedule](https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-packet.proceed-002.production.json): The signature and exact digest verify, and the checkpoint overlaps the schedule window.
 - [Machine-readable outcome policy](https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/examples/witness/evaluation-outcomes.json): Verify the checkpoint, check it against the participant-local schedule, and decide whether to proceed. POPCORN does not make that decision.
-- [JavaScript witness verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript): Verifies the ES256 signature, signed envelope, expected digest, nonce, predecessor, node, and local clock policy without a wallet or network request.
-- [Python witness verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python): Independent verification of the same production packet.
+- [Historical 1.0 JavaScript witness verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/typescript): Verifies the ES256 signature, signed envelope, expected digest, nonce, predecessor, node, and local clock policy without a wallet or network request.
+- [Historical 1.0 Python witness verifier](https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/verify/python): Independent verification of the same production packet.
 - [Witness protocol](https://github.com/violetclaire/popcorn-temporal-anchor/blob/main/docs/WITNESS_PROTOCOL.md): Exact signed scope, exclusions, request sequence, and fail-closed rules.
 
 ## Offline verifier kit
@@ -133,7 +145,7 @@ The current POPCORN API requires no account or license. Briarwood’s future inv
 - Pricing: https://767-2676.com/pricing
 - Service terms: https://767-2676.com/terms
 - Signed time: GET /v1/time; 0.001 USDC on Base through x402.
-- Digest witness: POST /v2/receipt; 0.001 USDC on Base through x402. `/v1/receipt` remains compatible.
+- Digest witness: POST /v2/receipt; 0.001 USDC on Base through x402.
 - Public documentation, verification keys and saved examples are free to read.
 
 - Support: https://767-2676.com/support
