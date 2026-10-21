@@ -59,6 +59,27 @@ function lockedOption(value: unknown) {
       typeof value.payTo !== "string" || value.payTo.toLowerCase() !== PAY_TO) {
     throw new Error("Payment must be exactly $0.001 USDC on Base to POPCORN");
   }
+  if (!Number.isInteger(value.maxTimeoutSeconds) || Number(value.maxTimeoutSeconds) < 1 || Number(value.maxTimeoutSeconds) > 300 ||
+      !isObject(value.extra) || value.extra.name !== "USD Coin" || value.extra.version !== "2" ||
+      (value.extra.assetTransferMethod !== undefined && value.extra.assetTransferMethod !== "eip3009")) throw new Error("Unsupported payment authorization terms");
+}
+function validateProof(header: string, url: string): void {
+  const proof = decodeHeader(header);
+  if (proof.x402Version !== 2) throw new Error("Expected x402 version 2 payment proof");
+  lockedOption(proof.accepted);
+  if (!isObject(proof.resource) || proof.resource.url !== url) throw new Error("Payment proof resource differs from this request");
+  const payload = proof.payload;
+  const auth = isObject(payload) ? payload.authorization : null;
+  if (!isObject(payload) || !isObject(auth) || typeof payload.signature !== "string" || !/^0x[0-9a-fA-F]{130}$/.test(payload.signature) ||
+      typeof auth.from !== "string" || !/^0x[0-9a-fA-F]{40}$/.test(auth.from) ||
+      typeof auth.to !== "string" || auth.to.toLowerCase() !== PAY_TO || auth.value !== "1000" ||
+      typeof auth.nonce !== "string" || !/^0x[0-9a-fA-F]{64}$/.test(auth.nonce)) throw new Error("Invalid EIP-3009 payment authorization; expected a standard EOA signature for the exact recipient and amount");
+  const now = Math.floor(Date.now() / 1000);
+  const lower = Number(auth.validAfter), upper = Number(auth.validBefore);
+  if (typeof auth.validAfter !== "string" || !/^\d{1,16}$/.test(auth.validAfter) ||
+      typeof auth.validBefore !== "string" || !/^\d{1,16}$/.test(auth.validBefore) ||
+      !Number.isSafeInteger(lower) || !Number.isSafeInteger(upper) || lower > now || upper <= now ||
+      upper > now + Number((proof.accepted as Json).maxTimeoutSeconds)) throw new Error("Payment authorization is expired, not yet valid, or exceeds the permitted expiry");
 }
 
 /** Forward only an explicitly approved, caller-signed proof, once. No server wallet exists. */
@@ -67,13 +88,7 @@ export async function requestReceipt(upstream: Upstream, path: string, body: Jso
   if (approval.payment_signature && !approval.approve_payment) throw new Error("Payment proof requires explicit approval for this call");
   if (approval.approve_payment && !approval.payment_signature) throw new Error("Sign the dry-run x402 challenge with your own wallet and supply payment_signature; never send a private key");
   const url = ORIGIN + path;
-  if (approval.payment_signature) {
-    const proof = decodeHeader(approval.payment_signature);
-    if (proof.x402Version !== 2) throw new Error("Expected x402 version 2 payment proof");
-    lockedOption(proof.accepted);
-    if (!isObject(proof.resource) || proof.resource.url !== url) throw new Error("Payment proof resource differs from this request");
-    if (!isObject(proof.payload)) throw new Error("Missing signed payment payload");
-  }
+  if (approval.payment_signature) validateProof(approval.payment_signature, url);
   const init: RequestInit = { method: body ? "POST" : "GET", headers: { accept: "application/json", ...(body ? { "content-type": "application/json" } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) };
   const challenge = await upstream(fixedRequest(path, init));
   if (challenge.status !== 402) throw new Error(`Expected an unpaid 402 challenge, received ${challenge.status}`);
@@ -89,6 +104,7 @@ export async function requestReceipt(upstream: Upstream, path: string, body: Jso
     challenge: { status: 402, payment_required: header, decoded_terms: terms, response_body: challengeBody },
     next_step: "Only with owner approval, sign this challenge locally and repeat this tool call with approve_payment:true and payment_signature. No wallet keys belong on this server.",
   };
+  validateProof(approval.payment_signature!, url);
   // Never retry a submitted proof: a timeout can occur after settlement.
   try {
     const headers = new Headers(init.headers);

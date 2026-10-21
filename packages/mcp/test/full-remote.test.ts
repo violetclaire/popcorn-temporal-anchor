@@ -5,10 +5,13 @@ import worker, { requestReceipt, type Env } from "../remote/full-worker.js";
 import { requestRpc } from "../remote/http-smoke.js";
 
 const endpoint = "https://767-2676.com/mcp";
-const option = { scheme: "exact", network: "eip155:8453", amount: "1000", asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", payTo: "0x5f5a631e975183d084f60d7121e967b30ec83cb8", maxTimeoutSeconds: 300 };
+const option = { scheme: "exact", network: "eip155:8453", amount: "1000", asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", payTo: "0x5f5a631e975183d084f60d7121e967b30ec83cb8", maxTimeoutSeconds: 300, extra: { name: "USD Coin", version: "2" } };
 const terms = { x402Version: 2, resource: { url: "https://767-2676.com/v2/receipt" }, accepts: [option] };
 const encode = (v: unknown) => Buffer.from(JSON.stringify(v)).toString("base64");
-const proof = encode({ x402Version: 2, resource: terms.resource, accepted: option, payload: { signature: "test-only" } });
+const now = Math.floor(Date.now() / 1000);
+// Synthetic EOA shape for forwarding tests only. No real signature or funds.
+const payload = { signature: "0x" + "11".repeat(65), authorization: { from: "0x" + "22".repeat(20), to: option.payTo, value: "1000", nonce: "0x" + "33".repeat(32), validAfter: "0", validBefore: String(now + 120) } };
+const proof = encode({ x402Version: 2, resource: terms.resource, accepted: option, payload });
 const challenge = (t: unknown = terms) => new Response(JSON.stringify(t), { status: 402, headers: { "payment-required": encode(t) } });
 const fixture = JSON.parse(await readFile(new URL("../remote/fixtures/popcorn-receipt.json", import.meta.url), "utf8"));
 const jwks = JSON.parse(await readFile(new URL("../remote/fixtures/popcorn-keys.json", import.meta.url), "utf8"));
@@ -85,6 +88,26 @@ test("timeout after proof submission is unknown and never automatically retried"
   assert.equal(calls, 2);
   assert.equal(result.settlement_status, "unknown");
   assert.equal(result.do_not_retry_automatically, true);
+});
+
+test("signed-payload amount, recipient, nonce, signature and validity are checked before forwarding", async () => {
+  const variants = [
+    { ...payload, authorization: { ...payload.authorization, value: "1000000" } },
+    { ...payload, authorization: { ...payload.authorization, to: "0x" + "44".repeat(20) } },
+    { ...payload, authorization: { ...payload.authorization, nonce: "0x00" } },
+    { ...payload, authorization: { ...payload.authorization, validBefore: String(now + 10000) } },
+    { ...payload, authorization: { ...payload.authorization, validBefore: String(now - 1) } },
+    { ...payload, authorization: { ...payload.authorization, validAfter: String(now + 60) } },
+    { ...payload, signature: "test-only" },
+    { authorization: payload.authorization },
+  ];
+  for (const badPayload of variants) {
+    let calls = 0;
+    await assert.rejects(requestReceipt(async () => { calls++; return challenge(); }, "/v2/receipt", {}, {
+      approve_payment: true, payment_signature: encode({ x402Version: 2, resource: terms.resource, accepted: option, payload: badPayload }),
+    }), /authorization/);
+    assert.equal(calls, 0, "invalid authorization must not reach the issuer");
+  }
 });
 
 test("redirected keys fail closed; origin/body limits and route passthrough hold", async () => {

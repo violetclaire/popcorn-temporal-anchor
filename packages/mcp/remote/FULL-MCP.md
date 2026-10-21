@@ -32,6 +32,10 @@ returned x402 challenge locally, and repeat the same tool arguments with both
 PAYMENT-SIGNATURE header. Never submit a private key. The wrapper accepts only
 the fixed POPCORN resource, exactly 1,000 atomic USDC units ($0.001), Base network
 `eip155:8453`, the published USDC asset, and the published recipient.
+It also checks the actual EIP-3009 authorization's recipient, value, sender,
+nonce, signature shape and expiry before forwarding. This remote payment path
+currently accepts standard EOA signatures only, not smart-wallet signature
+envelopes. The issuer performs cryptographic payment-signature verification.
 
 The wrapper forwards one approved proof once. It does not retry a payment after
 a timeout. A missing or malformed response after submission is reported as
