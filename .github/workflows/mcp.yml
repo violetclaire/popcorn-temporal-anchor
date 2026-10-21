@@ -36,3 +36,6 @@ jobs:
       - name: Bundle read-only remote MCP without deploying
         run: npx --yes wrangler@4.138.0 deploy --config remote/wrangler.jsonc --dry-run
         working-directory: packages/mcp
+      - name: Bundle full remote MCP without deploying
+        run: npx --yes wrangler@4.138.0 deploy --config remote/full-wrangler.jsonc --dry-run
+        working-directory: packages/mcp

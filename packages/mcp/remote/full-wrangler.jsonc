@@ -1,0 +1,11 @@
+{
+  "name": "popcorn-canonical-mcp",
+  "account_id": "2777255435a3499dec85c6ec39ebeae4",
+  "main": "./full-worker.ts",
+  "compatibility_date": "2026-09-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [{ "pattern": "https://767-2676.com/mcp*", "zone_id": "7a02d892170f951fff1c8cda8d1cf35c" }],
+  "services": [{ "binding": "POPCORN", "service": "seven-six-seven-2676", "environment": "production" }]
+}
