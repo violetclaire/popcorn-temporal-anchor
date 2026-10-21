@@ -1,0 +1,41 @@
+import assert from "node:assert/strict";
+import { writeFile } from "node:fs/promises";
+import worker from "./full-worker.js";
+import { requestRpc } from "./http-smoke.js";
+import receipt from "./fixtures/popcorn-receipt.json" with { type: "json" };
+
+const endpoint = process.argv[2] ?? "https://767-2676.com/mcp";
+const direct = process.argv.includes("--local-handler");
+const send = (request: Request) => direct ? worker.fetch(request, { POPCORN: { fetch: req => fetch(req) } }) : fetch(request);
+let id = 0;
+const rpc = (method: string, params: Record<string, unknown>) => requestRpc(endpoint, send, ++id, method, params);
+const initialize = await rpc("initialize", { protocolVersion: "2025-11-25", capabilities: {}, clientInfo: { name: "popcorn-live-free-smoke", version: "1.0.0" } });
+const listed = await rpc("tools/list", {});
+const tools = (listed.tools as { name: string }[]).map(t => t.name);
+assert.equal(tools.length, 7);
+const call = async (name: string, args: Record<string, unknown> = {}) => {
+  const response = await rpc("tools/call", { name, arguments: args });
+  assert.notEqual(response.isError, true, JSON.stringify(response));
+  return response.structuredContent as Record<string, unknown>;
+};
+const sample = await call("popcorn_sample");
+assert.equal(sample.passed, true);
+const catalog = await call("popcorn_catalog");
+assert.equal(catalog.payment_sent, false);
+const input = { response: receipt, jwks: {}, expected_nonce: receipt.witness_receipt.commitment.nonce, expected_payload_digest: receipt.witness_receipt.commitment.payload_digest.value };
+const genuine = await call("popcorn_verify_v2", input);
+assert.equal(genuine.accepted, true);
+assert.equal(genuine.issuer_key_trust_checked_by_tool, true);
+const changed = structuredClone(input);
+changed.response.witness_receipt.unix_time_milliseconds++;
+const tamper = await call("popcorn_verify_v2", changed);
+assert.equal(tamper.accepted, false);
+const time = await call("popcorn_time");
+assert.equal(time.payment_sent, false);
+const witness = await call("popcorn_witness", { digest: input.expected_payload_digest, nonce: input.expected_nonce });
+assert.equal(witness.payment_sent, false);
+const report = { checked_at: new Date().toISOString(), endpoint, mode: direct ? "local_handler_live_upstream" : "live_endpoint", initialize, tools, sample, genuine, tamper,
+  catalog_fetched: true, time, witness, paid_calls: 0, passed: true };
+const destination = process.env.SMOKE_REPORT ?? "test-results/full-live-smoke.json";
+await writeFile(destination, JSON.stringify(report, null, 2) + "\n");
+console.log(JSON.stringify({ destination, passed: true, tools, genuine, tamper, paid_calls: 0 }, null, 2));

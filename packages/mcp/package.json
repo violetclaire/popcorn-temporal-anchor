@@ -64,14 +64,14 @@
   "homepage": "https://767-2676.com/agents",
   "bugs": "https://github.com/violetclaire/popcorn-temporal-anchor/issues",
   "dependencies": {
-    "@modelcontextprotocol/server": "2.0.0",
+    "@modelcontextprotocol/server": "2.3.1",
     "@x402/evm": "2.24.0",
     "@x402/fetch": "2.24.0",
     "viem": "2.56.3",
     "zod": "4.5.4"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "2.0.0",
+    "@modelcontextprotocol/client": "2.3.1",
     "@types/node": "26.4.0",
     "tsx": "4.23.13",
     "typescript": "7.0.2"
