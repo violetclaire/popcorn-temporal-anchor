@@ -1,0 +1,207 @@
+{
+  "status": "complete",
+  "order": "https://github.com/violetclaire/scout-codex-bridge/blob/943901e1/inbox-codex/2026-10-20-order-767-mirror-into-page.md",
+  "published_at_utc": "2026-10-21T03:03:18.378Z",
+  "verified_at_utc": "2026-10-21T03:03:27.557Z",
+  "worker_version": "fa04e4d1-4d51-4561-9811-3846f46dce62",
+  "previous_worker_version": "58a07b4f-9995-4e31-a06f-22f528416961",
+  "deployment_id": "ddef59b5-90a5-442e-802b-b803362a47c8",
+  "changed_routes": [
+    "/"
+  ],
+  "canonical_url": "https://767-2676.com/",
+  "source": {
+    "url": "https://letain.estate/letain-agent-manifesto-360-mirror.svg",
+    "bytes": 67523,
+    "sha256": "91f270e961afbf4f530ac62b782d5285f63af415819accf99e6b09505687a93e",
+    "post_deploy_get_at_utc": "2026-10-21T03:06:26.760Z",
+    "post_deploy_get_status": 200,
+    "post_deploy_hash_unchanged": true
+  },
+  "xml_prolog_treatment": "Omit only the 39-byte XML prolog line including its LF from inline HTML; retain every other source byte including the final LF. Full standalone source and repository mirror.svg remain unchanged.",
+  "node_response": {
+    "source_bytes": 67523,
+    "source_sha256": "91f270e961afbf4f530ac62b782d5285f63af415819accf99e6b09505687a93e",
+    "prolog_removed_bytes": 39,
+    "inserted_bytes": 67484,
+    "inserted_sha256": "45bc67106143bcac0d918d9bd535108b80fe97b201fcd12ea4f8f1f8290793fa",
+    "source_element_bytes": 67483,
+    "source_element_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "candidate_element_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "before_bytes": 581775,
+    "before_sha256": "0789eb455f71624611f5ac66f10c075895d702e70ecf9c8c2c0fb93bc03072c3",
+    "after_bytes": 649259,
+    "after_sha256": "8acb14498390521a1da342cd5678280dc77744b48ad2a975c9b17ea10be1d6ce",
+    "insertion_byte_offset": 46376,
+    "removal_reconstructs_before_exactly": true,
+    "all_existing_page_bytes_unchanged": true
+  },
+  "powershell_response": {
+    "source_bytes": 67523,
+    "source_sha256": "91f270e961afbf4f530ac62b782d5285f63af415819accf99e6b09505687a93e",
+    "prolog_removed_bytes": 39,
+    "inserted_bytes": 67484,
+    "inserted_sha256": "45bc67106143bcac0d918d9bd535108b80fe97b201fcd12ea4f8f1f8290793fa",
+    "source_element_bytes": 67483,
+    "source_element_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "candidate_element_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "before_bytes": 582142,
+    "before_sha256": "acf38e1f7f258e779ac1f0b49b887a11bcf65cce5f5776821980946ffcd6f5d4",
+    "after_bytes": 649626,
+    "after_sha256": "52b5c3be210a1b9b5eec4dc31e9c019d65b5c499d0743f42997be55a373c54cc",
+    "insertion_byte_offset": 46376,
+    "removal_reconstructs_before_exactly": true,
+    "all_existing_page_bytes_unchanged": true,
+    "before_observed_utc": "2026-10-21T02:24:51.3167106Z",
+    "after_observed_utc": "2026-10-21T03:04:10.5233145Z",
+    "existing_analytics_insertion_bytes": 367,
+    "both_raw_bodies_preserved": true
+  },
+  "served_svg_element": {
+    "bytes": 67483,
+    "source_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "node_served_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "powershell_served_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef"
+  },
+  "existing_page_bytes_preserved": true,
+  "opening_styles_guide_archive_unchanged": true,
+  "plain_text": {
+    "route": "/llms.txt",
+    "status": 200,
+    "bytes": 454042,
+    "sha256": "192b2d2004974ed140c4b480b084c16cc860e0fd79931729fda86714561af542",
+    "content_type": "text/plain; charset=utf-8",
+    "file": "llms.txt"
+  },
+  "unchanged_public_routes": [
+    {
+      "route": "/llms.txt",
+      "status": 200,
+      "bytes": 454042,
+      "sha256": "192b2d2004974ed140c4b480b084c16cc860e0fd79931729fda86714561af542",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "llms.txt"
+    },
+    {
+      "route": "/SKILL.md",
+      "status": 200,
+      "bytes": 18728,
+      "sha256": "b160b3dc754a386b9ef764deb9841d0477df7f183f7ab1a925c90381f60c9e2b",
+      "content_type": "text/markdown; charset=utf-8",
+      "file": "SKILL.md"
+    },
+    {
+      "route": "/.well-known/ai-catalog.json",
+      "status": 200,
+      "bytes": 4834,
+      "sha256": "293bdc1c3f19ee442c6c90e6d391221f2c120e8a187d7f4d3ed203f787171159",
+      "content_type": "application/json; charset=utf-8",
+      "file": ".well-known_ai-catalog.json"
+    },
+    {
+      "route": "/test-line/bundle.json",
+      "status": 200,
+      "bytes": 20763,
+      "sha256": "f8bd6f55045975e8b4fc21609e0de9b145dd60c7e65fb5b546543a7d7b879c78",
+      "content_type": "application/json; charset=utf-8",
+      "file": "test-line_bundle.json"
+    },
+    {
+      "route": "/agents",
+      "status": 200,
+      "bytes": 24119,
+      "sha256": "8120286e297a75b780fe1976f4f2a49c28dcc7005cbdcf3c3679a0e58bafa95c",
+      "content_type": "text/html; charset=utf-8",
+      "file": "agents"
+    },
+    {
+      "route": "/agent-entry",
+      "status": 200,
+      "bytes": 23854,
+      "sha256": "c4c7319c9c59ad2c4cc7857f4a26d6d8f4517629884eed850a70de3287e03d26",
+      "content_type": "text/html; charset=utf-8",
+      "file": "agent-entry"
+    },
+    {
+      "route": "/agents.md",
+      "status": 200,
+      "bytes": 8232,
+      "sha256": "993ad7fbd643d6c90ec003d2dd44f2d4585ad25b40f1ec8c28c7dcf2feb0e372",
+      "content_type": "text/markdown; charset=utf-8",
+      "file": "agents.md"
+    },
+    {
+      "route": "/agent-entry.md",
+      "status": 200,
+      "bytes": 9244,
+      "sha256": "22d15e99f301b65444770cf2bba87005f1f7ca33104a94d25aa1af56bcf03c2b",
+      "content_type": "text/markdown; charset=utf-8",
+      "file": "agent-entry.md"
+    },
+    {
+      "route": "/schedule",
+      "status": 200,
+      "bytes": 6463,
+      "sha256": "1ccdcea2f85e5f1fefd0552b7cbfa6afc0f09eba5a0ac498a79b996fefb8db50",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "schedule"
+    },
+    {
+      "route": "/openapi.json",
+      "status": 200,
+      "bytes": 24621,
+      "sha256": "69c97d590e3afa6e05c7528f7b805b4310a82b1431e77f4a3af9a8f5b51ca181",
+      "content_type": "application/json; charset=utf-8",
+      "file": "openapi.json"
+    },
+    {
+      "route": "/.well-known/popcorn-keys.json",
+      "status": 200,
+      "bytes": 418,
+      "sha256": "936957f453f6a5fabe93a9748ee68603be51bff521ddfd0ad6599fed336ce554",
+      "content_type": "application/json; charset=utf-8",
+      "file": ".well-known_popcorn-keys.json"
+    },
+    {
+      "route": "/pricing",
+      "status": 200,
+      "bytes": 1889,
+      "sha256": "af6189d29f926e1df74938ff440606e71dd1cad8d9168ed4df66a06fb9a810ef",
+      "content_type": "text/html; charset=utf-8",
+      "file": "pricing"
+    }
+  ],
+  "live_heads": [
+    {
+      "route": "/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "body_bytes": 0
+    },
+    {
+      "route": "/llms.txt",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "body_bytes": 0
+    }
+  ],
+  "tests": {
+    "passed": 24,
+    "failed": 0
+  },
+  "support_modules_preserved": 12,
+  "settings_bindings_assets_migrations_preserved": true,
+  "signed_checkpoint_marker_sha256": "1f25bac347e73d726c412c0d1e25692de96f6c3352ffc4725c12798f142b4408",
+  "publisher": {
+    "runner_sha256": "fe4539f63ea39fe2d1fcbb656d1b8406f3cde606e29118c7fce52e419f24aaed",
+    "automation_sha256": "ead7fb60b293dcbe1389bf4cbae0810ba6fee2f30ba4f10b92f3975f4f8ab8e3",
+    "baseline_sha256": "5f38ee57e20c789315acce9986b3f281ab75dd8539511f2b328054e8608a68d0",
+    "manifest_sha256": "4fd23ebde5f0ead3f935484612ee01c844bb6f564934df314e57243c25650f0d",
+    "status": "PAUSED",
+    "preexisting_drift_preserved": true,
+    "guard_unchanged": true,
+    "baseline_unchanged": true
+  },
+  "lock_released": true,
+  "actual_payments": 0
+}
