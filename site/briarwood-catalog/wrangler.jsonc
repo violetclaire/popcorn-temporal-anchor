@@ -1,0 +1,15 @@
+{
+  "name": "briarwood-catalog",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-21",
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  "workers_dev": true,
+  "routes": [],
+  "vars": {
+    "CATALOG_OWNER": "violetclaire",
+    "CATALOG_REPO": "briarwood-pointers",
+    "CATALOG_BRANCH": "main",
+    "CATALOG_PATH": "pointers.json",
+    "PUBLIC_INTAKE_ENABLED": "false"
+  }
+}
