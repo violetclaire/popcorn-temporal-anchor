@@ -1,0 +1,345 @@
+{
+  "schema": "popcorn-homepage-free-check-release/1",
+  "status": "complete",
+  "deployed_at_utc": "2026-10-22T01:20:47.746Z",
+  "deployed_at_pacific": "2026-10-21T18:20:47.746-07:00",
+  "pacific_timezone": "America/Los_Angeles (PDT)",
+  "verified_at_utc": "2026-10-22T01:21:00.330Z",
+  "verified_at_pacific": "2026-10-21T18:21:00.330-07:00",
+  "version": "89625376-19fa-4f8b-b58e-a3fd214f6f0d",
+  "previous_version": "d3af7071-6344-4b7b-96bd-afe37cd599bb",
+  "deployment_id": "b0a68a88-03ba-4a3c-bdb0-cb4976097968",
+  "scope": "Only the existing first-check demonstration in the canonical HTML and plain-text presentation literals changed. The October 14 v2 receipt, separate FreeTSA evidence and complete offline checker are printed inline.",
+  "documents": [
+    {
+      "url": "https://767-2676.com/",
+      "route": "/",
+      "before": {
+        "bytes": 649259,
+        "sha256": "8acb14498390521a1da342cd5678280dc77744b48ad2a975c9b17ea10be1d6ce"
+      },
+      "after": {
+        "bytes": 678948,
+        "sha256": "383207cc09f641589cc72d4ddaacf6f7552db415b5dfce67620a83a69d9a7d8e",
+        "status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "cache_control": "public, max-age=0, must-revalidate, no-transform"
+      },
+      "independent_powershell_match": true
+    },
+    {
+      "url": "https://767-2676.com/llms.txt",
+      "route": "/llms.txt",
+      "before": {
+        "bytes": 454042,
+        "sha256": "192b2d2004974ed140c4b480b084c16cc860e0fd79931729fda86714561af542"
+      },
+      "after": {
+        "bytes": 484521,
+        "sha256": "ba56187e919ae283b88535da2d33044e4c5ddc385053b1bfc8c2ff8520c8ef95",
+        "status": 200,
+        "content_type": "text/plain; charset=utf-8",
+        "cache_control": "public, max-age=0, must-revalidate"
+      },
+      "independent_powershell_match": true
+    }
+  ],
+  "worker_source": {
+    "before": {
+      "bytes": 2221787,
+      "sha256": "6d418d10587e860f52ef0dcfe8300c1237e58d2bc9ec4d48fe95337e0c56a9ce"
+    },
+    "after": {
+      "bytes": 2283018,
+      "sha256": "eaaa5a14028b1b8d798e90e4f6562beb3eeca877bfa0a5fe0f3eb726529a7c16"
+    },
+    "only_two_presentation_literals_changed": true
+  },
+  "validation": {
+    "baseline_tests": {
+      "passed": 24,
+      "failed": 0
+    },
+    "candidate_tests": {
+      "passed": 24,
+      "failed": 0
+    },
+    "preservation_guard_tests": {
+      "passed": 7,
+      "failed": 0
+    },
+    "offline_packet_checks": {
+      "passed": 12,
+      "failed": 0
+    },
+    "freetsa": {
+      "node_checker_verifies_artifact_hashes_only": true,
+      "node_checker_rfc3161_signature_verified": false,
+      "separate_openssl_original_exit": 0,
+      "separate_openssl_original_result": "Verification: OK",
+      "separate_openssl_tampered_exit": 1,
+      "separate_openssl_tampered_result": "message imprint mismatch"
+    },
+    "signed_receipt_original": "PASS",
+    "changed_checkpoint_digest_matches_receipt": false,
+    "original_signature_still_valid_after_external_checkpoint_mutation": true,
+    "live_get_responses": 13,
+    "empty_head_responses": 2,
+    "independent_readback": {
+      "client": "PowerShell Invoke-WebRequest",
+      "at_utc": "2026-10-22T01:21:12.7753518+00:00",
+      "both_documents_match": true,
+      "inline_mirrors": 1,
+      "interactive_elements": 0,
+      "svg_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef"
+    },
+    "documentation_fixture": "Both fresh suites used the same exact current production witness-layer section. The previous llms.txt section check is replaced by exact complete-body coverage; repository production tests were not modified."
+  },
+  "sample": {
+    "historical": true,
+    "date": "2026-10-14",
+    "protocol": "POPCORN-WITNESS/2.0",
+    "receipt_id": "pwr_eb7e440aaff765e9d803c42d96c171c6",
+    "checkpoint_bytes": 385,
+    "checkpoint_sha256": "03eecd1ed8866d816e183834fbf7f94543ecca18d0a1adc0f3b798252e6058a2",
+    "limits": "Verification uses retained keys and certificates. It does not establish current time, current key/revocation status, independent POPCORN clock accuracy, payment settlement, identity, action execution or authorization. FreeTSA timestamps the checkpoint independently; it does not countersign POPCORN."
+  },
+  "preservation": {
+    "html_outside_first_check_unchanged": true,
+    "plain_text_outside_first_check_unchanged": true,
+    "authored_opening_green_styles_header_guide_archive_unchanged": true,
+    "mirror": {
+      "source_sha256": "91f270e961afbf4f530ac62b782d5285f63af415819accf99e6b09505687a93e",
+      "element_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+      "preserved": true
+    },
+    "root_no_transform_unchanged": true,
+    "signed_checkpoint_marker_sha256": "1f25bac347e73d726c412c0d1e25692de96f6c3352ffc4725c12798f142b4408",
+    "support_modules_preserved": 12,
+    "settings_bindings_assets_migrations_preserved": true,
+    "other_workers": [
+      {
+        "name": "popcorn-canonical-mcp",
+        "version": "53c3ecee-cf2c-4fff-8b9b-90304bb16d37",
+        "module_count": 1,
+        "unchanged": true
+      },
+      {
+        "name": "briarwood-specification",
+        "version": "0c52ba05-0e54-445d-9a89-d32ea1beeb49",
+        "module_count": 1,
+        "unchanged": true
+      },
+      {
+        "name": "briarwood-invitation",
+        "version": "9c7218bd-05a8-4578-b6da-2cedcdefc184",
+        "module_count": 2,
+        "unchanged": true
+      },
+      {
+        "name": "letain",
+        "version": "91f293d1-0abf-49c8-a272-b6e6c0a27370",
+        "module_count": 3,
+        "unchanged": true
+      }
+    ],
+    "route_tables": {
+      "count": 2,
+      "total_routes": 7,
+      "unchanged": true
+    },
+    "unchanged_public_responses": [
+      {
+        "url": "https://767-2676.com/SKILL.md",
+        "status": 200,
+        "bytes": 18728,
+        "sha256": "b160b3dc754a386b9ef764deb9841d0477df7f183f7ab1a925c90381f60c9e2b"
+      },
+      {
+        "url": "https://767-2676.com/.well-known/ai-catalog.json",
+        "status": 200,
+        "bytes": 4834,
+        "sha256": "293bdc1c3f19ee442c6c90e6d391221f2c120e8a187d7f4d3ed203f787171159"
+      },
+      {
+        "url": "https://767-2676.com/test-line/bundle.json",
+        "status": 200,
+        "bytes": 20763,
+        "sha256": "f8bd6f55045975e8b4fc21609e0de9b145dd60c7e65fb5b546543a7d7b879c78"
+      },
+      {
+        "url": "https://767-2676.com/agents",
+        "status": 200,
+        "bytes": 24119,
+        "sha256": "8120286e297a75b780fe1976f4f2a49c28dcc7005cbdcf3c3679a0e58bafa95c"
+      },
+      {
+        "url": "https://767-2676.com/agent-entry",
+        "status": 200,
+        "bytes": 23854,
+        "sha256": "c4c7319c9c59ad2c4cc7857f4a26d6d8f4517629884eed850a70de3287e03d26"
+      },
+      {
+        "url": "https://767-2676.com/agents.md",
+        "status": 200,
+        "bytes": 8232,
+        "sha256": "993ad7fbd643d6c90ec003d2dd44f2d4585ad25b40f1ec8c28c7dcf2feb0e372"
+      },
+      {
+        "url": "https://767-2676.com/agent-entry.md",
+        "status": 200,
+        "bytes": 9244,
+        "sha256": "22d15e99f301b65444770cf2bba87005f1f7ca33104a94d25aa1af56bcf03c2b"
+      },
+      {
+        "url": "https://767-2676.com/schedule",
+        "status": 200,
+        "bytes": 6463,
+        "sha256": "1ccdcea2f85e5f1fefd0552b7cbfa6afc0f09eba5a0ac498a79b996fefb8db50"
+      },
+      {
+        "url": "https://767-2676.com/openapi.json",
+        "status": 200,
+        "bytes": 24621,
+        "sha256": "69c97d590e3afa6e05c7528f7b805b4310a82b1431e77f4a3af9a8f5b51ca181"
+      },
+      {
+        "url": "https://767-2676.com/.well-known/popcorn-keys.json",
+        "status": 200,
+        "bytes": 418,
+        "sha256": "936957f453f6a5fabe93a9748ee68603be51bff521ddfd0ad6599fed336ce554"
+      },
+      {
+        "url": "https://767-2676.com/pricing",
+        "status": 200,
+        "bytes": 1889,
+        "sha256": "af6189d29f926e1df74938ff440606e71dd1cad8d9168ed4df66a06fb9a810ef"
+      },
+      {
+        "url": "https://767-2676.com/briarwood/specification/v1",
+        "status": 200,
+        "bytes": 20004,
+        "sha256": "fefcd6eca18093001349357bdac42e2430f78b3d180c1551446447c5d828e559"
+      },
+      {
+        "url": "https://767-2676.com/briarwood/specification/v1/",
+        "status": 200,
+        "bytes": 20004,
+        "sha256": "fefcd6eca18093001349357bdac42e2430f78b3d180c1551446447c5d828e559"
+      },
+      {
+        "url": "https://767-2676.com/briarwood/specification/v1.md",
+        "status": 200,
+        "bytes": 6587,
+        "sha256": "cc03dd7b1ee289cd8ddaf012f7eb8c8a125d69a1ba5de288a6c8d0f7a9453b53"
+      },
+      {
+        "url": "https://767-2676.com/briarwood/specification/v1/addendum-1.md",
+        "status": 200,
+        "bytes": 5329,
+        "sha256": "d86870d2f7cb837c7c1698737ba88d3ec7af1663e8c8d3bb4811ae600a70263c"
+      },
+      {
+        "url": "https://767-2676.com/briarwood/specification/v1/addendum-2.md",
+        "status": 200,
+        "bytes": 4550,
+        "sha256": "4108b2e45b50315f25c44c51f5b00ae63673a64ed693af9b482324aca8f4f67b"
+      },
+      {
+        "url": "https://767-2676.com/briarwood/specification/v1/manifest.json",
+        "status": 200,
+        "bytes": 2385,
+        "sha256": "253f48944b767a2bfc09603c88a94c24b82f1f022fadd0057bfbe67b27eeedef"
+      },
+      {
+        "url": "https://briarwood.ai/specification/v1",
+        "status": 200,
+        "bytes": 20004,
+        "sha256": "fefcd6eca18093001349357bdac42e2430f78b3d180c1551446447c5d828e559"
+      },
+      {
+        "url": "https://briarwood.ai/specification/v1/",
+        "status": 200,
+        "bytes": 20004,
+        "sha256": "fefcd6eca18093001349357bdac42e2430f78b3d180c1551446447c5d828e559"
+      },
+      {
+        "url": "https://briarwood.ai/specification/v1.md",
+        "status": 200,
+        "bytes": 6587,
+        "sha256": "cc03dd7b1ee289cd8ddaf012f7eb8c8a125d69a1ba5de288a6c8d0f7a9453b53"
+      },
+      {
+        "url": "https://briarwood.ai/specification/v1/addendum-1.md",
+        "status": 200,
+        "bytes": 5329,
+        "sha256": "d86870d2f7cb837c7c1698737ba88d3ec7af1663e8c8d3bb4811ae600a70263c"
+      },
+      {
+        "url": "https://briarwood.ai/specification/v1/addendum-2.md",
+        "status": 200,
+        "bytes": 4550,
+        "sha256": "4108b2e45b50315f25c44c51f5b00ae63673a64ed693af9b482324aca8f4f67b"
+      },
+      {
+        "url": "https://briarwood.ai/specification/v1/manifest.json",
+        "status": 200,
+        "bytes": 2385,
+        "sha256": "253f48944b767a2bfc09603c88a94c24b82f1f022fadd0057bfbe67b27eeedef"
+      },
+      {
+        "url": "https://briarwood.ai/",
+        "status": 200,
+        "bytes": 16563,
+        "sha256": "c2368bb21613135739094a14d04927919b3bc58c415a7f91237b847f9f8613e3"
+      },
+      {
+        "url": "https://letain.estate/",
+        "status": 200,
+        "bytes": 8622,
+        "sha256": "22b457383fb4853f88f2d167f510cef518b57fe40bbbebdacefbea26a59fa93f"
+      },
+      {
+        "url": "https://letain.estate/discovery",
+        "status": 200,
+        "bytes": 7147,
+        "sha256": "ef1a427df8b866595d52c023f6e522824bb85092e8db670ab06380d84782e4f3"
+      }
+    ],
+    "publisher": {
+      "status": "PAUSED",
+      "guard_unchanged": true,
+      "baseline_unchanged": true,
+      "preexisting_drift_preserved": true
+    }
+  },
+  "source_artifacts": [
+    {
+      "name": "index.html",
+      "bytes": 678948,
+      "sha256": "383207cc09f641589cc72d4ddaacf6f7552db415b5dfce67620a83a69d9a7d8e"
+    },
+    {
+      "name": "index.txt",
+      "bytes": 484521,
+      "sha256": "ba56187e919ae283b88535da2d33044e4c5ddc385053b1bfc8c2ff8520c8ef95"
+    },
+    {
+      "name": "first-check.md",
+      "bytes": 39094,
+      "sha256": "c8bb531dc7017934feb1b2ec88218ae457cca9271a509b44a715877120514ae1"
+    },
+    {
+      "name": "free-sample.json",
+      "bytes": 21764,
+      "sha256": "93f903bff113beec21d713353161320c893ee2925832e73b4826017c1cd90e18"
+    },
+    {
+      "name": "verify-free-sample.mjs",
+      "bytes": 11601,
+      "sha256": "346367e0e680e5fe172ba898484582f4104778a070a0f2ba9967ff91b9efd59f"
+    }
+  ],
+  "actual_payments": 0,
+  "lock_released": true
+}
