@@ -1,0 +1,33 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {tmpdir} from 'node:os';
+import {createHash,generateKeyPairSync} from 'node:crypto';
+import {verifyPacket,verifyAndExtract} from './verify-free-sample.mjs';
+const packet = JSON.parse(fs.readFileSync(new URL('./free-sample.json',import.meta.url)));
+const copy = () => structuredClone(packet);
+const failure = (p,checkName) => {const r=verifyPacket(p);assert.equal(r.status,'FAIL');assert.equal(r.checks.find(c=>c.name===checkName)?.status,'FAIL');return r;};
+test('retained sample: all checks pass and exact one-byte alteration fails digest while signature remains valid',()=>{
+  const r=verifyPacket(packet);assert.equal(r.status,'PASS');assert.equal(r.checks.length,12);
+  assert.equal(r.one_byte_demonstration.byte_offset,0);assert.equal(r.one_byte_demonstration.original_byte,70);
+  assert.equal(r.one_byte_demonstration.altered_byte,71);assert.equal(r.one_byte_demonstration.original_signature_still_valid,true);
+  assert.equal(r.scope.freetsa_rfc3161_signature_verified,false);assert.equal(r.scope.network_requests,0);
+});
+test('algorithm substitution is refused',()=>{const p=copy(),parts=p.popcorn_response.witness_attestation.compact_jws.split('.');const header=JSON.parse(Buffer.from(parts[0],'base64url'));header.alg='HS256';parts[0]=Buffer.from(JSON.stringify(header)).toString('base64url');p.popcorn_response.witness_attestation.compact_jws=parts.join('.');failure(p,'original_compact_jws_and_pinned_header');});
+test('key replacement, wrong curve and duplicate key are refused',()=>{for(const change of [p=>{const key=generateKeyPairSync('ec',{namedCurve:'prime256v1'}).publicKey.export({format:'jwk'});Object.assign(p.popcorn_public_keys.keys[1],key);},p=>p.popcorn_public_keys.keys[1].crv='P-384',p=>p.popcorn_public_keys.keys.push(p.popcorn_public_keys.keys[1])]){const p=copy();change(p);failure(p,'included_key_matches_retained_public_key');}});
+test('outer signed-field mismatch is refused',()=>{const p=copy();p.popcorn_response.witness_receipt.witnessed_at_utc='2026-10-14T23:26:25.274Z';failure(p,'outer_receipt_equals_signed_payload');});
+test('changed encoded payload is refused by signature',()=>{const p=copy(),parts=p.popcorn_response.witness_attestation.compact_jws.split('.');const payload=JSON.parse(Buffer.from(parts[1],'base64url'));payload.witnessed_at_utc='2026-10-14T23:26:25.274Z';parts[1]=Buffer.from(JSON.stringify(payload)).toString('base64url');p.popcorn_response.witness_attestation.compact_jws=parts.join('.');failure(p,'es256_signature_over_original_encoded_parts');});
+test('changed signature is refused',()=>{const p=copy(),parts=p.popcorn_response.witness_attestation.compact_jws.split('.'),signature=Buffer.from(parts[2],'base64url');signature[0]^=1;parts[2]=signature.toString('base64url');p.popcorn_response.witness_attestation.compact_jws=parts.join('.');failure(p,'es256_signature_over_original_encoded_parts');});
+test('altered checkpoint and forged claimed hash are refused',()=>{const p=copy(),bytes=Buffer.from(p.exact_checkpoint.bytes,'base64url');bytes[0]^=1;p.exact_checkpoint.bytes=bytes.toString('base64url');p.exact_checkpoint.utf8_for_reading=bytes.toString();p.exact_checkpoint.sha256_hex=createHash('sha256').update(bytes).digest('hex');failure(p,'exact_checkpoint_bytes_and_sha256');failure(p,'signed_digest_nonce_and_predecessor');});
+test('malformed encodings and packet shapes fail closed',()=>{for(const p of [null,{},[],{...copy(),exact_checkpoint:{bytes:'===='}},(()=>{const p=copy();p.popcorn_response.witness_attestation.compact_jws='abc..def';return p;})()])assert.equal(verifyPacket(p).status,'FAIL');});
+test('changed FreeTSA artifact is refused without claiming RFC3161 verification',()=>{const p=copy(),bytes=Buffer.from(p.freetsa_timestamp_response.bytes,'base64');bytes[0]^=1;p.freetsa_timestamp_response.bytes=bytes.toString('base64');const r=failure(p,'retained_freetsa_files_match_sample_hashes_not_signature_verification');assert.equal(r.scope.freetsa_rfc3161_signature_verified,false);});
+test('extraction uses new directory and fixed filenames; never overwrites and never extracts a failed packet',()=>{
+  const parent=fs.mkdtempSync(path.join(tmpdir(),'popcorn-offline-check-')),out=path.join(parent,'new-evidence');
+  const r=verifyAndExtract(packet,out);assert.equal(r.status,'PASS');
+  assert.deepEqual(fs.readFileSync(path.join(out,'checkpoint.txt')),Buffer.from(packet.exact_checkpoint.bytes,'base64url'));
+  assert.deepEqual(fs.readFileSync(path.join(out,'checkpoint.tsr')),Buffer.from(packet.freetsa_timestamp_response.bytes,'base64'));
+  const before=fs.readFileSync(path.join(out,'verification.json'));assert.throws(()=>verifyAndExtract(packet,out),{code:'EEXIST'});
+  assert.deepEqual(fs.readFileSync(path.join(out,'verification.json')),before);
+  const failedOut=path.join(parent,'not-created');assert.equal(verifyAndExtract({},failedOut).status,'FAIL');assert.equal(fs.existsSync(failedOut),false);
+});
