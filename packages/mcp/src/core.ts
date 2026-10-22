@@ -247,7 +247,7 @@ export async function popcornCatalog(fetchImpl: FetchLike = fetch) {
     published_keys: POPCORN_JWKS_URL,
     execution_schedule_schema: `${POPCORN_ORIGIN}/schemas/execution-schedule.v1.json`,
     witness_request_schema: `${POPCORN_ORIGIN}/schemas/witness-request.v1.json`,
-    witness_response_schema: `${POPCORN_ORIGIN}/schemas/witness-response.v1.json`,
+    witness_response_schema: `${POPCORN_ORIGIN}/schemas/witness-response.v2.json`,
   };
   const entries = await Promise.all(
     Object.entries(resources).map(async ([name, url]) => [name, await fetchJson(url, fetchImpl)]),

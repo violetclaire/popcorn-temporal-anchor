@@ -1,5 +1,7 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { verifyTaskScheduleSample } from "./task-schedule.js";
+import { verifyV2, type VerifyV2Input } from "./v2-interface.js";
 
 import {
   evaluateWitnessAgainstSchedule,
@@ -80,7 +82,57 @@ async function verifySample(filename: typeof SAMPLE_FILES[number]) {
   };
 }
 
-/** Reproduce two bundled historical receipts with the maintained offline verifier. */
+/** A real, already-settled 2.0 receipt. Reproduction never requests a new receipt. */
+async function verifyV2Sample() {
+  const packet: {
+    evaluation_only: boolean;
+    source: { checkpoint: string; keys: string; receipt: string };
+    exact_payload: { bytes: string; byte_length: number };
+    submitted_request: { payload_digest: string; nonce: string };
+    response: VerifyV2Input["response"];
+    jwks: VerifyV2Input["jwks"];
+  } = JSON.parse(await readFile(new URL("../../../examples/witness/v2-production-sample.json", import.meta.url), "utf8"));
+  const bytes = Buffer.from(packet.exact_payload.bytes, "base64url");
+  if (packet.evaluation_only !== true || bytes.length !== packet.exact_payload.byte_length || !bytes.length) {
+    throw new Error("invalid historical v2 sample");
+  }
+  const digest = createHash("sha256").update(bytes).digest("base64url");
+  if (digest !== packet.submitted_request.payload_digest) throw new Error("v2 sample digest mismatch");
+  const input: VerifyV2Input = {
+    response: packet.response,
+    jwks: packet.jwks,
+    expected_payload_base64url: bytes.toString("base64url"),
+    expected_nonce: packet.submitted_request.nonce,
+    expected_node_id: "767-2676.com",
+    max_clock_accuracy_radius_ms: 10_000,
+  };
+  const verified = await verifyV2(input);
+  if (!verified.accepted) throw new Error(`v2 sample did not verify: ${verified.reason}`);
+  const tamperedBytes = Buffer.from(bytes);
+  tamperedBytes[0] ^= 1;
+  const payloadControl = await verifyV2({ ...input, expected_payload_base64url: tamperedBytes.toString("base64url") });
+  const alteredResponse = structuredClone(packet.response);
+  const parts = alteredResponse.witness_attestation.compact_jws.split(".");
+  const signature = Buffer.from(parts[2], "base64url");
+  signature[0] ^= 1;
+  parts[2] = signature.toString("base64url");
+  alteredResponse.witness_attestation.compact_jws = parts.join(".");
+  const signatureControl = await verifyV2({ ...input, response: alteredResponse });
+  if (payloadControl.accepted || signatureControl.accepted) throw new Error("v2 sample tamper control was accepted");
+  return {
+    ...verified,
+    source: packet.source,
+    historical: true,
+    establishes_current_time: false,
+    byte_length: bytes.length,
+    payload_digest: digest,
+    one_byte_tamper_rejected: !payloadControl.accepted,
+    altered_signature_rejected: !signatureControl.accepted,
+    witness_window_utc: packet.response.witness_receipt.witness_window_utc,
+  };
+}
+
+/** Reproduce bundled historical v1/v2 receipts with offline verification. */
 export async function popcornSample() {
   return {
     evaluation_only: true,
@@ -91,5 +143,33 @@ export async function popcornSample() {
     time_scope: "These results describe historical checkpoints. They do not establish current time or permission to act now.",
     task_schedule: await verifyTaskScheduleSample(JSON.parse(await readFile(new URL("../../../examples/task-schedule/packet.json", import.meta.url), "utf8"))),
     examples: await Promise.all(SAMPLE_FILES.map(verifySample)),
+    v2: await verifyV2Sample(),
+  };
+}
+
+/** Portable public evidence for an agent-to-agent handoff; nothing is sent. */
+export async function popcornHandoff() {
+  const checked = await verifyV2Sample();
+  const packet = JSON.parse(await readFile(new URL("../../../examples/witness/v2-production-sample.json", import.meta.url), "utf8"));
+  return {
+    schema: "popcorn-agent-handoff/1.0",
+    service: "https://767-2676.com",
+    message: "POPCORN witnesses an exact digest. This packet contains a public historical receipt and exact bytes you can verify yourself. Fresh receipts cost $0.001 USDC on Base; local verification is free.",
+    historical: true,
+    authorization_granted: false,
+    payment_sent: false,
+    network_request_made: false,
+    verification: checked,
+    key_trust: "Bundled keys reproduce this public historical example. Obtain trusted issuer keys independently for your own evidence.",
+    input: {
+      response: packet.response,
+      jwks: packet.jwks,
+      expected_payload_base64url: packet.exact_payload.bytes,
+      expected_nonce: packet.submitted_request.nonce,
+      expected_node_id: "767-2676.com",
+      max_clock_accuracy_radius_ms: 10_000,
+    },
+    reproduce: "popcorn-mcp verify-v2 handoff.json",
+    source: "https://github.com/violetclaire/popcorn-temporal-anchor/releases/tag/agent-adoption-v0.1.4",
   };
 }
