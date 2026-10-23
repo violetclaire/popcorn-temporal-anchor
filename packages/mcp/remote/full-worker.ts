@@ -207,6 +207,13 @@ export default {
     if (url.pathname !== "/mcp" && url.pathname !== "/mcp/") return env.POPCORN.fetch(request);
     const origin = request.headers.get("origin");
     if (origin && ![ORIGIN, "https://popcorn-canonical-mcp.violetherod.workers.dev"].includes(origin)) return new Response("Forbidden origin", { status: 403 });
+    if (request.method === "GET" && url.pathname === "/mcp") return Response.json({
+      name: "popcorn",
+      version: "0.1.4-remote",
+      transport: "MCP calls use POST JSON-RPC 2.0 at this URL; GET only returns this server card.",
+      tools: ["popcorn_sample", "popcorn_catalog", "popcorn_hash", "popcorn_verify", "popcorn_verify_v2", "popcorn_time", "popcorn_witness"],
+      pointers: [ORIGIN + "/.well-known/mcp.json", ORIGIN + "/.well-known/agent-card.json", ORIGIN + "/ai-catalog.json", ORIGIN + "/SKILL.md", ORIGIN + "/agent-entry"],
+    }, { headers: { "cache-control": "no-store", "x-content-type-options": "nosniff" } });
     const handler = createMcpHandler(() => createFullServer(req => env.POPCORN.fetch(req)), { maxRequestBodySize: MAX_BODY, legacy: "stateless" });
     const response = await handler.fetch(request);
     const headers = new Headers(response.headers);

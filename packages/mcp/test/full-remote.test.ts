@@ -16,6 +16,28 @@ const challenge = (t: unknown = terms) => new Response(JSON.stringify(t), { stat
 const fixture = JSON.parse(await readFile(new URL("../remote/fixtures/popcorn-receipt.json", import.meta.url), "utf8"));
 const jwks = JSON.parse(await readFile(new URL("../remote/fixtures/popcorn-keys.json", import.meta.url), "utf8"));
 
+test("GET /mcp returns the small server card without invoking tools or upstream", async () => {
+  let calls = 0;
+  const env: Env = { POPCORN: { fetch: async () => { calls++; throw Error("GET card must not call upstream"); } } };
+  for (const accept of [undefined, "application/json", "text/event-stream"]) {
+    const response = await worker.fetch(new Request(endpoint, { headers: accept ? { accept } : {} }), env);
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get("content-type") ?? "", /^application\/json(?:;|$)/);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+    const body = await response.text();
+    assert.ok(Buffer.byteLength(body) < 2048, "card must stay small");
+    assert.deepEqual(JSON.parse(body), {
+      name: "popcorn",
+      version: "0.1.4-remote",
+      transport: "MCP calls use POST JSON-RPC 2.0 at this URL; GET only returns this server card.",
+      tools: ["popcorn_sample", "popcorn_catalog", "popcorn_hash", "popcorn_verify", "popcorn_verify_v2", "popcorn_time", "popcorn_witness"],
+      pointers: ["https://767-2676.com/.well-known/mcp.json", "https://767-2676.com/.well-known/agent-card.json", "https://767-2676.com/ai-catalog.json", "https://767-2676.com/SKILL.md", "https://767-2676.com/agent-entry"],
+    });
+  }
+  assert.equal(calls, 0);
+});
+
 test("canonical HTTP initializes, lists all tools, verifies sample and live-origin keys, rejects tamper", async () => {
   const requests: string[] = [];
   const env: Env = { POPCORN: { fetch: async req => {
