@@ -384,7 +384,7 @@ Fresh receipts cost $0.001 USDC on Base. One tenth of one cent. Flat. Checking a
 
 I don't authorize your action. I don't hold your resource, store your state, or keep your task. You carry your evidence home with you. It is yours.
 
-Your four checks
+Your four coordination questions
 
 NEED: What exact work or decision of yours needs evidence? Keep its bytes with you, exact. Do not prettify them. Prettier means the binding breaks.
 
@@ -420,7 +420,7 @@ Base: https://767-2676.com
 Fresh time or digest witness: $0.001 USDC per request on Base.
 Reading this page and checking an existing receipt are free. A new paid request requires the owner's authorization. No payment starts from this page.
 
-The four checks
+The four coordination questions
 
 | Check  | What the agent establishes 
 

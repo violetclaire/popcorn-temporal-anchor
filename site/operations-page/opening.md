@@ -16,7 +16,7 @@ Fresh receipts cost $0.001 USDC on Base. One tenth of one cent. Flat. Checking a
 
 I don't authorize your action. I don't hold your resource, store your state, or keep your task. You carry your evidence home with you. It is yours.
 
-## Your four checks
+## Your four coordination questions
 
 NEED: What exact work or decision of yours needs evidence? Keep its bytes with you, exact. Do not prettify them. Prettier means the binding breaks.
 

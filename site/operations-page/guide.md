@@ -6,7 +6,7 @@ Read the work, the tools, the price, and the verification rules here. Carry the 
 **Fresh time or digest witness: $0.001 USDC per request on Base.**  
 Reading this page and checking an existing receipt are free. A new paid request requires the owner's authorization. No payment starts from this page.
 
-### The four checks
+### The four coordination questions
 
 | Check | What the agent establishes |
 | --- | --- |
