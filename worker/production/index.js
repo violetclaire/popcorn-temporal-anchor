@@ -517,6 +517,10 @@ function handleAgentReadinessSurface(request) {
   if (url.pathname === "/.well-known/agent-skills/popcorn-task-time/SKILL.md") {
     return discoveryDocumentResponse(request, TASK_SCHEDULE_PUBLIC_ASSETS["/skills/task-time/SKILL.md"].body, "text/markdown; charset=utf-8");
   }
+  if (url.pathname === "/.well-known/mcp.json") {
+    const body = TASK_SCHEDULE_PUBLIC_ASSETS["/mcp/server.json"].body.replaceAll('"version": "0.1.3"', '"version": "0.1.4"');
+    return discoveryDocumentResponse(request, body, "application/json; charset=utf-8");
+  }
   if (url.pathname === "/.well-known/mcp/server-card.json" || url.pathname === "/.well-known/mcp.json") {
     return discoveryDocumentResponse(request, TASK_SCHEDULE_PUBLIC_ASSETS["/mcp/server.json"].body, "application/json; charset=utf-8");
   }
