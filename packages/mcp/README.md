@@ -26,10 +26,10 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-After version 0.1.3 is published to npm, run:
+After version 0.1.4 is published to npm, run:
 
 ```bash
-npx -y @violetclaire/popcorn-mcp@0.1.3 --sample
+npx -y @violetclaire/popcorn-mcp@0.1.4 --sample
 ```
 
 The evaluation checks the eight-line task schedule and two legacy, historically settled receipts with the
