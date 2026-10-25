@@ -206,3 +206,11 @@ The reference library includes the instructions and original text for the saved 
 For the October 14 checkpoint, the published SHA-256 is `03eecd1ed8866d816e183834fbf7f94543ecca18d0a1adc0f3b798252e6058a2`. FreeTSA's signed time is `2026-10-14T23:24:34Z`; POPCORN's witness time is `2026-10-14T23:26:25.273Z`. These are separate witness events. Preserve the exact 385-byte checkpoint and both original proofs. Verify each native format under your own trust policy.
 
 This page explains the operations in its served HTML. The complete references follow in the same document; none is hidden behind a tab, accordion, or additional request. Printed URLs identify service endpoints and original artifacts that a caller can use when carrying out an operation.
+
+## The seam
+
+The Personal Agent Protocol (Poppy) covers the door: discovery, identity, OAuth Sessions, and the grant the customer gives. Its Path to 1.0 lists payments as an open topic. Version 0.2, frozen October 24, 2026, does not cover payments.
+
+On October 25, 2026, an agent paid this node $0.001 USDC on Base for a witness receipt, with no Poppy discovery, no Poppy Session, and no Poppy OAuth. The payment settled. Receipt pwr_c09ed615c21a3b67e449e3348eb93412. Witnessed 2026-10-25T14:16:29.567Z. Base transaction 0x8c448d8447ed575e80b8676382cd0e93396b29a067ad4b2171da9b4ca5c001ce.
+
+The door shows who was let in. The receipt shows what happened.
