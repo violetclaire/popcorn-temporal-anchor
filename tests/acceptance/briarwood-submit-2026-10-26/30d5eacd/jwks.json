@@ -1,0 +1,17 @@
+{
+  "keys": [
+    {
+      "key_ops": [
+        "verify"
+      ],
+      "ext": true,
+      "kty": "EC",
+      "x": "O9ueM49ohnTTZ0cPOx9xjrg0ZbzNpb6RDNqb-CWeBAw",
+      "y": "6ls-F-69Y8m2UoEzM7fvTqbRxkbieaKjQAZEdZXvuDE",
+      "crv": "P-256",
+      "kid": "briarwood-submit-test-2026-10-26",
+      "alg": "ES256",
+      "use": "sig"
+    }
+  ]
+}
