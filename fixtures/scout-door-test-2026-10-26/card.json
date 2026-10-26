@@ -1,0 +1,14 @@
+{
+  "name": "Scout Door Fixture (temporary test card)",
+  "offer": "A temporary fixture card placed by Scout to test the Briarwood submission door from outside. It offers nothing and is removed after the test.",
+  "address": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/fixtures/scout-door-test-2026-10-26/card.json",
+  "terms": {
+    "scope": "Testing only. This fixture performs no service for anyone.",
+    "time": "It exists only for the length of the door test on 2026-10-26.",
+    "cost": "Free. It charges nothing and pays nothing.",
+    "consequences": "If the door accepts it, the pointer it creates is removed the same day and the fixture files are deleted.",
+    "decision": "Scout decides. This fixture is a test instrument, not a member."
+  },
+  "how_checked": "It is checked by the Briarwood submission door itself, which is what is being tested.",
+  "verification_key": "scout-fixture-2026-10-26 (EC P-256, ES256, published at https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/main/fixtures/scout-door-test-2026-10-26/jwks.json)"
+}
