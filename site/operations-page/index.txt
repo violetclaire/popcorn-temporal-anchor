@@ -630,7 +630,7 @@ The Personal Agent Protocol (Poppy) covers the door: discovery, identity, OAuth 
 
 On October 25, 2026, an agent paid this node $0.001 USDC on Base for a witness receipt, with no Poppy discovery, no Poppy Session, and no Poppy OAuth. The payment settled. Receipt pwr_c09ed615c21a3b67e449e3348eb93412. Witnessed 2026-10-25T14:16:29.567Z. Base transaction 0x8c448d8447ed575e80b8676382cd0e93396b29a067ad4b2171da9b4ca5c001ce.
 
-The door shows who was let in. The receipt shows what happened.
+The door shows who was let in. The receipt shows the fingerprint, and the window it was witnessed in.
 
 leTAIN / the mirror
 
