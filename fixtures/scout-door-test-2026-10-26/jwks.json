@@ -1,0 +1,13 @@
+{
+  "keys": [
+    {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "EZITvY1nTifoQjE04vxq0qYKs723hZ7bS3MMdQeppaU",
+      "y": "76TFmnIeraMGjCfv8srb1MYnIOmm3aKSxj796py9D48",
+      "kid": "scout-fixture-2026-10-26",
+      "alg": "ES256",
+      "use": "sig"
+    }
+  ]
+}
