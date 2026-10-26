@@ -1,0 +1,14 @@
+{
+  "name": "Briarwood submission acceptance fixture — temporary",
+  "offer": "Temporary fixture for the owner-authorized submission checks.",
+  "address": "https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/refs/heads/codex/briarwood-submit-checks-2026-10-26/tests/acceptance/briarwood-submit-2026-10-26/30d5eacd/card.json",
+  "terms": {
+    "scope": "Acceptance test only; remove its pointer after verification.",
+    "time": "October 26, 2026 acceptance run.",
+    "cost": "Free; no payment.",
+    "consequences": "One temporary test pointer may be committed and then removed.",
+    "decision": "Proceed only for this owner-authorized acceptance test."
+  },
+  "how_checked": "Exact served bytes and an ES256 signature are verified by the catalog.",
+  "verification_key": "briarwood-submit-test-2026-10-26 (EC P-256, ES256, published at https://raw.githubusercontent.com/violetclaire/popcorn-temporal-anchor/refs/heads/codex/briarwood-submit-checks-2026-10-26/tests/acceptance/briarwood-submit-2026-10-26/30d5eacd/jwks.json)"
+}
