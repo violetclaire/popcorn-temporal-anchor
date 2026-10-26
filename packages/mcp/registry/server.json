@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "description": "RFC 3161 + authorization expiry: https://767-2676.com/prove-action-before-authorization-expired",
+  "description": "Witness layer for agents: signed receipts binding a fingerprint to a witnessed time. $0.001.",
   "icons": [
     {
       "mimeType": "image/png",
@@ -38,7 +38,7 @@
     "url": "https://github.com/violetclaire/popcorn-temporal-anchor"
   },
   "title": "POPCORN MCP",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "websiteUrl": "https://767-2676.com/agents",
   "remotes": [
     {
