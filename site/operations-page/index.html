@@ -676,7 +676,70 @@ Rule"><code>yes_if_on_or_before</code></td>
 <p>The Personal Agent Protocol (Poppy) covers the door: discovery, identity, OAuth Sessions, and the grant the customer gives. Its Path to 1.0 lists payments as an open topic. Version 0.2, frozen October 24, 2026, does not cover payments.</p>
 <p>On October 25, 2026, an agent paid this node $0.001 USDC on Base for a witness receipt, with no Poppy discovery, no Poppy Session, and no Poppy OAuth. The payment settled. Receipt pwr_c09ed615c21a3b67e449e3348eb93412. Witnessed 2026-10-25T14:16:29.567Z. Base transaction 0x8c448d8447ed575e80b8676382cd0e93396b29a067ad4b2171da9b4ca5c001ce.</p>
 <p>The door shows who was let in. The receipt shows the fingerprint, and the window it was witnessed in.</p>
-</section><section class="locked" id="the-mirror"><p class="eyebrow">leTAIN / the mirror</p><h2>One work. Recoverable and checkable.</h2><p class="definition">leTAIN: one work, in one set of bytes, that shows a human one thing and an agent another, each seeing recoverable and checkable against the other, so that sight itself can be witnessed.</p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 360 360" width="360" height="360">
+</section><section class="chapter" id="the-contract"><h2>The contract</h2>
+<p>This service issues an exportable, public-key-signed event record. The record binds a request digest and an approval reference to the resulting event, its message and event identifiers, and its resulting status. The event is first frozen into a packet of exact bytes. The packet is hashed. The hash is witnessed at a stated time and signed with the node's public key. Anyone can verify the signature against the published keys, offline, without an account and without trusting the operator. This section is where that contract is documented.</p>
+<p><strong>The record.</strong> A witness receipt is a small signed document. It is issued by the node at 767-2676.com when a fingerprint is presented to it, and it can be carried anywhere and checked anywhere. It contains:</p>
+<ul>
+<li>Receipt ID: names this receipt.</li>
+<li>TAIN: the receipt's public handle.</li>
+<li>Payload digest: SHA-256 over the exact bytes presented.</li>
+<li>Nonce: the commitment's unique value.</li>
+<li>Payment identifier: ties the receipt to its settled payment.</li>
+<li>Witnessed interval: earliest and latest bounds of the witnessed time.</li>
+<li>Key ID: which published key signed it.</li>
+<li>Signature: JWS, ES256, over all of the above.</li>
+</ul>
+<p>The protocol is POPCORN-WITNESS/2.0. Receipts are issued at <code>POST https://767-2676.com/v2/receipt</code>. The signing keys are published at <code>https://767-2676.com/.well-known/popcorn-keys.json</code>. Discovery is at <code>https://767-2676.com/.well-known/mcp.json</code>. Receipts interoperate with RFC 3161 timestamping, FreeTSA, and OpenTimestamps.</p>
+<p><strong>The packet: how an event becomes a record.</strong> For an event on any platform, the payload is a packet with three parts, kept in a declared order:</p>
+<ul>
+<li>The request. The exact record of what was asked, as sent and as received.</li>
+<li>The approval reference. The identifier of the approval the action rests on: the authorization reference, named and carried, not merged into the event.</li>
+<li>The resulting event. What came back: the message and event identifiers and the resulting status.</li>
+</ul>
+<p>The packet is frozen into canonical bytes: UTF-8, fixed line endings, the declared order, nothing reformatted. The SHA-256 digest is taken over those bytes. Change one byte and the digest changes, and the record no longer matches. That is the binding.</p>
+<p>Two kinds of evidence stay separate, by design. The platform's own origin evidence, such as its webhook signature, remains the platform's record. The user's approval evidence remains the approver's record. The witness receipt sits alongside both: it witnesses the packet's fingerprint and the time, and it certifies nothing about the packet's contents.</p>
+<p>A working adapter built to this contract exists for Photon Spectrum message webhooks: <code>popcorn-photon-observation-adapter</code>, in the open repository <code>violetclaire/popcorn-temporal-anchor</code>. The contract is the same whatever the platform.</p>
+<p><strong>What it proves.</strong></p>
+<ul>
+<li>The node received this exact fingerprint within the stated witnessed interval. The interval and the clock's stated accuracy radius are printed on the receipt itself.</li>
+<li>The signature is the node's, made with the key named on the receipt, checkable against the published key set.</li>
+<li>Where the receipt is paid, the payment settled, and the receipt's payment identifier can be compared by anyone against the authorization in the payment transaction on Base. That comparison needs no trust in this node.</li>
+</ul>
+<p><strong>What it does not prove.</strong></p>
+<ul>
+<li>Who the caller was. Caller identity is not proven.</li>
+<li>That anything was delivered to a recipient.</li>
+<li>That the action inside the packet was executed, or executed well.</li>
+<li>That authorization was granted. The receipt is evidence, not permission.</li>
+<li>That the payer's authorization is bound to the commitment. The receipt prints this limit in its own scope: <code>payer_authorization_bound_to_commitment: false</code>. The payload-to-payment pairing rests on the node's signature, and the receipt says so.</li>
+</ul>
+<p>Every receipt carries its full <code>evidence_scope</code> in the open, field by field, so the limits travel with the proof.</p>
+<p><strong>Check it yourself.</strong> Four questions, and the record answers each one. What time is it? The witnessed interval is printed on the receipt. Is this receipt real? Verify the JWS signature against the published keys. Am I who it says I am? The key ID on the receipt names the signing key in the key set. Am I in the window? Compare the witnessed interval with the approval's window: inside it, Proceed; outside it, Stop. The steps: take the receipt. Fetch the keys. Verify the signature. Recompute the SHA-256 digest over the frozen bytes and compare it to the digest on the receipt. For a paid receipt, compare the payment identifier with the payment transaction. No step requires this site, this operator, or anyone's word.</p>
+<p><strong>Price.</strong> $0.001 per witness receipt. Flat. No tiers, no percentages. Paid at the moment of action, settled in USDC on Base through x402. Discovery is free. Verification is free, and stays free.</p>
+<p><strong>A worked example, complete.</strong> One real receipt, issued October 25, 2026. Every value below is copied from the node's own response, so the whole example can be rechecked from this page alone.</p>
+<ul>
+<li>Receipt ID: <code>pwr_c09ed615c21a3b67e449e3348eb93412</code></li>
+<li>TAIN: <code>tain_01M5SPQ23ZSH3VBQGNQQB4V9E7</code></li>
+<li>Witnessed at: <code>2026-10-25T14:16:29.567Z</code></li>
+<li>Witnessed interval: <code>2026-10-25T14:16:19.567Z</code> to <code>2026-10-25T14:16:39.567Z</code></li>
+<li>Payload digest (SHA-256): <code>Qun_WL5QqcNYQWqeGco03Hvhwz1F62SIwlKApXppOMw</code></li>
+<li>Nonce: <code>WQt4Kwm5xpKxnHPJJZWiiF6kUZzKRGfIHg-M4tDCG7U</code></li>
+<li>Payment identifier: <code>eip3009_43be2a4cd7e6a6bc7538153704d7a2d71d771d59ad9cefaa4bbb0332857ee58d</code></li>
+<li>Payment transaction (Base): <code>0x8c448d8447ed575e80b8676382cd0e93396b29a067ad4b2171da9b4ca5c001ce</code></li>
+<li>Signed with: key <code>popcorn-witness-2026-01</code>, JWS ES256</li>
+<li>Verify this receipt: <code>https://767-2676.com/v1/receipt/tain/tain_01M5SPQ23ZSH3VBQGNQQB4V9E7</code></li>
+</ul>
+<p>The payload, exactly as witnessed. Four lines, byte for byte, so anyone can recompute the digest above:</p>
+<pre>SCOUT FIRST POPCORN PAYMENT
+2026-10-25
+Authorized by Violet Herod, owner, in chat.
+One paid witness receipt, $0.001, at 767-2676.com.
+</pre>
+<p>The signed receipt itself, complete, so it can be carried away and verified offline:</p>
+<pre>eyJhbGciOiJFUzI1NiIsImtpZCI6InBvcGNvcm4td2l0bmVzcy0yMDI2LTAxIiwidHlwIjoicG9wY29ybi13aXRuZXNzK2p3cyJ9.eyJyZWNlaXB0X2lkIjoicHdyX2MwOWVkNjE1YzIxYTNiNjdlNDQ5ZTMzNDhlYjkzNDEyIiwidGFpbiI6InRhaW5fMDFNNVNQUTIzWlNIM1ZCUUdOUVFCNFY5RTciLCJub2RlX2lkIjoiNzY3LTI2NzYuY29tIiwicHJvdG9jb2xfaWQiOiJQT1BDT1JOLVdJVE5FU1MvMi4wIiwicmVxdWVzdF9yZWNlaXZlZF9hdF91dGMiOiIyMDI2LTEwLTI1VDE0OjE2OjI4LjgwMFoiLCJ3aXRuZXNzZWRfYXRfdXRjIjoiMjAyNi0xMC0yNVQxNDoxNjoyOS41NjdaIiwic3RhdGVtZW50X2NyZWF0ZWRfYXRfdXRjIjoiMjAyNi0xMC0yNVQxNDoxNjoyOS41NjdaIiwidW5peF90aW1lX21pbGxpc2Vjb25kcyI6MTc5MjkzNzc4OTU2NywiY2xvY2tfYWNjdXJhY3lfcmFkaXVzX21zIjoxMDAwMCwid2l0bmVzc193aW5kb3dfdXRjIjp7ImVhcmxpZXN0IjoiMjAyNi0xMC0yNVQxNDoxNjoxOS41NjdaIiwibGF0ZXN0IjoiMjAyNi0xMC0yNVQxNDoxNjozOS41NjdaIn0sInNlcnZlcl9wcm9jZXNzaW5nX2R1cmF0aW9uX21zIjo3NjcsInBvc3Rfd2l0bmVzc19wcm9jZXNzaW5nX2R1cmF0aW9uX21zIjowLCJjb21taXRtZW50Ijp7InBheWxvYWRfZGlnZXN0Ijp7ImFsZ29yaXRobSI6InNoYS0yNTYiLCJ2YWx1ZSI6IlF1bl9XTDVRcWNOWVFXcWVHY28wM0h2aHd6MUY2MlNJd2xLQXBYcHBPTXcifSwibm9uY2UiOiJXUXQ0S3dtNXhwS3huSFBKSlpXaWlGNmtVWnpLUkdmSUhnLU00dERDRzdVIiwicHJldmlvdXNfYXR0ZXN0YXRpb25fZGlnZXN0IjpudWxsfSwicGF5bWVudF9pZGVudGlmaWVyIjoiZWlwMzAwOV80M2JlMmE0Y2Q3ZTZhNmJjNzUzODE1MzcwNGQ3YTJkNzFkNzcxZDU5YWQ5Y2VmYWE0YmJiMDMzMjg1N2VlNThkIiwicGF5bWVudF90cmFuc2FjdGlvbiI6IjB4OGM0NDhkODQ0N2VkNTc1ZTgwYjg2NzYzODJjZDBlOTMzOTZiMjlhMDY3YWQ0YjIxNzFkYTliNGNhNWMwMDFjZSIsImV2aWRlbmNlX3Njb3BlIjp7InR5cGUiOiJwYXlsb2FkX2NvbW1pdG1lbnRfd2l0bmVzcyIsInBheWxvYWRfZGlzY2xvc2VkIjpmYWxzZSwiY2FsbGVyX2lkZW50aXR5X3Byb3ZlbiI6ZmFsc2UsInJlY2lwaWVudF9kZWxpdmVyeV9wcm92ZW4iOmZhbHNlLCJhY3Rpb25fZXhlY3V0aW9uX3Byb3ZlbiI6ZmFsc2UsIm5vbmNlX3VuaXF1ZW5lc3NfZW5mb3JjZWQiOmZhbHNlLCJyZXBsYXlfcHJldmVudGVkIjpmYWxzZSwiYXV0aG9yaXphdGlvbl9ncmFudGVkIjpmYWxzZSwiZXh0ZXJuYWxfYXRvbWljX2Nsb2NrX2FsaWdubWVudF9wcm92ZW4iOmZhbHNlLCJjbG9ja19hY2N1cmFjeV9pbmRlcGVuZGVudGx5X3ZlcmlmaWVkIjpmYWxzZSwicGF5ZXJfYXV0aG9yaXphdGlvbl9ib3VuZF90b19jb21taXRtZW50IjpmYWxzZX0sImlzc3Vpbmdfb3JpZ2luIjoiaHR0cHM6Ly83NjctMjY3Ni5jb20iLCJpc3N1YW5jZV9lbmRwb2ludCI6Ii92Mi9yZWNlaXB0IiwidGFpbl92ZXJpZmljYXRpb25fdXJpIjoiaHR0cHM6Ly83NjctMjY3Ni5jb20vdjEvcmVjZWlwdC90YWluL3RhaW5fMDFNNVNQUTIzWlNIM1ZCUUdOUVFCNFY5RTciLCJjb250cmlidXRpb25fbGljZW5zZV91cmkiOiJodHRwczovLzc2Ny0yNjc2LmNvbS9saWNlbnNlL2NvbnRyaWJ1dGlvbi8xLjAiLCJsaWNlbnNlX3Rlcm1zX2RpZ2VzdCI6eyJhbGdvcml0aG0iOiJzaGEtMjU2IiwidmFsdWUiOiJjUjBnaE9PSDZERzNTRWVvWXhQdzFiMzhvTDJ3ZjJJalRhekdTeGktdklZIn19.9QksTmuAyh3qW2178IRszUBpfrB_9j-Rc7O9Enx88lRPnp1WFXH1h1FzQJ5FHxcV8Jv4UU7he2BEgxcb_MgKkA</pre>
+<p>This receipt's own evidence scope, printed on it: caller identity not proven, recipient delivery not proven, action execution not proven, authorization not granted, payer authorization bound to commitment: false. The example proves the fingerprint and the time. It claims nothing else, here or anywhere.</p>
+</section>
+<section class="locked" id="the-mirror"><p class="eyebrow">leTAIN / the mirror</p><h2>One work. Recoverable and checkable.</h2><p class="definition">leTAIN: one work, in one set of bytes, that shows a human one thing and an agent another, each seeing recoverable and checkable against the other, so that sight itself can be witnessed.</p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 360 360" width="360" height="360">
   <title>leTAIN</title>
   <defs>
 <g id="glyph-0-0">
