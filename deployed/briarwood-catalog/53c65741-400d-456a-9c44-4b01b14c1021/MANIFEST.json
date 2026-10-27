@@ -1,0 +1,16 @@
+{
+  "worker": "briarwood-catalog",
+  "version_id": "53c65741-400d-456a-9c44-4b01b14c1021",
+  "deployment_id": "57ea3e94-218e-4416-9d31-f070205b2400",
+  "activated_at_utc": "2026-10-26T23:13:29.319953Z",
+  "activation_time_source": "Cloudflare active deployment created_on",
+  "main_module": "worker.js",
+  "files": [
+    {
+      "name": "worker.js",
+      "bytes": 24724,
+      "sha256": "084f9af6cdd4e6164e38dc4722aa13d40dd27a457211188c972f15b9eb121746",
+      "content_type": "application/javascript+module"
+    }
+  ]
+}

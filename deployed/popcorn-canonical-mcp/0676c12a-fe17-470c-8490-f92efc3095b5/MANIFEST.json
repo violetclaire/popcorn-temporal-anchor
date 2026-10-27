@@ -1,0 +1,16 @@
+{
+  "worker": "popcorn-canonical-mcp",
+  "version_id": "0676c12a-fe17-470c-8490-f92efc3095b5",
+  "deployment_id": "fef4196a-4fef-4899-b593-13922451d26a",
+  "activated_at_utc": "2026-10-27T04:08:15.203862Z",
+  "activation_time_source": "Cloudflare active deployment created_on",
+  "main_module": "full-worker.js",
+  "files": [
+    {
+      "name": "full-worker.js",
+      "bytes": 874377,
+      "sha256": "f3c9966891cca18e1eadbc898c61600fff1a4eec8e3809e279471c8e612e87e8",
+      "content_type": "application/javascript+module"
+    }
+  ]
+}
