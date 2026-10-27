@@ -4438,7 +4438,11 @@ function handlePopcornKeys(request, env) {
     });
   }
   return jsonResponse(
-    { keys: keySet.keys },
+    {
+      keys: keySet.keys,
+      popcorn_protocols: keySet.active_witness_key_id ? { [keySet.active_witness_key_id]: [WITNESS_PROTOCOL_ID, TAIN_WITNESS_PROTOCOL_ID] } : {},
+      popcorn_protocol_note: "The per-key popcorn_protocol field is a legacy v1 marker retained for verifier compatibility. This public key verifies v1 and v2 receipts. Use each receipt's signed protocol_id to select its receipt format."
+    },
     200,
     {
       "cache-control": `public, max-age=${JWKS_CACHE_MAX_AGE_SECONDS}, must-revalidate`,
