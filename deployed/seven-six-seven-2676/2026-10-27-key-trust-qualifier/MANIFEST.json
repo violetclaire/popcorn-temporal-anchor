@@ -1,0 +1,123 @@
+{
+  "worker": "seven-six-seven-2676",
+  "status": "owner_deployed_and_complete_public_presentations_verified",
+  "prepared_at_utc": "2026-10-28T01:00:14.358895+00:00",
+  "main_module": "index.js",
+  "previous_source_commit": "324d24a4327df8ec1a2309d8479fb4cb46ff39c0",
+  "baseline_source_sha256": "b432a9809bf6fa5f947bf5dab950490038fe4ac03cd24237d19ebfe7ce8f8016",
+  "candidate_sha256": "f953214380ebbe8f72b082a9280009f4197f454538b358a4eadc0392260817cb",
+  "candidate_bytes": 2307234,
+  "line_endings": "CRLF, preserved from the supplied source",
+  "approved_replacement": {
+    "before": "Anyone can verify the signature against the published keys, offline, without an account and without trusting the operator.",
+    "after": "Once you hold a trusted copy of the issuer's key, anyone can verify the signature against the published keys, offline, without an account and without trusting the operator.",
+    "source_occurrences": 2
+  },
+  "documents": {
+    "home": {
+      "baseline_sha256": "e072e85d9256980f96428a573bc6f8aa3d3f1bc3ad437baabd9b09fd3c68c8cf",
+      "candidate_sha256": "8a4d086af2139d7515de68b7e326e1d337eefa3ab4272af046f9a3f089f12b8e",
+      "candidate_bytes": 690386
+    },
+    "llms": {
+      "baseline_sha256": "9f33d2ee7789b6dc600a005c6e25522f800360b5465b620f5ce5bea74372b766",
+      "candidate_sha256": "9e6edb689fff150f7003f5a4d99ab889bd212f946cc86e0e5732b995292b2aeb",
+      "candidate_bytes": 495006
+    }
+  },
+  "checks": [
+    "Exactly two authorized source replacements",
+    "Reversing the replacements restores every input byte",
+    "All code outside the presentation literals is byte-identical",
+    "CRLF line endings are preserved",
+    "home: full baseline matches live response",
+    "home: only the target sentence changed",
+    "home: new qualified sentence occurs once",
+    "home: both prior corrections and existing qualifier remain intact",
+    "llms: full baseline matches live response",
+    "llms: only the target sentence changed",
+    "llms: new qualified sentence occurs once",
+    "llms: both prior corrections and existing qualifier remain intact",
+    "Complete source parses as a JavaScript module"
+  ],
+  "scope": "Only the specified contract sentence changes, once in the homepage and once in llms.txt. Existing signer and settlement corrections are retained.",
+  "history": "No existing archive, manifest, historical receipt, or held bundle was modified.",
+  "verification_limits": "Local runtime checks used retained companion modules. Both complete public presentation responses matched the candidate after the owner confirmed deployment. Companion modules, bindings, settings and deployed-source bytes were not independently re-exported from Cloudflare.",
+  "local_runtime_tests": {
+    "baseline_existing_tests": 15,
+    "candidate_existing_tests": 15,
+    "presentation_and_route_checks": 16,
+    "preserved_routes": [
+      {
+        "route": "/agents",
+        "status": 200,
+        "bytes": 24053,
+        "sha256": "296492c04469f4e8f74438475c300f9502f9aa7205612353254e3e8e9c80a348"
+      },
+      {
+        "route": "/agents.md",
+        "status": 200,
+        "bytes": 8232,
+        "sha256": "ef702d8891f6a805035e4fa4de07d258b2997dc0ba51bc83e29c206255802b8d"
+      },
+      {
+        "route": "/pricing",
+        "status": 200,
+        "bytes": 2305,
+        "sha256": "6f4265fabda462dbf8479816e0d2b5881a3cce16b24bfde3453226b73700f0b8"
+      },
+      {
+        "route": "/service-terms",
+        "status": 404,
+        "bytes": 32,
+        "sha256": "318c141e9229dff6bd67ef42104f96caab241c6001f2b7be66d59924716eea74"
+      },
+      {
+        "route": "/tone-spec.v1.json",
+        "status": 200,
+        "bytes": 2768,
+        "sha256": "1afa378db5b529a3ef0a54b69ed3911387149794030800f64cb0a8b060f270a2"
+      },
+      {
+        "route": "/signal.md",
+        "status": 200,
+        "bytes": 3774,
+        "sha256": "09897253360e47cfbf19521558ae30284552f8271b73a6659557f25dfc387523"
+      },
+      {
+        "route": "/SKILL.md",
+        "status": 200,
+        "bytes": 18752,
+        "sha256": "e7afdad4280bdfe4883d5b8f3ee474ccc4af654cdea09ff3b455511ce0d4ddcd"
+      },
+      {
+        "route": "/skills/task-time/SKILL.md",
+        "status": 200,
+        "bytes": 4076,
+        "sha256": "acb033cf01e527d46593729395e1629bf4e015047edc42cd9deb7586501caf5d"
+      }
+    ],
+    "external_requests": 0
+  },
+  "verified_at_utc": "2026-10-28T01:08:48.687503+00:00",
+  "deployment_method": "Owner pasted the supplied index.js into the existing Cloudflare Worker editor and confirmed deployment.",
+  "cloudflare_version_id": null,
+  "cloudflare_deployment_id": null,
+  "source_attestation": "This index.js is the exact verified source supplied for the owner deployment. An authenticated post-deployment source export was unavailable; full deployed-source byte equality and Cloudflare version metadata were not independently verified.",
+  "live_verification": {
+    "home": {
+      "url": "https://767-2676.com/",
+      "status": 200,
+      "bytes": 690386,
+      "sha256": "8a4d086af2139d7515de68b7e326e1d337eefa3ab4272af046f9a3f089f12b8e",
+      "qualified_sentence_count": 1
+    },
+    "llms": {
+      "url": "https://767-2676.com/llms.txt",
+      "status": 200,
+      "bytes": 495006,
+      "sha256": "9e6edb689fff150f7003f5a4d99ab889bd212f946cc86e0e5732b995292b2aeb",
+      "qualified_sentence_count": 1
+    }
+  }
+}
