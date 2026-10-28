@@ -1,0 +1,132 @@
+{
+  "worker": "seven-six-seven-2676",
+  "status": "owner_deployed_and_complete_public_presentations_verified",
+  "prepared_at_utc": "2026-10-27T23:38:16.055793+00:00",
+  "main_module": "index.js",
+  "source_basis": "Owner-supplied current Worker source; homepage and llms.txt literals matched the current public responses byte-for-byte.",
+  "source_upload_sha256": "2b0de1e17aedaaba1ab2ad68df08738ea5f14af16bf73e0343fc4d70a3dfe7e7",
+  "source_upload_bytes": 2307044,
+  "candidate_sha256": "b432a9809bf6fa5f947bf5dab950490038fe4ac03cd24237d19ebfe7ce8f8016",
+  "candidate_bytes": 2307134,
+  "line_endings": "CRLF, retained exactly from owner upload",
+  "approved_replacements": [
+    {
+      "before": "Am I who it says I am? The key ID on the receipt names the signing key in the key set.",
+      "after": "Who signed it? The key ID on the receipt names the signing key in the published key set. This does not identify the caller.",
+      "source_occurrences": 2
+    },
+    {
+      "before": "Where the receipt is paid, the payment settled, and the receipt's payment identifier can be compared by anyone against the authorization in the payment transaction on Base.",
+      "after": "Where the receipt is paid, it carries a payment identifier and transaction that anyone can compare against Base to confirm settlement; the receipt itself does not prove settlement.",
+      "source_occurrences": 2
+    }
+  ],
+  "documents": {
+    "home": {
+      "baseline_sha256": "c318a82fe360447663f648f7fddd8b01318fbe8b0e122ce5db6c76df88275f85",
+      "candidate_sha256": "e072e85d9256980f96428a573bc6f8aa3d3f1bc3ad437baabd9b09fd3c68c8cf",
+      "candidate_bytes": 690336
+    },
+    "llms": {
+      "baseline_sha256": "626baa1e54f6877404d59ea4010e0ac6830fc486693be0eea9f1584881712925",
+      "candidate_sha256": "9f33d2ee7789b6dc600a005c6e25522f800360b5465b620f5ce5bea74372b766",
+      "candidate_bytes": 494956
+    }
+  },
+  "checks": [
+    "home: uploaded presentation matches live bytes",
+    "home: only the approved replacements changed",
+    "home: approved replacement occurs exactly once",
+    "home: approved replacement occurs exactly once",
+    "home: existing trusted-key qualification preserved",
+    "home: unchanged Base comparison sentence preserved",
+    "llms: uploaded presentation matches live bytes",
+    "llms: only the approved replacements changed",
+    "llms: approved replacement occurs exactly once",
+    "llms: approved replacement occurs exactly once",
+    "llms: existing trusted-key qualification preserved",
+    "llms: unchanged Base comparison sentence preserved",
+    "complete source parses as a JavaScript module",
+    "all source outside the two presentation strings is byte-identical",
+    "reversing exactly four string replacements restores the complete upload",
+    "line endings and line count are unchanged"
+  ],
+  "verification_limits": "Runtime tests used retained companion modules. The two complete public presentation responses were verified byte-for-byte against the candidate after the owner confirmed deployment. Companion modules, bindings, settings and the deployed-source bytes were not independently re-exported from Cloudflare.",
+  "history": "No historical snapshot, receipt, held bundle, or existing manifest was modified.",
+  "local_runtime_tests": {
+    "baseline_existing_tests": 15,
+    "candidate_existing_tests": 15,
+    "presentation_and_route_checks": 16,
+    "preserved_routes": [
+      {
+        "route": "/agents",
+        "status": 200,
+        "bytes": 24053,
+        "sha256": "296492c04469f4e8f74438475c300f9502f9aa7205612353254e3e8e9c80a348"
+      },
+      {
+        "route": "/agents.md",
+        "status": 200,
+        "bytes": 8232,
+        "sha256": "ef702d8891f6a805035e4fa4de07d258b2997dc0ba51bc83e29c206255802b8d"
+      },
+      {
+        "route": "/pricing",
+        "status": 200,
+        "bytes": 2305,
+        "sha256": "6f4265fabda462dbf8479816e0d2b5881a3cce16b24bfde3453226b73700f0b8"
+      },
+      {
+        "route": "/service-terms",
+        "status": 404,
+        "bytes": 32,
+        "sha256": "318c141e9229dff6bd67ef42104f96caab241c6001f2b7be66d59924716eea74"
+      },
+      {
+        "route": "/tone-spec.v1.json",
+        "status": 200,
+        "bytes": 2768,
+        "sha256": "1afa378db5b529a3ef0a54b69ed3911387149794030800f64cb0a8b060f270a2"
+      },
+      {
+        "route": "/signal.md",
+        "status": 200,
+        "bytes": 3774,
+        "sha256": "09897253360e47cfbf19521558ae30284552f8271b73a6659557f25dfc387523"
+      },
+      {
+        "route": "/SKILL.md",
+        "status": 200,
+        "bytes": 18752,
+        "sha256": "e7afdad4280bdfe4883d5b8f3ee474ccc4af654cdea09ff3b455511ce0d4ddcd"
+      },
+      {
+        "route": "/skills/task-time/SKILL.md",
+        "status": 200,
+        "bytes": 4076,
+        "sha256": "acb033cf01e527d46593729395e1629bf4e015047edc42cd9deb7586501caf5d"
+      }
+    ],
+    "external_requests": 0
+  },
+  "verified_at_utc": "2026-10-28T00:43:43.922628+00:00",
+  "deployment_method": "Owner pasted the supplied index.js into the existing Cloudflare Worker editor and confirmed deployment.",
+  "cloudflare_version_id": null,
+  "cloudflare_deployment_id": null,
+  "source_attestation": "This index.js is the exact verified source supplied for the owner deployment. An authenticated post-deployment source export was unavailable; full deployed-source byte equality and Cloudflare version metadata were not independently verified.",
+  "live_verification": {
+    "homepage": {
+      "url": "https://767-2676.com/",
+      "status": 200,
+      "bytes": 690336,
+      "sha256": "e072e85d9256980f96428a573bc6f8aa3d3f1bc3ad437baabd9b09fd3c68c8cf"
+    },
+    "llms_txt": {
+      "url": "https://767-2676.com/llms.txt",
+      "status": 200,
+      "bytes": 494956,
+      "sha256": "9f33d2ee7789b6dc600a005c6e25522f800360b5465b620f5ce5bea74372b766"
+    },
+    "matches_expected_complete_bodies": true
+  }
+}
