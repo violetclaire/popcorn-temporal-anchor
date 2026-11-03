@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import {
   verifyPopcornWitnessEvidence,
   type JsonWebKeySet,
@@ -12,6 +14,8 @@ export type VerifyV2Checks = {
   expected_payload_base64url?: string;
   expected_node_id?: string;
   max_clock_accuracy_radius_ms?: number;
+  /** An independently obtained RFC 7638 SHA-256 thumbprint for the selected issuer key. */
+  expected_issuer_key_thumbprint_sha256?: string;
   previous_receipt?: {
     response: PopcornWitnessResponse;
     jwks: JsonWebKeySet;
@@ -40,6 +44,62 @@ const MAX_PREDECESSORS = 8;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function assertExpectedIssuerKeyThumbprints(
+  checks: VerifyV2Checks,
+  response: PopcornWitnessResponse,
+  jwks: JsonWebKeySet,
+): void {
+  const expected = checks.expected_issuer_key_thumbprint_sha256;
+  if (expected !== undefined) {
+    if (typeof expected !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(expected) ||
+        Buffer.from(expected, "base64url").toString("base64url") !== expected) {
+      throw new Error(
+        "expected_issuer_key_thumbprint_sha256 must be a canonical unpadded base64url SHA-256 digest",
+      );
+    }
+
+    // Select exactly the key the witness verifier will use: the first JWKS entry
+    // whose kid matches the protected JWS header. Invalid headers and missing keys
+    // retain the verifier's own rejection reason.
+    const compact = isRecord(response) && isRecord(response.witness_attestation)
+      ? response.witness_attestation.compact_jws
+      : undefined;
+    if (typeof compact === "string") {
+      const encodedHeader = compact.split(".")[0];
+      let header: unknown;
+      try {
+        header = JSON.parse(Buffer.from(encodedHeader, "base64url").toString("utf8"));
+      } catch {
+        header = undefined;
+      }
+      if (isRecord(header) && typeof header.kid === "string") {
+        const key = jwks?.keys?.find(candidate => candidate.kid === header.kid);
+        if (key) {
+          if (key.kty !== "EC" || key.crv !== "P-256" ||
+              typeof key.x !== "string" || typeof key.y !== "string") {
+            throw new Error("JWKS key material does not match expected issuer key thumbprint");
+          }
+          const canonicalJwk = JSON.stringify({ crv: key.crv, kty: key.kty, x: key.x, y: key.y });
+          const actual = createHash("sha256").update(canonicalJwk, "utf8").digest("base64url");
+          if (actual !== expected) {
+            throw new Error("JWKS key material does not match expected issuer key thumbprint");
+          }
+        }
+      }
+    }
+  }
+  if (checks.previous_receipt !== undefined && isRecord(checks.previous_receipt)) {
+    const previous = checks.previous_receipt;
+    if (isRecord(previous.verification)) {
+      assertExpectedIssuerKeyThumbprints(
+        previous.verification as VerifyV2Checks,
+        previous.response as PopcornWitnessResponse,
+        previous.jwks as JsonWebKeySet,
+      );
+    }
+  }
 }
 
 function verificationOptions(
@@ -103,10 +163,12 @@ export async function verifyV2(
     on_chain_settlement_checked_by_tool: false as const,
   };
   try {
+    const options = verificationOptions(input, 0, allowPayloadBytes);
+    assertExpectedIssuerKeyThumbprints(input, input.response, input.jwks);
     const verified = await verifyPopcornWitnessEvidence(
       input.response,
       input.jwks,
-      verificationOptions(input, 0, allowPayloadBytes),
+      options,
     );
     return {
       ...base,

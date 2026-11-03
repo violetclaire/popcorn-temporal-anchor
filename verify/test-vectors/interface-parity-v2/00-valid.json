@@ -1,7 +1,7 @@
 {
   "test_only": true,
   "id": "00-valid",
-  "category": "valid evidence",
+  "category": "valid evidence with issuer key pin",
   "expected": {
     "accepted": true,
     "reason": "signature, digest, time interval, and required fields verified"
@@ -82,6 +82,7 @@
     "expected_nonce": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
     "expected_payload_digest": "Rxq-1-qWHODHUM-_OcsN3w8t3BGUo8VXjsac7toEzI8",
     "expected_node_id": "767-2676.com",
-    "max_clock_accuracy_radius_ms": 10000
+    "max_clock_accuracy_radius_ms": 10000,
+    "expected_issuer_key_thumbprint_sha256": "xx0BcA-wMohw8atYDJOe6peGModklG2wRHBlXHMvl0M"
   }
 }
