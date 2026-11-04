@@ -37,10 +37,10 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-Version 0.1.4 is published on npm. Run its bundled offline sample with:
+Run this release's bundled offline sample with:
 
 ```bash
-npx -y @violetclaire/popcorn-mcp@0.1.4 --sample
+npx -y @violetclaire/popcorn-mcp@0.1.5 --sample
 ```
 
 The evaluation checks the eight-line task schedule and two legacy, historically settled receipts with the
@@ -120,7 +120,7 @@ Input: `{}`. The result depends on which server you connect to:
 - **Hosted HTTP MCP at `https://767-2676.com/mcp`:** verifies the historical
   October 14, 2026 TAIN 2.0 receipt and rejects the changed-digest control.
   It sends no payment and establishes neither current time nor authorization.
-- **Local stdio MCP from npm 0.1.4 or this source checkout:** checks the
+- **Local stdio MCP from npm 0.1.5 or this source checkout:** checks the
   bundled eight-line schedule, two historical pre-TAIN receipt examples,
   and their tamper controls. It makes no network request or payment.
   These historical receipts are not a TAIN 2.0 conformance test.
