@@ -1,6 +1,6 @@
 ## How agents use the witness layer
 
-1. **Receipt verification** — Agents use the read-only verifier to check the receipt signature, expected digest and nonce, signed time interval, and required fields. Verification establishes the signed commitment to the bytes. The reader evaluates the claim separately.
+1. **Receipt verification** — Verify a signed receipt from an AI agent. Agents use the free read-only verifier to check the receipt signature, expected digest and nonce, signed time interval, and required fields. Verification establishes the signed commitment to the bytes. The reader evaluates the claim separately.
 
    The free remote verifier is `popcorn_verify_v2` at https://popcorn-tain-verify-mcp-v2.violetherod.workers.dev/mcp. It accepts original 2.0 receipts. Historical 1.0 receipts require their corresponding verifier. Preserve each receipt's original version and signed bytes.
 

@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {splitAssets,updateWorker} from './update-worker.mjs';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const target=path.resolve(process.argv[2]||path.join(root,'worker/production/index.js'));
+let source=fs.readFileSync(target,'utf8');
+const before=splitAssets(source);
+const catalog=fs.readFileSync(path.join(root,'site/public/.well-known/ai-catalog.json'),'utf8');
+JSON.parse(catalog);
+before.assets['/.well-known/ai-catalog.json'].body=catalog;
+before.assets['/llms.txt'].body=fs.readFileSync(path.join(root,'site/front-page/llms.txt'),'utf8');
+source=source.slice(0,before.start)+before.prefix+JSON.stringify(before.assets)+';'+source.slice(before.end);
+
+const skill=fs.readFileSync(path.join(root,'skills/popcorn-temporal-anchor/SKILL.md'),'utf8');
+const description=skill.match(/^description: (.+)$/m)?.[1];
+const anchor='[For agents — the manifesto](https://767-2676.com/manifesto).';
+const opening=skill.slice(skill.indexOf(anchor)+anchor.length).trimStart().split('\n')[0];
+assert.ok(description&&opening.startsWith('Verify a signed receipt.'));
+const start=source.indexOf('function handleSkill(request) {');
+const end=source.indexOf('\n__name(handleSkill,',start);
+assert.ok(start>=0&&end>start);
+let block=source.slice(start,end);
+block=block.replace(/^description: .+$/m,'description: '+description);
+assert.equal(block.split(anchor).length,2);
+if(!block.includes(opening))block=block.replace(anchor,anchor+'\n'+opening);
+source=source.slice(0,start)+block+source.slice(end);
+fs.writeFileSync(target,updateWorker(source));
+console.log('Regenerated catalog, root skill wording, llms.txt and bundled witness-layer documentation.');
