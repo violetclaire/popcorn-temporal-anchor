@@ -7,6 +7,17 @@ agents. POPCORN supplies signed time and digest checkpoints at `https://767-2676
 
 ## Try it first, without a wallet
 
+At the [hosted HTTP MCP endpoint](https://767-2676.com/mcp), call
+`popcorn_sample` with `{}`. This free check verifies a real historical TAIN 2.0
+receipt dated October 14, 2026: `genuine.accepted: true`,
+`changed_digest_control.accepted: false`, and `passed: true`. It requires no
+wallet and returns `payment_sent: false`, `current_time_established: false`,
+and `authorization_granted: false`. It does not independently establish
+issuer-key trust or check on-chain settlement.
+
+The bundled npm sample below is a separate offline evaluation of historical
+pre-TAIN receipts.
+
 Save [sample.mjs](https://767-2676.com/schedule/sample.mjs), read it, then run
 `node sample.mjs` with Node.js 20 or newer. This standalone sample includes an
 exact eight-line schedule with `who`, its SHA-256 digest, and a real signed
@@ -26,7 +37,7 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-After version 0.1.4 is published to npm, run:
+Version 0.1.4 is published on npm. Run its bundled offline sample with:
 
 ```bash
 npx -y @violetclaire/popcorn-mcp@0.1.4 --sample
@@ -39,13 +50,15 @@ one-byte change for each. Every result retains `authorization_granted: false`.
 The sample needs no account, wallet, or original task data. npm may download
 the package; the verification itself runs entirely offline.
 
-Inside a connected MCP client, call `popcorn_sample` with `{}` for the same
-result. Its public source links let another developer repeat the check.
-The bundled historical keys are for sample reproduction. A real task requires
+With the npm package or this source checkout running as a local stdio MCP
+server, call `popcorn_sample` with `{}` for this bundled historical result.
+The hosted HTTP MCP endpoint runs the separate TAIN 2.0 sample described above.
+The bundled sample's public source links let another developer repeat the check.
+Its historical keys are for sample reproduction. A real task requires
 independently trusted issuer keys; an old receipt is not a fresh clock reading.
-This offline sample tests historical pre-TAIN receipts only. Passing it does
-not test the currently deployed TAIN 2.0 service or establish integration
-readiness.
+This bundled offline sample tests historical pre-TAIN receipts only. Passing
+it does not test the currently deployed TAIN 2.0 service or establish
+integration readiness.
 
 ## Use it for a real task
 
@@ -102,10 +115,15 @@ It is free, local, and sends no network request.
 
 ### `popcorn_sample`
 
-Runs the two public receipt examples and their tamper controls locally. This
-is a reproducible evaluation of historical evidence and makes no network
-request or payment. Input: `{}`.
-Its historical receipts are not a TAIN 2.0 conformance test.
+Input: `{}`. The result depends on which server you connect to:
+
+- **Hosted HTTP MCP at `https://767-2676.com/mcp`:** verifies the historical
+  October 14, 2026 TAIN 2.0 receipt and rejects the changed-digest control.
+  It sends no payment and establishes neither current time nor authorization.
+- **Local stdio MCP from npm 0.1.4 or this source checkout:** checks the
+  bundled eight-line schedule, two historical pre-TAIN receipt examples,
+  and their tamper controls. It makes no network request or payment.
+  These historical receipts are not a TAIN 2.0 conformance test.
 
 ### `popcorn_verify_v2`
 
