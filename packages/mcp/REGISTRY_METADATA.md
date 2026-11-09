@@ -5,11 +5,12 @@
 - Display name: POPCORN MCP
 - Registry name: `io.github.violetclaire/popcorn-mcp`
 - npm package: `@violetclaire/popcorn-mcp`
-- Version prepared for registry publication: `0.1.4`
+- Registry metadata version prepared for publication: `0.1.7`
+- npm package version: `0.1.6`
 - Tagline: agents checking their watch
 - Transport: stdio
 - MCP authentication: none
-- Install: use the 0.1.4 GitHub release archive in README.md until that version is published to npm.
+- Install: `npx -y @violetclaire/popcorn-mcp@0.1.6`
 - Homepage: https://767-2676.com/agents
 - Repository: https://github.com/violetclaire/popcorn-temporal-anchor
 - Package source: https://github.com/violetclaire/popcorn-temporal-anchor/tree/main/packages/mcp
@@ -32,9 +33,11 @@ POPCORN by Briarwood AI provides signed time and task-version evidence for indep
 - `popcorn_verify`: Verify a receipt and any supplied predecessor chain offline.
 - `popcorn_verify_v2`: Verify a TAIN 2.0 envelope against retained expected bytes or a digest and nonce.
 
-The separate `registry/server.json` remains pinned to the already published npm
-version. Update it only after npm 0.1.4 publication is confirmed; `server.json`
-in this directory is prepared metadata, not evidence of registry publication.
+Both `registry/server.json` and this directory's `server.json` prepare metadata
+version 0.1.7 for the existing registry name, pointing at npm 0.1.6. Publish this
+metadata only after npm 0.1.6 publication is confirmed. The existing metadata
+version 0.1.6 cannot be overwritten; its older npm target remains historical.
+Prepared files are not evidence of registry publication.
 
 ### Paid tools
 

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "date": "2026-10-21",
+  "source_repository": "violetclaire/scout-codex-bridge",
+  "documents": [
+    {
+      "id": "specification-v1",
+      "file": "specification-v1.md",
+      "bytes": 6587,
+      "sha256": "cc03dd7b1ee289cd8ddaf012f7eb8c8a125d69a1ba5de288a6c8d0f7a9453b53",
+      "source_git_blob": "1b71ba759aff9eb43d25d771d7cc5674239db091",
+      "source_commit": "9b794f4e47f9e1349b4899dfbdeff9d917bcf63d",
+      "source_path": "inbox-codex/2026-10-21-briarwood-specification-v1.md"
+    },
+    {
+      "id": "addendum-1",
+      "file": "addendum-1.md",
+      "bytes": 5329,
+      "sha256": "d86870d2f7cb837c7c1698737ba88d3ec7af1663e8c8d3bb4811ae600a70263c",
+      "source_git_blob": "c7d6c4438ed9c003c220deb7ea6564e525906841",
+      "source_commit": "616dd7786206f11ca312168e9bf319ad0ad7fcec",
+      "source_path": "inbox-codex/2026-10-21-briarwood-evidence-format-addendum.md"
+    },
+    {
+      "id": "addendum-2",
+      "file": "addendum-2.md",
+      "bytes": 4550,
+      "sha256": "4108b2e45b50315f25c44c51f5b00ae63673a64ed693af9b482324aca8f4f67b",
+      "source_git_blob": "1d73d1be999a5d2412a2bccb4a89159f5460b613",
+      "source_commit": "ec941c68be8de372ec9f155b53aff633262c2f49",
+      "source_path": "inbox-codex/2026-10-21-briarwood-evidence-clarifications.md"
+    }
+  ]
+}

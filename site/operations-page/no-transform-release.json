@@ -1,0 +1,189 @@
+{
+  "status": "complete",
+  "version": "d3af7071-6344-4b7b-96bd-afe37cd599bb",
+  "previous_version": "fa04e4d1-4d51-4561-9811-3846f46dce62",
+  "deployment_id": "e6865c5a-02d7-4c6a-afaf-e49c90257a00",
+  "at": "2026-10-21T16:08:33.151Z",
+  "homepage_sha256": "8acb14498390521a1da342cd5678280dc77744b48ad2a975c9b17ea10be1d6ce",
+  "plain_text_sha256": "192b2d2004974ed140c4b480b084c16cc860e0fd79931729fda86714561af542",
+  "changed_routes": [
+    "/"
+  ],
+  "verified_at": "2026-10-21T16:09:15.480Z",
+  "live": [
+    {
+      "route": "/",
+      "status": 200,
+      "bytes": 649259,
+      "sha256": "8acb14498390521a1da342cd5678280dc77744b48ad2a975c9b17ea10be1d6ce",
+      "content_type": "text/html; charset=utf-8",
+      "file": "homepage.html"
+    },
+    {
+      "route": "/llms.txt",
+      "status": 200,
+      "bytes": 454042,
+      "sha256": "192b2d2004974ed140c4b480b084c16cc860e0fd79931729fda86714561af542",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "llms.txt"
+    },
+    {
+      "route": "/SKILL.md",
+      "status": 200,
+      "bytes": 18728,
+      "sha256": "b160b3dc754a386b9ef764deb9841d0477df7f183f7ab1a925c90381f60c9e2b",
+      "content_type": "text/markdown; charset=utf-8",
+      "file": "SKILL.md"
+    },
+    {
+      "route": "/.well-known/ai-catalog.json",
+      "status": 200,
+      "bytes": 4834,
+      "sha256": "293bdc1c3f19ee442c6c90e6d391221f2c120e8a187d7f4d3ed203f787171159",
+      "content_type": "application/json; charset=utf-8",
+      "file": ".well-known_ai-catalog.json"
+    },
+    {
+      "route": "/test-line/bundle.json",
+      "status": 200,
+      "bytes": 20763,
+      "sha256": "f8bd6f55045975e8b4fc21609e0de9b145dd60c7e65fb5b546543a7d7b879c78",
+      "content_type": "application/json; charset=utf-8",
+      "file": "test-line_bundle.json"
+    },
+    {
+      "route": "/agents",
+      "status": 200,
+      "bytes": 24119,
+      "sha256": "8120286e297a75b780fe1976f4f2a49c28dcc7005cbdcf3c3679a0e58bafa95c",
+      "content_type": "text/html; charset=utf-8",
+      "file": "agents"
+    },
+    {
+      "route": "/agent-entry",
+      "status": 200,
+      "bytes": 23854,
+      "sha256": "c4c7319c9c59ad2c4cc7857f4a26d6d8f4517629884eed850a70de3287e03d26",
+      "content_type": "text/html; charset=utf-8",
+      "file": "agent-entry"
+    },
+    {
+      "route": "/agents.md",
+      "status": 200,
+      "bytes": 8232,
+      "sha256": "993ad7fbd643d6c90ec003d2dd44f2d4585ad25b40f1ec8c28c7dcf2feb0e372",
+      "content_type": "text/markdown; charset=utf-8",
+      "file": "agents.md"
+    },
+    {
+      "route": "/agent-entry.md",
+      "status": 200,
+      "bytes": 9244,
+      "sha256": "22d15e99f301b65444770cf2bba87005f1f7ca33104a94d25aa1af56bcf03c2b",
+      "content_type": "text/markdown; charset=utf-8",
+      "file": "agent-entry.md"
+    },
+    {
+      "route": "/schedule",
+      "status": 200,
+      "bytes": 6463,
+      "sha256": "1ccdcea2f85e5f1fefd0552b7cbfa6afc0f09eba5a0ac498a79b996fefb8db50",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "schedule"
+    },
+    {
+      "route": "/openapi.json",
+      "status": 200,
+      "bytes": 24621,
+      "sha256": "69c97d590e3afa6e05c7528f7b805b4310a82b1431e77f4a3af9a8f5b51ca181",
+      "content_type": "application/json; charset=utf-8",
+      "file": "openapi.json"
+    },
+    {
+      "route": "/.well-known/popcorn-keys.json",
+      "status": 200,
+      "bytes": 418,
+      "sha256": "936957f453f6a5fabe93a9748ee68603be51bff521ddfd0ad6599fed336ce554",
+      "content_type": "application/json; charset=utf-8",
+      "file": ".well-known_popcorn-keys.json"
+    },
+    {
+      "route": "/pricing",
+      "status": 200,
+      "bytes": 1889,
+      "sha256": "af6189d29f926e1df74938ff440606e71dd1cad8d9168ed4df66a06fb9a810ef",
+      "content_type": "text/html; charset=utf-8",
+      "file": "pricing"
+    }
+  ],
+  "live_head": [
+    {
+      "route": "/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "body_bytes": 0
+    },
+    {
+      "route": "/llms.txt",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "body_bytes": 0
+    }
+  ],
+  "mirror": {
+    "source_sha256": "91f270e961afbf4f530ac62b782d5285f63af415819accf99e6b09505687a93e",
+    "element_sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+    "source_bytes": 67523,
+    "element_bytes": 67483,
+    "preserved": true
+  },
+  "signed_checkpoint_marker_sha256": "1f25bac347e73d726c412c0d1e25692de96f6c3352ffc4725c12798f142b4408",
+  "support_modules_preserved": 12,
+  "publisher": {
+    "runner_sha256": "fe4539f63ea39fe2d1fcbb656d1b8406f3cde606e29118c7fce52e419f24aaed",
+    "automation_sha256": "ead7fb60b293dcbe1389bf4cbae0810ba6fee2f30ba4f10b92f3975f4f8ab8e3",
+    "baseline_sha256": "5f38ee57e20c789315acce9986b3f281ab75dd8539511f2b328054e8608a68d0",
+    "manifest_sha256": "4fd23ebde5f0ead3f935484612ee01c844bb6f564934df314e57243c25650f0d",
+    "status": "PAUSED",
+    "preexisting_drift_preserved": true,
+    "guard_unchanged": true,
+    "baseline_unchanged": true
+  },
+  "actual_payments": 0,
+  "lock_released": true,
+  "scope": "Only canonical root GET/HEAD cache-control adds no-transform; all document bytes remain identical",
+  "tests": {
+    "status": "passed",
+    "passed": 24,
+    "failed": 0,
+    "candidate_index_sha256": "6d418d10587e860f52ef0dcfe8300c1237e58d2bc9ec4d48fe95337e0c56a9ce",
+    "output_file": "test-output.tap",
+    "output_sha256": "38e447902be5fd0a869aa393281de5076ea6961bebf552b9b13cced8c1b53986"
+  },
+  "changed_source": {
+    "file": "index.js",
+    "before_sha256": "838d894eb8721b17f84f8620dfc920adc25acf3de94dfed5e0973a6e834aa505",
+    "after_sha256": "6d418d10587e860f52ef0dcfe8300c1237e58d2bc9ec4d48fe95337e0c56a9ce"
+  },
+  "served_clients": {
+    "node": {
+      "bytes": 649259,
+      "sha256": "8acb14498390521a1da342cd5678280dc77744b48ad2a975c9b17ea10be1d6ce"
+    },
+    "powershell": {
+      "at": "2026-10-21T16:09:02.2612168Z",
+      "status": 200,
+      "cache_control": "no-transform, public, must-revalidate, max-age=0",
+      "bytes": 649259,
+      "sha256": "8acb14498390521a1da342cd5678280dc77744b48ad2a975c9b17ea10be1d6ce"
+    },
+    "equal_raw_bodies": true,
+    "script_elements": 0
+  },
+  "canonical_mcp_preserved": {
+    "version": "53c3ecee-cf2c-4fff-8b9b-90304bb16d37",
+    "route_count": 3,
+    "all_route_objects_unchanged": true
+  },
+  "official_reference": "https://developers.cloudflare.com/web-analytics/get-started/"
+}

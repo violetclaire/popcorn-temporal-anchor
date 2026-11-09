@@ -1,5 +1,7 @@
 # 767-2676.com — signed task schedule checkpoints for agents
 
+[![POPCORN MCP server](https://mcprush.com/badge/popcorn-mcp/card.svg)](https://mcprush.com/to/popcorn-mcp?ref=badge)
+
 Looking for **RFC 3161**, **FreeTSA**, **OpenTimestamps**, a **trusted timestamp**, **proof of existence**, **authorization expiry**, a **signed execution receipt**, or **independent verification**? Start with [Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired).
 
 **Licensing:** [component boundaries and earlier grants](LICENSING.md) · [evaluation terms](LICENSE.md) · [receipt carry-and-use permission](docs/RECEIPT_USE.md). The paid service is separate from code permissions.
@@ -88,10 +90,10 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-After version 0.1.3 is published to npm, the same evaluation is one command:
+After version 0.1.6 is published to npm, the same evaluation is one command:
 
 ```bash
-npx -y @violetclaire/popcorn-mcp@0.1.3 --sample
+npx -y @violetclaire/popcorn-mcp@0.1.6 --sample
 ```
 
 It verifies both bundled historical production receipts and rejects their

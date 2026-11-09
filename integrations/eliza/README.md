@@ -11,16 +11,18 @@ not target the ElizaOS 2 beta or register social posting tools.
 
 ## Install and try
 
-Install the two built release archives together in your ElizaOS application's
-directory. Installing both prevents npm from looking for a POPCORN version that
-has not yet been published to the npm registry:
+Install the current MCP client with the existing historical plugin archive in
+your ElizaOS application's directory:
 
 ```sh
-npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-eliza-plugin-popcorn-0.1.0.tgz
+npm install @violetclaire/popcorn-mcp@0.1.6 https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-eliza-plugin-popcorn-0.1.0.tgz
 ```
 
-The published older `@violetclaire/popcorn-mcp@0.1.3` cannot verify current witness
-v2 receipts. This integration requires `^0.1.4`; do not substitute 0.1.3.
+This source integration requires `@violetclaire/popcorn-mcp@^0.1.6`, including
+its `./sample` export and `popcornHandoff` function. Published npm 0.1.4 and 0.1.5
+lack that export; the historical GitHub client archive is a different build.
+The plugin archive above is unchanged; explicitly selecting npm 0.1.6 supplies
+the required client interfaces.
 Installation may download dependencies. Once installed, this one command runs
 the bundled sample without a network request, wallet or payment:
 
@@ -187,7 +189,7 @@ From this directory, install the built core archive along with development
 dependencies, then run `npm run check`. Use the archive's real local path:
 
 ```sh
-npm install --no-save /path/to/violetclaire-popcorn-mcp-0.1.4.tgz
+npm install --ignore-scripts --no-save /path/to/violetclaire-popcorn-mcp-0.1.6.tgz
 npm run check
 npm pack
 ```

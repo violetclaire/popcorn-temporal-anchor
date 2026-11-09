@@ -9,7 +9,8 @@ const pkg = manifest.packages[0];
 assert.equal(pkg.registryType, "npm");
 assert.equal(pkg.registryBaseUrl, "https://registry.npmjs.org");
 assert.equal(pkg.identifier, "@violetclaire/popcorn-mcp");
-assert.equal(pkg.version, manifest.version);
+// Registry metadata releases may describe an unchanged, already-public package.
+assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
 assert.equal(pkg.transport.type, "stdio");
 const url = new URL(
   encodeURIComponent(pkg.identifier) + "/" + encodeURIComponent(pkg.version),

@@ -10,7 +10,7 @@ on Base. Verification of an existing receipt is free and can run offline.
 Node.js 20 or newer:
 
 ```sh
-npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz
+npm install @violetclaire/popcorn-mcp@0.1.6
 npx --no-install popcorn-mcp --sample
 ```
 
@@ -49,10 +49,11 @@ paid POPCORN request and does not post messages or submit to an index.
 
 ## Eliza can use it
 
-In an existing ElizaOS 1.7.2 application, install both release packages together:
+In an existing ElizaOS 1.7.2 application, install the current MCP client with
+the unchanged historical plugin archive:
 
 ```sh
-npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-eliza-plugin-popcorn-0.1.0.tgz
+npm install @violetclaire/popcorn-mcp@0.1.6 https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-eliza-plugin-popcorn-0.1.0.tgz
 ```
 
 ```ts
@@ -74,5 +75,6 @@ POPCORN uses stdio. Some clients use a different configuration shape.
 Call `popcorn_sample` with `{}` first. The five free POPCORN tools and two dry-run
 payment tools require no wallet for discovery or evaluation.
 
-The release contains MCP 0.1.4. npm 0.1.3 is an older interface; installing it
-does not install this code. The GitHub archive is usable without npm publication.
+npm 0.1.6 includes the sample export and handoff interfaces used here. Historical
+GitHub release archives remain available for reproduction; they are separate
+artifacts from the current npm package.

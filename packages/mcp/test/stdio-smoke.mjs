@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
@@ -18,6 +19,8 @@ transport.stderr?.on("data", (chunk) => { serverErrors += chunk.toString(); });
 
 try {
   await client.connect(transport);
+  const { version } = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(client.getServerVersion()?.version, version, "stdio handshake must match the package version");
   const listed = await client.listTools();
   assert.equal(listed.tools.length, 7);
   const response = await client.callTool({

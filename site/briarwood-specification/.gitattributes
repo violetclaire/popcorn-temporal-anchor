@@ -1,0 +1,4 @@
+documents/*.md -text
+source-lock.json text eol=lf
+*.mjs text eol=lf
+*.jsonc text eol=lf

@@ -1,0 +1,53 @@
+{
+  "format": "popcorn-ots-aggregate-example/v1",
+  "aggregate_commitment_hex": "6ac68d7a381cb1de4dec452aa33c516ba2ff6a22585a853cc6335bcc360bed107cc94b80367234c1e2fdeadf",
+  "operations": [
+    "08",
+    "f0207356217fbba7dc3ce922b746a981bd97ab29e54578344eb5eb25757995ffd8e8",
+    "08",
+    "f020f531f082fa8770cc667c62ff539f49caff45b41e4e4015679baad33e6a9307ef",
+    "08",
+    "f02075b95cce2809eeb7e345b00e23434c7a144fee6bb4d70decc73de2f243e938ac",
+    "08",
+    "f0204b3951b3cc060e45d6d8b8d4fef6d86056421c8e6e8ec8f370208cbf3ae3235e",
+    "08",
+    "f020b4604289bec4d7a0f034decfb06dfee50c600311bcfdfec7be64fb085adf3c66",
+    "08",
+    "f020467fd60b94851249f93451cbcd00e8cc5e4b94474bd2533a3b5f7d71b8118a44",
+    "08",
+    "f020fc447cf6cec75a35da50031f456958ad0be500f946f7ee31ed882fca829b48bc",
+    "08",
+    "f020edc9a01da0b7de09d7fa0138a3f9013547f71e7a3604494a751af0bdb74028a7",
+    "08",
+    "f0209d0add69ca927498697c89cf373e67e9252ffd20ce31b03a15a36d150b2dc3c8",
+    "08",
+    "f020eb2b2bdde44dc315e646f7f2386ddfb8494b08273636fc5a4d83a7abeb50b9d5",
+    "08",
+    "f020d2c62b6733196b5f778d6d46f43e41f6162be0a6d014f2f5a21818bb144451ce",
+    "08",
+    "f0208fadbdb1d2068e875b7c35f3cbedb65940f8fdedd974222409595421498bdf2a",
+    "08",
+    "f0205660ef08be6a82fa00fd5aa4b8a2a81fc0273ac8745f76de8e9894156e48a49a",
+    "08"
+  ],
+  "witnessed_root_hex": "edff70d8ebda08ba937dd6da7f3bfe6e2eaf068c0590f75eeda94815d3637754",
+  "receipt_file": "receipt.json",
+  "receipt_sha256": "e07058b1b008e1033b5ca53dde5cc2bf291ea8139d3907baab383b7e03b677f6",
+  "public_keys_file": "issuer-public-keys.json",
+  "expected_key_thumbprint": "ns4g75U5Bsn2bA3XtaSuQhDg065PVkhYgs3KOtJVPf0",
+  "provenance": {
+    "calendar": "Bob",
+    "source_url": "https://bob.btc.calendar.opentimestamps.org/experimental/backup/108774",
+    "source_sha256": "e672621275f8e5a594f227a303fcb4347e8f08596f02da4a893d199c0f513ca3",
+    "path_source": "One path extracted from saved public calendar archive evidence on October 7, 2026. Calendar attribution is unsigned provenance, not asserted by the POPCORN receipt."
+  },
+  "expected": {
+    "receipt_id": "pwr_2547ed912dbd76f1782440e7909b0d9d",
+    "protocol_id": "POPCORN-WITNESS/2.0",
+    "node_id": "767-2676.com",
+    "key_id": "popcorn-witness-2026-01",
+    "nonce": "eM3EbD0f6WFxqfmPvZ-7QT-2QAKxuX1RlOjxQCg5UfQ",
+    "witnessed_at_utc": "2026-10-07T22:22:59.418Z",
+    "tain": "tain_01M4C7CXTTTARBVWDT5Q60GZDY"
+  }
+}

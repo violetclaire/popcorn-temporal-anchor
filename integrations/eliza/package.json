@@ -23,7 +23,7 @@
   },
   "peerDependencies": {
     "@elizaos/core": ">=1.7.2 <2",
-    "@violetclaire/popcorn-mcp": "^0.1.4"
+    "@violetclaire/popcorn-mcp": "^0.1.6"
   },
   "devDependencies": {
     "@elizaos/core": "1.7.2",
