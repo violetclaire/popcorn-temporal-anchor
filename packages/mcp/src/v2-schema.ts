@@ -26,4 +26,13 @@ function verifySchema(depth: number, remote: boolean, top: boolean): z.ZodTypeAn
 }
 
 export const localVerifyV2Schema = verifySchema(8, false, true);
-export const remoteVerifyV2Schema = verifySchema(8, true, true);
+const remoteBaseSchema = verifySchema(8, true, true) as z.ZodObject<Record<string, z.ZodType>>;
+export const remoteVerifyV2Schema = remoteBaseSchema.extend({
+  jwks: remoteBaseSchema.shape.jwks.describe("Accepted to match the call shape. The check replaces it with the published keys fetched from the fixed POPCORN issuer address."),
+  response: remoteBaseSchema.shape.response.describe("The TAIN 2.0 receipt response to verify. Send a digest, never private work."),
+  expected_nonce: remoteBaseSchema.shape.expected_nonce.describe("The nonce the receipt must carry."),
+  expected_payload_digest: remoteBaseSchema.shape.expected_payload_digest.describe("The payload digest the receipt must carry."),
+  expected_node_id: remoteBaseSchema.shape.expected_node_id.describe("Optional. The node id the receipt must carry."),
+  previous_receipt: remoteBaseSchema.shape.previous_receipt.describe("Optional. A previous receipt to check this one against."),
+  max_clock_accuracy_radius_ms: remoteBaseSchema.shape.max_clock_accuracy_radius_ms.describe("Optional. The largest clock accuracy radius, in milliseconds, the check accepts."),
+});

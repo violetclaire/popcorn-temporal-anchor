@@ -14,7 +14,7 @@ const MAX_BODY = 131072;
 const record = z.record(z.string(), z.unknown());
 const digest = z.string().regex(/^[A-Za-z0-9_-]{43}$/).refine(v => Buffer.from(v, "base64url").toString("base64url") === v, "Noncanonical digest or nonce");
 const payment = {
-  approve_payment: z.boolean().default(false),
+  approve_payment: z.boolean().default(false).describe("Set to true to approve paying exactly $0.001 USDC on Base for this single call. Requires payment_signature."),
   payment_signature: z.string().max(16384).optional().describe("Caller-signed x402 PAYMENT-SIGNATURE. Never send a wallet private key. Requires approve_payment:true for this single call."),
 };
 type Json = Record<string, unknown>;
@@ -167,11 +167,19 @@ export function createFullServer(upstream: Upstream) {
   }));
   server.registerTool("popcorn_hash", {
     description: "Hash public bytes on this remote server. Submitted text reaches the server: hash private work locally instead. Free; no onward request or payment.",
-    inputSchema: z.strictObject({ payload_text: z.string().max(65536).optional(), payload_base64url: z.string().max(65536).optional() }), annotations: readOnly,
+    inputSchema: z.strictObject({
+      payload_text: z.string().max(65536).optional().describe("The public text to hash on this server. Submitted text reaches the server, so hash private work locally instead. Give one of payload_text or payload_base64url."),
+      payload_base64url: z.string().max(65536).optional().describe("The public bytes to hash, given as base64url. Submitted bytes reach the server, so hash private work locally instead. Give one of payload_text or payload_base64url."),
+    }), annotations: readOnly,
   }, async input => handle(() => popcornHash(input)));
   server.registerTool("popcorn_verify", {
     description: "Verify a time or witness receipt using caller-trusted JWKS and expected values. Digest-only for witness payloads. No outbound request or payment. Caller keys do not establish issuer identity; a signature grants no authority.",
-    inputSchema: z.strictObject({ receipt_type: z.enum(["time", "witness"]), response: record, jwks: record, verification: record }), annotations: readOnly,
+    inputSchema: z.strictObject({
+      receipt_type: z.enum(["time", "witness"]).describe("The kind of receipt being verified: time or witness."),
+      response: record.describe("The receipt response to verify, as returned by the time or witness call."),
+      jwks: record.describe("The JWKS you trust, holding the keys the receipt signature is checked against."),
+      verification: record.describe("The expected values the receipt is checked against."),
+    }), annotations: readOnly,
   }, async input => handle(async () => {
     boundVerification(input.verification);
     return { ...await popcornVerify(input), authorization_granted: false, issuer_key_trust_checked_by_tool: false, on_chain_settlement_checked_by_tool: false };
@@ -187,11 +195,16 @@ export function createFullServer(upstream: Upstream) {
   const paid = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true };
   server.registerTool("popcorn_time", {
     description: "Request signed current-time evidence. Defaults to a free unpaid 402 challenge. A fresh receipt costs exactly $0.001 USDC on Base. Payment requires owner approval, approve_payment:true, and a caller-signed payment_signature. No server wallet or private key. No automatic retry. Verify evidence and account for client round-trip time before a deadline decision.",
-    inputSchema: z.strictObject({ freshness_ms: z.number().int().min(100).max(60000).default(30000), ...payment }), annotations: paid,
+    inputSchema: z.strictObject({ freshness_ms: z.number().int().min(100).max(60000).default(30000).describe("How fresh the signed time evidence must be, in milliseconds. Default 30000, allowed from 100 to 60000."), ...payment }), annotations: paid,
   }, async input => handle(() => requestReceipt(upstream, `/v1/time?freshness_ms=${input.freshness_ms}`, null, input)));
   server.registerTool("popcorn_witness", {
     description: "Witness a SHA-256 digest and fresh caller nonce at a time. Defaults to a free unpaid 402 challenge. One fresh receipt costs exactly $0.001 USDC on Base; requires owner approval, approve_payment:true, and caller-signed payment_signature. Keep work and wallet keys local. No automatic retry. Evidence does not authorize or prove execution of an action.",
-    inputSchema: z.strictObject({ digest, nonce: digest, previous_attestation_digest: digest.nullable().optional(), ...payment }), annotations: paid,
+    inputSchema: z.strictObject({
+      digest: digest.describe("The SHA-256 digest to witness, in the 43 character form the schema pattern shows."),
+      nonce: digest.describe("A fresh caller nonce: 43 characters, letters, digits, dash and underscore."),
+      previous_attestation_digest: digest.nullable().optional().describe("Optional. The digest of the previous attestation to chain from, or null."),
+      ...payment,
+    }), annotations: paid,
   }, async input => handle(() => requestReceipt(upstream, "/v2/receipt", {
     payload_digest: { algorithm: "sha-256", value: input.digest }, nonce: input.nonce,
     previous_attestation_digest: input.previous_attestation_digest ? { algorithm: "sha-256", value: input.previous_attestation_digest } : null,
