@@ -148,7 +148,7 @@ function trustedInput(input: VerifyV2Input, jwks: VerifyV2Input["jwks"]): Verify
   return copy;
 }
 export function createFullServer(upstream: Upstream) {
-  const server = new McpServer({ name: "popcorn", version: "0.1.4-remote" }, { maxToolInputElements: 10000 });
+  const server = new McpServer({ name: "popcorn", version: "0.1.6" }, { maxToolInputElements: 10000 });
   const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
   server.registerTool("popcorn_sample", {
     title: "Verify a real receipt for free", description: "Check the public October 14 TAIN 2.0 receipt and a changed-digest control. No inputs, wallet, payment, or outbound request. Historical evidence, not a fresh clock. Bundled sample keys do not independently establish issuer identity.",
