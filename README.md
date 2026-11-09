@@ -90,7 +90,7 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-After version 0.1.6 is published to npm, the same evaluation is one command:
+With version 0.1.6 published to npm, the same evaluation is one command:
 
 ```bash
 npx -y @violetclaire/popcorn-mcp@0.1.6 --sample
