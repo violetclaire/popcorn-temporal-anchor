@@ -56,7 +56,7 @@ export function createServer(): McpServer {
     {
       title: "Try Briarwood's signed witness for free",
       description:
-        "Reproduce historical pre-TAIN receipts and one-byte tamper controls offline. No inputs, wallet, payment, or network request. This sample does not test a current TAIN 2.0 receipt, establish current time, or grant permission; use popcorn_verify_v2 for TAIN 2.0 evidence.",
+        "Reproduce bundled historical receipts, including a production TAIN 2.0 receipt, and reject altered payloads and signatures offline. No inputs, wallet, payment, or network request. Historical samples do not establish current time or grant permission. Use popcorn_verify_v2 for your own TAIN 2.0 evidence.",
       inputSchema: z.strictObject({}),
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },

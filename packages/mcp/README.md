@@ -15,8 +15,10 @@ wallet and returns `payment_sent: false`, `current_time_established: false`,
 and `authorization_granted: false`. It does not independently establish
 issuer-key trust or check on-chain settlement.
 
-The bundled npm sample below is a separate offline evaluation of historical
-pre-TAIN receipts.
+The published npm 0.1.5 sample is a separate offline evaluation of historical
+pre-TAIN receipts. This source checkout also bundles a historical TAIN 2.0
+receipt and exposes the `./sample` export and `popcornHandoff` function;
+those additions are not in npm 0.1.5.
 
 Save [sample.mjs](https://767-2676.com/schedule/sample.mjs), read it, then run
 `node sample.mjs` with Node.js 20 or newer. This standalone sample includes an
@@ -37,16 +39,19 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-Run this release's bundled offline sample with:
+Run the published npm 0.1.5 sample with:
 
 ```bash
 npx -y @violetclaire/popcorn-mcp@0.1.5 --sample
 ```
 
-The evaluation checks the eight-line task schedule and two legacy, historically settled receipts with the
+The npm 0.1.5 evaluation checks the eight-line task schedule and two legacy,
+historically settled receipts with the
 maintained verifier. It returns valid signatures, `STOP` for a checkpoint after
 its task window, `TIME_CHECK_PASSED` for one inside its window, and a rejected
-one-byte change for each. Every result retains `authorization_granted: false`.
+one-byte change for each. This source checkout additionally verifies the
+production TAIN 2.0 receipt dated October 14, 2026, rejects changed payload bytes,
+and rejects an altered signature. Every result retains `authorization_granted: false`.
 The sample needs no account, wallet, or original task data. npm may download
 the package; the verification itself runs entirely offline.
 
@@ -56,9 +61,31 @@ The hosted HTTP MCP endpoint runs the separate TAIN 2.0 sample described above.
 The bundled sample's public source links let another developer repeat the check.
 Its historical keys are for sample reproduction. A real task requires
 independently trusted issuer keys; an old receipt is not a fresh clock reading.
-This bundled offline sample tests historical pre-TAIN receipts only. Passing
-it does not test the currently deployed TAIN 2.0 service or establish
-integration readiness.
+These are historical fixtures. Passing the sample does not test fresh issuance
+or a wallet setup, establish current time, or grant permission.
+
+## Give another agent something it can check
+
+After building this source checkout, run from `packages/mcp`:
+
+```sh
+node dist/packages/mcp/src/index.js --handoff > handoff.json
+node dist/packages/mcp/src/index.js verify-v2 handoff.json
+```
+
+The first command verifies the bundled version 2 example and exports its exact
+public payload, receipt, and reproduction keys. The second verifies that packet
+independently. Share it through an authorized handoff; these commands send nothing.
+The packet is a public historical example, not proof of a new action or present
+permission. For production evidence, each receiver selects trusted issuer keys
+independently. The verifier does not check on-chain settlement.
+
+The `@violetclaire/popcorn-mcp/sample` export provides `popcornSample` and
+`popcornHandoff` for consumers of this source build. npm 0.1.5 does not provide
+this export.
+
+[Exa discovery](../../integrations/README.md) provides the same path from finding
+the service to trying and sharing checkable evidence.
 
 ## Use it for a real task
 
@@ -120,10 +147,14 @@ Input: `{}`. The result depends on which server you connect to:
 - **Hosted HTTP MCP at `https://767-2676.com/mcp`:** verifies the historical
   October 14, 2026 TAIN 2.0 receipt and rejects the changed-digest control.
   It sends no payment and establishes neither current time nor authorization.
-- **Local stdio MCP from npm 0.1.5 or this source checkout:** checks the
+- **Local stdio MCP from npm 0.1.5:** checks the
   bundled eight-line schedule, two historical pre-TAIN receipt examples,
   and their tamper controls. It makes no network request or payment.
   These historical receipts are not a TAIN 2.0 conformance test.
+- **Local stdio MCP from this source checkout:** runs those checks and also
+  verifies the historical October 14, 2026 TAIN 2.0 receipt, rejecting changed
+  payload bytes and an altered signature. It runs offline; it does not test
+  fresh issuance or establish current time.
 
 ### `popcorn_verify_v2`
 
