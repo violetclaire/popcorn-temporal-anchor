@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto';
-import { writeFile } from 'node:fs/promises';
+import { open, unlink } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 export const ORIGIN = 'https://767-2676.com';
 export const EXA_MCP = 'https://mcp.exa.ai/mcp?tools=web_search_advanced_exa';
@@ -27,7 +28,10 @@ async function readBounded(response) {
 // MCP Streamable HTTP permits JSON or SSE. Stop once this request's response arrives.
 export async function readRpc(response, id) {
   if (!response.ok) throw new Error(`Exa MCP HTTP ${response.status}`);
-  if (response.status === 202 || response.status === 204) return null;
+  if (response.status === 202 || response.status === 204) {
+    if (id !== undefined) throw new Error(`Exa MCP returned HTTP ${response.status} with no response to request ${id}`);
+    return null;
+  }
   let envelope;
   if (response.headers.get('content-type')?.includes('text/event-stream')) {
     const reader = response.body.getReader();
@@ -36,10 +40,11 @@ export async function readRpc(response, id) {
     try {
       while (!envelope) {
         const { done, value } = await reader.read();
-        if (done) break;
-        length += value.byteLength;
-        if (length > MAX_BYTES) throw new Error('Exa MCP response exceeded the 3 MiB limit');
-        buffer += decoder.decode(value, { stream: true });
+        if (!done) {
+          length += value.byteLength;
+          if (length > MAX_BYTES) throw new Error('Exa MCP response exceeded the 3 MiB limit');
+          buffer += decoder.decode(value, { stream: true });
+        } else buffer += decoder.decode() + '\n\n'; // flush a final event that lacks a trailing blank line
         let separator;
         while ((separator = /\r?\n\r?\n/.exec(buffer))) {
           const event = buffer.slice(0, separator.index);
@@ -47,9 +52,12 @@ export async function readRpc(response, id) {
           const data = event.split(/\r?\n/).filter(line => line.startsWith('data:'))
             .map(line => line.slice(5).trimStart()).join('\n');
           if (!data || data === '[DONE]') continue;
-          const candidate = JSON.parse(data);
-          if (candidate.id === id) { envelope = candidate; break; }
+          let candidate;
+          try { candidate = JSON.parse(data); } catch { continue; } // ignore non-JSON keep-alives
+          // Server-to-client requests and notifications carry `method`; they are not our response.
+          if (candidate.id === id && !Object.hasOwn(candidate, 'method')) { envelope = candidate; break; }
         }
+        if (done) break;
       }
     } finally { await reader.cancel(); }
   } else {
@@ -58,7 +66,10 @@ export async function readRpc(response, id) {
     envelope = JSON.parse(body);
   }
   if (!envelope || envelope.id !== id) throw new Error('Exa MCP response ID mismatch');
-  if (envelope.error) throw new Error(`Exa MCP error ${envelope.error.code ?? 'unknown'}`);
+  if (envelope.error) {
+    const detail = typeof envelope.error.message === 'string' ? `: ${envelope.error.message.slice(0, 200)}` : '';
+    throw new Error(`Exa MCP error ${envelope.error.code ?? 'unknown'}${detail}`);
+  }
   if (!Object.hasOwn(envelope, 'result')) throw new Error('Exa MCP omitted result');
   return envelope.result;
 }
@@ -69,7 +80,7 @@ export function normalizeSearch(result) {
     request_id: result.requestId ?? null,
     results: result.results.slice(0, 3).map(item => {
       let canonicalDomain = false;
-      try { canonicalDomain = new URL(item.url).hostname === '767-2676.com'; } catch {}
+      try { canonicalDomain = new URL(item.url).origin === ORIGIN; } catch {}
       return {
         url: typeof item.url === 'string' ? item.url : null,
         title: typeof item.title === 'string' ? item.title : null,
@@ -102,12 +113,16 @@ async function mcpSearch(fetchImpl) {
   await rpc('notifications/initialized', {}, true);
   const list = await rpc('tools/list', {});
   const tool = list.tools?.find(item => item.name === 'web_search_advanced_exa');
-  if (!tool?.inputSchema?.properties?.includeDomains) throw new Error('Exa domain-filtered search is unavailable');
-  const call = await rpc('tools/call', {
-    name: tool.name,
-    arguments: { ...SEARCH, textMaxCharacters: 1200, enableHighlights: false },
-  });
-  if (call.isError) throw new Error('Exa search tool returned an error');
+  const accepted = tool?.inputSchema?.properties ?? {};
+  if (!accepted.includeDomains) throw new Error('Exa domain-filtered search is unavailable');
+  const wanted = { ...SEARCH, textMaxCharacters: 1200, enableHighlights: false };
+  const missing = Object.keys(wanted).filter(name => !Object.hasOwn(accepted, name));
+  if (missing.length) throw new Error(`Exa search no longer accepts: ${missing.join(', ')}`);
+  const call = await rpc('tools/call', { name: tool.name, arguments: wanted });
+  if (call.isError) {
+    const detail = call.content?.find(part => part.type === 'text')?.text?.slice(0, 200);
+    throw new Error(`Exa search tool returned an error${detail ? `: ${detail}` : ''}`);
+  }
   let result = call.structuredContent;
   if (!Array.isArray(result?.results)) {
     for (const part of call.content ?? []) {
@@ -199,11 +214,28 @@ async function main() {
       output = args[++i];
     } else throw new Error(`Unknown or incomplete argument: ${args[i]}`);
   }
-  const report = await discover({ mode, apiKey: mode === 'rest' ? process.env.EXA_API_KEY : undefined });
-  if (output) await writeFile(output, `${JSON.stringify(report, null, 2)}\n`, { flag: 'wx' });
+  if (typeof fetch !== 'function' || typeof AbortSignal.timeout !== 'function') throw new Error('discover.mjs needs Node.js 18 or later');
+  if (mode === 'rest' && !process.env.EXA_API_KEY) throw new Error('--rest requires EXA_API_KEY');
+  const file = output ? await open(output, 'wx').catch(error => {
+    throw new Error(error.code === 'EEXIST' ? `${output} already exists; choose a new --output path` : error.message);
+  }) : null;
+  let report;
+  try {
+    report = await discover({ mode, apiKey: mode === 'rest' ? process.env.EXA_API_KEY : undefined });
+    if (file) await file.writeFile(`${JSON.stringify(report, null, 2)}\n`);
+  } catch (error) {
+    if (file) { await file.close(); await unlink(output).catch(() => {}); } // don't leave an empty report behind
+    throw error;
+  }
+  await file?.close();
   console.log(JSON.stringify({ ...summarize(report), ...(output ? { saved_report: resolve(output) } : {}) }, null, 2));
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+// Compare real paths: Node resolves symlinks for import.meta.url but not for process.argv[1],
+// so a symlinked launch path (npm bin link, macOS /tmp, linked home dir) would otherwise skip main() and exit 0.
+function launchedDirectly() {
+  try { return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)); } catch { return false; }
+}
+if (process.argv[1] && launchedDirectly()) {
   main().catch(error => { console.error(error.message); process.exitCode = 1; });
 }
