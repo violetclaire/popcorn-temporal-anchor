@@ -209,7 +209,7 @@ export default {
     if (origin && ![ORIGIN, "https://popcorn-canonical-mcp.violetherod.workers.dev"].includes(origin)) return new Response("Forbidden origin", { status: 403 });
     if (request.method === "GET" && url.pathname === "/mcp") return Response.json({
       name: "popcorn",
-      version: "0.1.4-remote",
+      version: "0.1.6",
       transport: "MCP calls use POST JSON-RPC 2.0 at this URL; GET only returns this server card.",
       tools: ["popcorn_sample", "popcorn_catalog", "popcorn_hash", "popcorn_verify", "popcorn_verify_v2", "popcorn_time", "popcorn_witness"],
       pointers: [ORIGIN + "/.well-known/mcp.json", ORIGIN + "/.well-known/agent-card.json", ORIGIN + "/ai-catalog.json", ORIGIN + "/SKILL.md", ORIGIN + "/agent-entry"],

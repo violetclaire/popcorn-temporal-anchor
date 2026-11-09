@@ -966,6 +966,11 @@ var BriarwoodAgentEngine = class {
     if (request.method !== "POST") {
       return agentMethodNotAllowed(["POST", "OPTIONS"]);
     }
+    if (!request.headers.get("x-payment-proof") && !request.headers.get("payment-signature")) {
+      // Unpaid discovery must see the price before content-type or body validation.
+      const challenge = await verifyAndSettleX402(request, this.env);
+      return challenge.ok ? serviceUnavailableResponse("payment_challenge_unavailable") : challenge.response;
+    }
     const contentType = request.headers.get("content-type") ?? "";
     const normalizedContentType = contentType.split(";", 1)[0].trim().toLowerCase();
     if (!normalizedContentType.startsWith("application/json") && !normalizedContentType.startsWith("application/popcorn+json")) {

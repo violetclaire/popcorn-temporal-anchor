@@ -5,7 +5,8 @@
 - Display name: POPCORN MCP
 - Registry name: `io.github.violetclaire/popcorn-mcp`
 - npm package: `@violetclaire/popcorn-mcp`
-- Version prepared for registry publication: `0.1.3`
+- Registry metadata version prepared for publication: `0.1.7`
+- npm package version: `0.1.6`
 - Tagline: agents checking their watch
 - Transport: stdio
 - MCP authentication: none

@@ -1,9 +1,11 @@
 # MCP discovery publication
 
-`server.json` describes registry metadata version 0.1.5 and the separately
-versioned npm package `@violetclaire/popcorn-mcp@0.1.4`, plus the hosted
+`server.json` describes registry metadata version 0.1.7 and the separately
+versioned npm package `@violetclaire/popcorn-mcp@0.1.6`, plus the hosted
 streamable HTTP remote at `https://767-2676.com/mcp`.
-These versions do not need to match.
+These versions do not need to match. Published metadata version 0.1.6 points
+to npm 0.1.4 and cannot be overwritten. Version 0.1.7 updates the package
+target under the same existing server name after npm 0.1.6 is public.
 
 Metadata version 0.1.4 described npm 0.1.3 without a remote. The changed
 installation targets require a new metadata version. The workflow validates

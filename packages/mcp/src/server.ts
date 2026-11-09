@@ -48,7 +48,7 @@ const jsonObject = z.record(z.string(), z.unknown());
 export function createServer(): McpServer {
   const server = new McpServer({
     name: "popcorn",
-    version: "0.1.5",
+    version: "0.1.6",
   });
 
   server.registerTool(
