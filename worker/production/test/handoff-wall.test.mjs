@@ -16,6 +16,11 @@ function setup() {
   return{env,calls,records};
 }
 function req(body,headers={}){return new Request(route,{method:'POST',body,headers});}
+test('unpaid discovery does not contact the stateful handoff engine',async()=>{
+  const s=setup();s.env.Agent_Engine={idFromName(){throw Error('unpaid discovery reached the engine');}};
+  const r=await worker.fetch(req('{}',{'content-type':'application/json'}),s.env,{});
+  assert.equal(r.status,402);assert.equal((await r.json()).accepts[0].amount,'1000');assert.deepEqual(s.calls,[]);
+});
 for(const [label,body,type]of [['empty',undefined,undefined],['object','{}','application/json'],['broken JSON','{','application/json'],['wrong content type','text','text/plain']])test('unpaid handoff '+label+' returns the price before reading input',async()=>{
   const s=setup(),r=req(body,type?{'content-type':type}:{});
   Object.defineProperty(r,'text',{value:()=>{throw Error('unpaid body read');}});
