@@ -12,6 +12,11 @@
       "types": "./dist/packages/mcp/src/core.d.ts",
       "import": "./dist/packages/mcp/src/core.js",
       "default": "./dist/packages/mcp/src/core.js"
+    },
+    "./sample": {
+      "types": "./dist/packages/mcp/src/sample.d.ts",
+      "import": "./dist/packages/mcp/src/sample.js",
+      "default": "./dist/packages/mcp/src/sample.js"
     }
   },
   "files": [

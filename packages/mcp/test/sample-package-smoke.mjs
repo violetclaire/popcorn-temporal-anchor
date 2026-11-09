@@ -20,12 +20,16 @@ try {
   const output = JSON.parse(run.stdout);
   assert.equal(output.payment_sent, false);
   assert.equal(output.evaluation_only, true);
+  assert.equal(output.v2.accepted, true);
+  assert.equal(output.v2.one_byte_tamper_rejected, true);
+  assert.equal(output.v2.altered_signature_rejected, true);
   assert.deepEqual(output.examples.map((item) => item.historical_time_check.decision), [
     "STOP", "TIME_CHECK_PASSED",
   ]);
   for (const filename of [
     "evaluation-packet.production.json",
     "evaluation-packet.proceed-002.production.json",
+    "v2-production-sample.json",
   ]) {
     assert.deepEqual(
       await readFile(join(isolated, "dist/examples/witness", filename)),

@@ -15,12 +15,15 @@ if (args.length === 2 && args[0] === "verify-v2") {
     process.stderr.write(`${error instanceof Error ? error.message : "Unable to read vector"}\n`);
     process.exitCode = 1;
   }
+} else if (args.length === 1 && args[0] === "--handoff") {
+  const { popcornHandoff } = await import("./sample.js");
+  process.stdout.write(`${JSON.stringify(await popcornHandoff(), null, 2)}\n`);
 } else if (args.length === 1 && args[0] === "--sample") {
   // Sample evaluation needs only Node and the bundled verifier/receipts.
   const { popcornSample } = await import("./sample.js");
   process.stdout.write(`${JSON.stringify(await popcornSample(), null, 2)}\n`);
 } else if (args.length > 0) {
-  process.stderr.write("Usage: popcorn-mcp [--sample | verify-v2 <vector.json>]\n");
+  process.stderr.write("Usage: popcorn-mcp [--sample | --handoff | verify-v2 <vector.json>]\n");
   process.exitCode = 1;
 } else {
   const [{ serveStdio }, { createServer }] = await Promise.all([
