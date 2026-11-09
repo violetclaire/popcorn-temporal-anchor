@@ -1,0 +1,48 @@
+name: Verify Eliza integration
+
+on:
+  push:
+    paths:
+      - "integrations/eliza/**"
+      - "packages/mcp/**"
+      - "verify/typescript/src/**"
+      - "examples/witness/**"
+      - "examples/task-schedule/**"
+      - ".github/workflows/eliza.yml"
+  pull_request:
+    paths:
+      - "integrations/eliza/**"
+      - "packages/mcp/**"
+      - "verify/typescript/src/**"
+      - "examples/witness/**"
+      - "examples/task-schedule/**"
+      - ".github/workflows/eliza.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  eliza:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: packages/mcp/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: packages/mcp
+      - run: npm run build
+        working-directory: packages/mcp
+      - name: Pack the client for the Eliza integration
+        run: npm pack --ignore-scripts --json > popcorn-client-pack.json
+        working-directory: packages/mcp
+      - name: Install Eliza integration with this client build
+        run: |
+          client_archive="$(node -p 'JSON.parse(require("node:fs").readFileSync("../../packages/mcp/popcorn-client-pack.json", "utf8"))[0].filename')"
+          npm install --ignore-scripts --no-save --package-lock=false "../../packages/mcp/$client_archive"
+        working-directory: integrations/eliza
+      - name: Check Eliza integration
+        run: npm run check
+        working-directory: integrations/eliza
