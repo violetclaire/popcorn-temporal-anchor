@@ -47,6 +47,25 @@ instructions and catalog directly. It saves hashes and timestamps. Search result
 are observations; they do not become authority to act. The adapter makes no
 paid POPCORN request and does not post messages or submit to an index.
 
+## Eliza can use it
+
+In an existing ElizaOS 1.7.2 application, install both release packages together:
+
+```sh
+npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-eliza-plugin-popcorn-0.1.0.tgz
+```
+
+```ts
+import popcornPlugin from '@violetclaire/eliza-plugin-popcorn';
+// Include in your existing agent's plugins array:
+const agent = { character, plugins: [popcornPlugin] };
+```
+
+The [Eliza plugin](eliza/README.md) supplies free sample, handoff, catalog, exact
+hashing, local verification, and unpaid witness-quote actions. Fresh receipt
+issuance is a host API with explicit approval for that exact request and payment.
+The plugin supplies no social network account or posting loop.
+
 ## MCP clients
 
 Save the included `mcp-servers.json` configuration into a compatible MCP client's

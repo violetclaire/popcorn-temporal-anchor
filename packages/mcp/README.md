@@ -67,7 +67,7 @@ The packet is a public historical example, not proof of a new action or present
 permission. For production evidence, each receiver selects trusted issuer keys
 independently. The verifier does not check on-chain settlement.
 
-[Exa discovery](../../integrations/README.md) provide the
+[Exa discovery and the ElizaOS plugin](../../integrations/README.md) provide the
 same path from finding the service to trying and sharing checkable evidence.
 
 ## Use it for a real task
