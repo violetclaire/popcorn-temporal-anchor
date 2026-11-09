@@ -15,10 +15,10 @@ wallet and returns `payment_sent: false`, `current_time_established: false`,
 and `authorization_granted: false`. It does not independently establish
 issuer-key trust or check on-chain settlement.
 
-The published npm 0.1.5 sample is a separate offline evaluation of historical
-pre-TAIN receipts. This source checkout also bundles a historical TAIN 2.0
-receipt and exposes the `./sample` export and `popcornHandoff` function;
-those additions are not in npm 0.1.5.
+The bundled npm 0.1.6 sample is a separate offline evaluation of historical
+receipts. It includes the eight-line schedule, two legacy pre-TAIN receipts,
+and a historical TAIN 2.0 receipt. The package exposes the `./sample` export
+with `popcornSample` and `popcornHandoff`.
 
 Save [sample.mjs](https://767-2676.com/schedule/sample.mjs), read it, then run
 `node sample.mjs` with Node.js 20 or newer. This standalone sample includes an
@@ -39,17 +39,17 @@ npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-Run the published npm 0.1.5 sample with:
+Run this release's bundled offline sample with:
 
 ```bash
-npx -y @violetclaire/popcorn-mcp@0.1.5 --sample
+npx -y @violetclaire/popcorn-mcp@0.1.6 --sample
 ```
 
-The npm 0.1.5 evaluation checks the eight-line task schedule and two legacy,
+The bundled evaluation checks the eight-line task schedule and two legacy,
 historically settled receipts with the
 maintained verifier. It returns valid signatures, `STOP` for a checkpoint after
 its task window, `TIME_CHECK_PASSED` for one inside its window, and a rejected
-one-byte change for each. This source checkout additionally verifies the
+one-byte change for each. It also verifies the
 production TAIN 2.0 receipt dated October 14, 2026, rejects changed payload bytes,
 and rejects an altered signature. Every result retains `authorization_granted: false`.
 The sample needs no account, wallet, or original task data. npm may download
@@ -66,11 +66,11 @@ or a wallet setup, establish current time, or grant permission.
 
 ## Give another agent something it can check
 
-After building this source checkout, run from `packages/mcp`:
+With npm 0.1.6, run:
 
 ```sh
-node dist/packages/mcp/src/index.js --handoff > handoff.json
-node dist/packages/mcp/src/index.js verify-v2 handoff.json
+npx -y @violetclaire/popcorn-mcp@0.1.6 --handoff > handoff.json
+npx -y @violetclaire/popcorn-mcp@0.1.6 verify-v2 handoff.json
 ```
 
 The first command verifies the bundled version 2 example and exports its exact
@@ -81,8 +81,7 @@ permission. For production evidence, each receiver selects trusted issuer keys
 independently. The verifier does not check on-chain settlement.
 
 The `@violetclaire/popcorn-mcp/sample` export provides `popcornSample` and
-`popcornHandoff` for consumers of this source build. npm 0.1.5 does not provide
-this export.
+`popcornHandoff` for consumers of npm 0.1.6 and this source build.
 
 [Exa discovery](../../integrations/README.md) provides the same path from finding
 the service to trying and sharing checkable evidence.
@@ -147,14 +146,12 @@ Input: `{}`. The result depends on which server you connect to:
 - **Hosted HTTP MCP at `https://767-2676.com/mcp`:** verifies the historical
   October 14, 2026 TAIN 2.0 receipt and rejects the changed-digest control.
   It sends no payment and establishes neither current time nor authorization.
-- **Local stdio MCP from npm 0.1.5:** checks the
+- **Local stdio MCP from npm 0.1.6 or this source checkout:** checks the
   bundled eight-line schedule, two historical pre-TAIN receipt examples,
-  and their tamper controls. It makes no network request or payment.
-  These historical receipts are not a TAIN 2.0 conformance test.
-- **Local stdio MCP from this source checkout:** runs those checks and also
-  verifies the historical October 14, 2026 TAIN 2.0 receipt, rejecting changed
-  payload bytes and an altered signature. It runs offline; it does not test
-  fresh issuance or establish current time.
+  and their tamper controls, plus the historical October 14, 2026 TAIN 2.0
+  receipt, rejecting changed payload bytes and an altered signature. It makes
+  no network request or payment and does not test fresh issuance or establish
+  current time.
 
 ### `popcorn_verify_v2`
 

@@ -29,7 +29,7 @@ test("GET /mcp returns the small server card without invoking tools or upstream"
     assert.ok(Buffer.byteLength(body) < 2048, "card must stay small");
     assert.deepEqual(JSON.parse(body), {
       name: "popcorn",
-      version: "0.1.4-remote",
+      version: "0.1.6",
       transport: "MCP calls use POST JSON-RPC 2.0 at this URL; GET only returns this server card.",
       tools: ["popcorn_sample", "popcorn_catalog", "popcorn_hash", "popcorn_verify", "popcorn_verify_v2", "popcorn_time", "popcorn_witness"],
       pointers: ["https://767-2676.com/.well-known/mcp.json", "https://767-2676.com/.well-known/agent-card.json", "https://767-2676.com/ai-catalog.json", "https://767-2676.com/SKILL.md", "https://767-2676.com/agent-entry"],
@@ -49,6 +49,7 @@ test("canonical HTTP initializes, lists all tools, verifies sample and live-orig
   const send = (req: Request) => worker.fetch(req, env);
   const initialized = await requestRpc(endpoint, send, 1, "initialize", { protocolVersion: "2025-11-25", capabilities: {}, clientInfo: { name: "test", version: "1" } });
   assert.equal((initialized.serverInfo as { name: string }).name, "popcorn");
+  assert.equal((initialized.serverInfo as { version: string }).version, "0.1.6");
   const listed = await requestRpc(endpoint, send, 2, "tools/list", {});
   assert.deepEqual((listed.tools as { name: string }[]).map(t => t.name).sort(), ["popcorn_catalog", "popcorn_hash", "popcorn_sample", "popcorn_time", "popcorn_verify", "popcorn_verify_v2", "popcorn_witness"]);
   const sample = await requestRpc(endpoint, send, 3, "tools/call", { name: "popcorn_sample", arguments: {} });

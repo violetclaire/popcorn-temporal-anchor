@@ -804,6 +804,12 @@ var index_default = {
     if (SITE_IMAGE_ASSET_PATH.test(url.pathname)) {
       return withDiscoveryHeaders(await handleSiteImageAssetRequest(request, env));
     }
+    if (url.pathname === "/agent/handoff" && request.method === "POST" &&
+        !request.headers.get("x-payment-proof") && !request.headers.get("payment-signature")) {
+      // Discovery does not require forwarding an unpaid request into the stateful engine.
+      const challenge = await verifyAndSettleX402(request, env, ctx);
+      return withDiscoveryHeaders(challenge.ok ? serviceUnavailableResponse("payment_challenge_unavailable") : challenge.response);
+    }
     if (url.pathname.startsWith(AGENT_PREFIX)) {
       const agentEngine = getAgentEngineBinding(env);
       if (!agentEngine) {
@@ -965,6 +971,11 @@ var BriarwoodAgentEngine = class {
     }
     if (request.method !== "POST") {
       return agentMethodNotAllowed(["POST", "OPTIONS"]);
+    }
+    if (!request.headers.get("x-payment-proof") && !request.headers.get("payment-signature")) {
+      // Unpaid discovery must see the price before content-type or body validation.
+      const challenge = await verifyAndSettleX402(request, this.env);
+      return challenge.ok ? serviceUnavailableResponse("payment_challenge_unavailable") : challenge.response;
     }
     const contentType = request.headers.get("content-type") ?? "";
     const normalizedContentType = contentType.split(";", 1)[0].trim().toLowerCase();

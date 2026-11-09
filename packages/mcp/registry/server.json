@@ -29,7 +29,7 @@
       "transport": {
         "type": "stdio"
       },
-      "version": "0.1.4"
+      "version": "0.1.6"
     }
   ],
   "repository": {
@@ -38,7 +38,7 @@
     "url": "https://github.com/violetclaire/popcorn-temporal-anchor"
   },
   "title": "POPCORN MCP",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "websiteUrl": "https://767-2676.com/agents",
   "remotes": [
     {
