@@ -21,7 +21,7 @@ function mockMcp({ searchError = false, sse = false } = {}) {
     if (message.method === 'notifications/initialized') return new Response(null, { status: 202 });
     let result;
     if (message.method === 'initialize') result = { protocolVersion: '2025-03-26', serverInfo: { name: 'exa-search-server' } };
-    if (message.method === 'tools/list') result = { tools: [{ name: 'web_search_advanced_exa', inputSchema: { properties: { includeDomains: {} } } }] };
+    if (message.method === 'tools/list') result = { tools: [{ name: 'web_search_advanced_exa', inputSchema: { properties: { query: {}, includeDomains: {}, numResults: {}, type: {}, textMaxCharacters: {}, enableHighlights: {} } } }] };
     if (message.method === 'tools/call') {
       assert.deepEqual(message.params.arguments.includeDomains, ['767-2676.com']);
       assert.equal(message.params.arguments.numResults, 3);
