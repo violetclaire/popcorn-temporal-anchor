@@ -1,0 +1,88 @@
+{
+  "worker": "seven-six-seven-2676",
+  "version_id": "156b5753-df22-4712-bde5-085a6ed144fc",
+  "deployment_id": "d5b4dff6-b5cf-4633-8642-c29e3a0264bc",
+  "activated_at_utc": "2026-10-27T04:08:28.458221Z",
+  "activation_time_source": "Cloudflare active deployment created_on",
+  "main_module": "index.js",
+  "files": [
+    {
+      "name": "bridge.mjs",
+      "bytes": 39430,
+      "sha256": "98ae36dd3a54a6f70e3434b1d31fccc6e4dc43950de7167cbdd7f4962a5898aa",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "catalog-page.mjs",
+      "bytes": 1878,
+      "sha256": "a828a4a9b1b5e1468296916a509d7896e1f29ad7e4e34240da19fcc3bd48c691",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "checkpoint-documents.mjs",
+      "bytes": 26762,
+      "sha256": "8cfb0c40b2d5f2c6e951b764d231eadb3227877a2f0db3f3a3c10e3b1c8155ff",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "checkpoint-evidence.mjs",
+      "bytes": 88089,
+      "sha256": "195c25ed6c500feb406a6227f45662c9ce6d581e0ddda9be17b86c54dcbf373b",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "discovery-demo.mjs",
+      "bytes": 37750,
+      "sha256": "48210c13edd54b65322255c5a19c41def830f27291a30fffc710f0fc95421ba1",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "executor.mjs",
+      "bytes": 25125,
+      "sha256": "385e297642414d23f05c1c3e5d92391d746ba8a3362af3ed6b75cb2920657696",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "index.js",
+      "bytes": 2304570,
+      "sha256": "0f3c2329619bb7db6e44cb322d198ea0d94361d6d25cc3572e36073647da97b4",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "model.js",
+      "bytes": 8395,
+      "sha256": "50a7b7d33d7e82e97817c330c40049a803ff865c6f532e2062ebe631ded3cac0",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "nameplate.mjs",
+      "bytes": 8616,
+      "sha256": "e39b66fd2f2951c13e774c810e31cfd5281c03ac28273f506ab4ae6ea4b74753",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "publication.js",
+      "bytes": 1129,
+      "sha256": "2f4a46842049184ab5ef6ded4b4942ea8325ac452e391b28dfa6ba4f0214416a",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "tain-qr.mjs",
+      "bytes": 10373,
+      "sha256": "c254392c3f1c2d4e626ed06da3c2d4032b331e86ac1020538bcae641edf4a1f0",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "tain-runtime.mjs",
+      "bytes": 9350,
+      "sha256": "3b584b4d1ef149f1b2bdf35eb296f842e99134836e31624728c7eef88a9256b9",
+      "content_type": "application/javascript+module"
+    },
+    {
+      "name": "transport.mjs",
+      "bytes": 10776,
+      "sha256": "b854496ae52fbb6ecf007b8d751b6bd7dddb97c4f7223965e7b2e03eeebee7b5",
+      "content_type": "application/javascript+module"
+    }
+  ]
+}

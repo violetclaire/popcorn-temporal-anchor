@@ -8,7 +8,7 @@
     "source": "github",
     "subfolder": "packages/mcp"
   },
-  "version": "0.1.4",
+  "version": "0.1.5",
   "websiteUrl": "https://767-2676.com/agents",
   "icons": [
     {
@@ -38,6 +38,12 @@
           "isSecret": true
         }
       ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://767-2676.com/mcp"
     }
   ]
 }

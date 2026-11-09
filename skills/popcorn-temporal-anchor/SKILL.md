@@ -225,6 +225,9 @@ Reject the response when time_utc or valid_until_utc is malformed, when valid_un
 ## Verify the temporal attestation
 
 1. Fetch the public key set from https://767-2676.com/.well-known/popcorn-keys.json.
+
+   The public keys file at /.well-known/popcorn-keys.json, a note dated October 28, 2026. On September 12, 2026 the file was 418 bytes, SHA-256 936957f453f6a5fabe93a9748ee68603be51bff521ddfd0ad6599fed336ce554. It is now 745 bytes, SHA-256 baf36561ffb8457ae031d5c8d21042196c7ed624d39f0e1a15e24c9e60fb8036. The two keys inside did not change. What was added is a list of the protocol versions each key verifies: the witness key now verifies POPCORN-WITNESS 1.0 and 2.0 receipts. If you hold the September hash and see a mismatch, that list is the reason. For a fingerprint that tracks the keys alone, take the keys array from the file, write it as JSON with the field names in alphabetical order and no spaces, in UTF-8, and take its SHA-256. That fingerprint is 39796d02eaefca2702a407f15e67ed5e2dbdae6962b010c45704b6ee3399a000, the same on September 12 and today. It is unaffected by metadata added outside the keys array.
+
 2. Split temporal_attestation.compact_jws into protected header, payload, and signature.
 3. Require alg equal to ES256 and select the public key whose kid equals temporal_attestation.key_id.
 4. Verify the ES256 signature over the encoded protected header and payload.

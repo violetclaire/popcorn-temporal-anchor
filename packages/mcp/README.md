@@ -7,6 +7,19 @@ agents. POPCORN supplies signed time and digest checkpoints at `https://767-2676
 
 ## Try it first, without a wallet
 
+At the [hosted HTTP MCP endpoint](https://767-2676.com/mcp), call
+`popcorn_sample` with `{}`. This free check verifies a real historical TAIN 2.0
+receipt dated October 14, 2026: `genuine.accepted: true`,
+`changed_digest_control.accepted: false`, and `passed: true`. It requires no
+wallet and returns `payment_sent: false`, `current_time_established: false`,
+and `authorization_granted: false`. It does not independently establish
+issuer-key trust or check on-chain settlement.
+
+The published npm 0.1.5 sample is a separate offline evaluation of historical
+pre-TAIN receipts. This source checkout also bundles a historical TAIN 2.0
+receipt and exposes the `./sample` export and `popcornHandoff` function;
+those additions are not in npm 0.1.5.
+
 Save [sample.mjs](https://767-2676.com/schedule/sample.mjs), read it, then run
 `node sample.mjs` with Node.js 20 or newer. This standalone sample includes an
 exact eight-line schedule with `who`, its SHA-256 digest, and a real signed
@@ -16,48 +29,48 @@ The [plain-text contract](https://767-2676.com/schedule/contract.txt) and
 [full packet](https://767-2676.com/schedule/example.json) can be retained locally.
 The receipt is historical evidence. Fetch new time for a new decision.
 
-Install this release directly from GitHub:
-
-```sh
-npm install https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz
-npx --no-install popcorn-mcp --sample
-```
-
-Version 0.1.4 includes the version 2 verifier, seven MCP tools, and the public
-`/sample` export. The older npm release 0.1.3 lacks these version 2 interfaces.
-Until 0.1.4 is published to npm, use the release archive above or this source:
+Run the current source from this public repository:
 
 ```bash
 git clone https://github.com/violetclaire/popcorn-temporal-anchor.git
-cd popcorn-temporal-anchor
-git checkout agent-adoption-v0.1.4
-cd packages/mcp
+cd popcorn-temporal-anchor/packages/mcp
 npm ci
 npm run build
 node dist/packages/mcp/src/index.js --sample
 ```
 
-The evaluation checks a production TAIN 2.0 receipt, the eight-line task schedule,
-and two legacy, historically settled receipts with the
+Run the published npm 0.1.5 sample with:
+
+```bash
+npx -y @violetclaire/popcorn-mcp@0.1.5 --sample
+```
+
+The npm 0.1.5 evaluation checks the eight-line task schedule and two legacy,
+historically settled receipts with the
 maintained verifier. It returns valid signatures, `STOP` for a checkpoint after
 its task window, `TIME_CHECK_PASSED` for one inside its window, and a rejected
-one-byte change for each. The version 2 sample also rejects a changed signature.
-Every result retains `authorization_granted: false`.
+one-byte change for each. This source checkout additionally verifies the
+production TAIN 2.0 receipt dated October 14, 2026, rejects changed payload bytes,
+and rejects an altered signature. Every result retains `authorization_granted: false`.
 The sample needs no account, wallet, or original task data. npm may download
 the package; the verification itself runs entirely offline.
 
-Inside a connected MCP client, call `popcorn_sample` with `{}` for the same
-result. Its public source links let another developer repeat the check.
-The bundled historical keys are for sample reproduction. A real task requires
+With the npm package or this source checkout running as a local stdio MCP
+server, call `popcorn_sample` with `{}` for this bundled historical result.
+The hosted HTTP MCP endpoint runs the separate TAIN 2.0 sample described above.
+The bundled sample's public source links let another developer repeat the check.
+Its historical keys are for sample reproduction. A real task requires
 independently trusted issuer keys; an old receipt is not a fresh clock reading.
-These are historical fixtures, including a production receipt issued on
-2026-10-14. Passing the sample does not test fresh issuance or a wallet setup.
+These are historical fixtures. Passing the sample does not test fresh issuance
+or a wallet setup, establish current time, or grant permission.
 
 ## Give another agent something it can check
 
+After building this source checkout, run from `packages/mcp`:
+
 ```sh
-npx --no-install popcorn-mcp --handoff > handoff.json
-npx --no-install popcorn-mcp verify-v2 handoff.json
+node dist/packages/mcp/src/index.js --handoff > handoff.json
+node dist/packages/mcp/src/index.js verify-v2 handoff.json
 ```
 
 The first command verifies the bundled version 2 example and exports its exact
@@ -67,8 +80,12 @@ The packet is a public historical example, not proof of a new action or present
 permission. For production evidence, each receiver selects trusted issuer keys
 independently. The verifier does not check on-chain settlement.
 
-[Exa discovery](../../integrations/README.md) provide the
-same path from finding the service to trying and sharing checkable evidence.
+The `@violetclaire/popcorn-mcp/sample` export provides `popcornSample` and
+`popcornHandoff` for consumers of this source build. npm 0.1.5 does not provide
+this export.
+
+[Exa discovery](../../integrations/README.md) provides the same path from finding
+the service to trying and sharing checkable evidence.
 
 ## Use it for a real task
 
@@ -93,10 +110,10 @@ This is a clock and a seal. It does not refund, authorize, or hold funds.
 
 ## Run with npx
 
-After installing the release archive above, start the MCP server with:
+Install and run the published package with:
 
 ```bash
-npx --no-install popcorn-mcp
+npx -y @violetclaire/popcorn-mcp
 ```
 
 Node.js 20 or newer is required.
@@ -125,10 +142,19 @@ It is free, local, and sends no network request.
 
 ### `popcorn_sample`
 
-Runs the public version 1 and version 2 receipt examples and their tamper controls locally. This
-is a reproducible evaluation of historical evidence and makes no network
-request or payment. Input: `{}`.
-The production version 2 fixture tests local verification, not fresh issuance.
+Input: `{}`. The result depends on which server you connect to:
+
+- **Hosted HTTP MCP at `https://767-2676.com/mcp`:** verifies the historical
+  October 14, 2026 TAIN 2.0 receipt and rejects the changed-digest control.
+  It sends no payment and establishes neither current time nor authorization.
+- **Local stdio MCP from npm 0.1.5:** checks the
+  bundled eight-line schedule, two historical pre-TAIN receipt examples,
+  and their tamper controls. It makes no network request or payment.
+  These historical receipts are not a TAIN 2.0 conformance test.
+- **Local stdio MCP from this source checkout:** runs those checks and also
+  verifies the historical October 14, 2026 TAIN 2.0 receipt, rejecting changed
+  payload bytes and an altered signature. It runs offline; it does not test
+  fresh issuance or establish current time.
 
 ### `popcorn_verify_v2`
 
@@ -281,7 +307,7 @@ Add this server to the `mcpServers` object in Claude Desktop's configuration:
   "mcpServers": {
     "popcorn": {
       "command": "npx",
-      "args": ["--yes", "--package", "https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz", "popcorn-mcp"]
+      "args": ["-y", "@violetclaire/popcorn-mcp"]
     }
   }
 }
@@ -295,7 +321,7 @@ tool call or chat.
 ## Claude Code
 
 ```bash
-claude mcp add --transport stdio popcorn -- npx --yes --package https://github.com/violetclaire/popcorn-temporal-anchor/releases/download/agent-adoption-v0.1.4/violetclaire-popcorn-mcp-0.1.4.tgz popcorn-mcp
+claude mcp add --transport stdio popcorn -- npx -y @violetclaire/popcorn-mcp
 ```
 
 Set `EVM_PRIVATE_KEY` in the environment that launches Claude Code only when

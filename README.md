@@ -1,5 +1,7 @@
 # 767-2676.com — signed task schedule checkpoints for agents
 
+[![POPCORN MCP server](https://mcprush.com/badge/popcorn-mcp/card.svg)](https://mcprush.com/to/popcorn-mcp?ref=badge)
+
 Looking for **RFC 3161**, **FreeTSA**, **OpenTimestamps**, a **trusted timestamp**, **proof of existence**, **authorization expiry**, a **signed execution receipt**, or **independent verification**? Start with [Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired).
 
 **Licensing:** [component boundaries and earlier grants](LICENSING.md) · [evaluation terms](LICENSE.md) · [receipt carry-and-use permission](docs/RECEIPT_USE.md). The paid service is separate from code permissions.

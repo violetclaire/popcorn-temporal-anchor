@@ -517,6 +517,10 @@ function handleAgentReadinessSurface(request) {
   if (url.pathname === "/.well-known/agent-skills/popcorn-task-time/SKILL.md") {
     return discoveryDocumentResponse(request, TASK_SCHEDULE_PUBLIC_ASSETS["/skills/task-time/SKILL.md"].body, "text/markdown; charset=utf-8");
   }
+  if (url.pathname === "/.well-known/mcp.json") {
+    const body = TASK_SCHEDULE_PUBLIC_ASSETS["/mcp/server.json"].body.replaceAll('"version": "0.1.3"', '"version": "0.1.4"');
+    return discoveryDocumentResponse(request, body, "application/json; charset=utf-8");
+  }
   if (url.pathname === "/.well-known/mcp/server-card.json" || url.pathname === "/.well-known/mcp.json") {
     return discoveryDocumentResponse(request, TASK_SCHEDULE_PUBLIC_ASSETS["/mcp/server.json"].body, "application/json; charset=utf-8");
   }
@@ -4434,7 +4438,11 @@ function handlePopcornKeys(request, env) {
     });
   }
   return jsonResponse(
-    { keys: keySet.keys },
+    {
+      keys: keySet.keys,
+      popcorn_protocols: keySet.active_witness_key_id ? { [keySet.active_witness_key_id]: [WITNESS_PROTOCOL_ID, TAIN_WITNESS_PROTOCOL_ID] } : {},
+      popcorn_protocol_note: "The per-key popcorn_protocol field is a legacy v1 marker retained for verifier compatibility. This public key verifies v1 and v2 receipts. Use each receipt's signed protocol_id to select its receipt format."
+    },
     200,
     {
       "cache-control": `public, max-age=${JWKS_CACHE_MAX_AGE_SECONDS}, must-revalidate`,

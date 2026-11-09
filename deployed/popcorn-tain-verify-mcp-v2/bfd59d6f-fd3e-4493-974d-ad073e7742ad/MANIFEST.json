@@ -1,0 +1,16 @@
+{
+  "worker": "popcorn-tain-verify-mcp-v2",
+  "version_id": "bfd59d6f-fd3e-4493-974d-ad073e7742ad",
+  "deployment_id": "ecb04159-165d-4139-8201-21cfe16c753f",
+  "activated_at_utc": "2026-10-27T04:08:01.556324Z",
+  "activation_time_source": "Cloudflare active deployment created_on",
+  "main_module": "worker.js",
+  "files": [
+    {
+      "name": "worker.js",
+      "bytes": 672660,
+      "sha256": "eaa9a669a77266d4bab3e950955806af4def7e70d346dc6fe62b4094a32d1473",
+      "content_type": "application/javascript+module"
+    }
+  ]
+}
