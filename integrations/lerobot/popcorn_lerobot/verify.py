@@ -76,6 +76,10 @@ def verify_jws_es256(jws: str, jwks: dict) -> tuple[bool, dict | None, str]:
 
 def verify_dataset(dataset: Path, jwks: dict | None = None) -> list[str]:
     """Return a list of problems; empty means the dataset verifies."""
+    from .core import dataset_format
+    if dataset_format(dataset) == "v3.0":
+        from .v3 import verify_dataset_v3
+        return verify_dataset_v3(dataset, jwks)
     problems: list[str] = []
     records = load_records(dataset)
     if not records:
