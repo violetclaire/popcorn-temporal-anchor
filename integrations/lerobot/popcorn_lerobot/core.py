@@ -51,6 +51,23 @@ def file_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def dataset_format(dataset: Path) -> str:
+    """The LeRobot layout of a dataset, from meta/info.json.
+
+    Returns "v3.0" when info.json carries codebase_version "v3.0"
+    (the layout LeRobot v0.7.0 writes) and "v2.1" otherwise: a
+    missing, unreadable, or older info.json means the per-episode
+    file layout this package originally shipped with.
+    """
+    try:
+        info = json.loads((dataset / "meta" / "info.json").read_bytes())
+    except Exception:
+        return "v2.1"
+    if isinstance(info, dict) and info.get("codebase_version") == "v3.0":
+        return "v3.0"
+    return "v2.1"
+
+
 def episode_files(dataset: Path) -> dict[int, list[Path]]:
     """Map episode index -> sorted list of that episode's files.
 
@@ -135,6 +152,9 @@ def write_record(dataset: Path, record: dict) -> Path:
 def record_dataset(dataset: Path) -> list[dict]:
     """Dry-run recording of every episode in order. Sends nothing,
     spends nothing."""
+    if dataset_format(dataset) == "v3.0":
+        from .v3 import record_dataset_v3
+        return record_dataset_v3(dataset)
     episodes = episode_files(dataset)
     records = []
     previous = None
