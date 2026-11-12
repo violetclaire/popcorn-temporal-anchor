@@ -1,0 +1,31 @@
+name: Verify LeRobot integration
+
+on:
+  push:
+    paths:
+      - "integrations/lerobot/**"
+      - ".github/workflows/lerobot.yml"
+  pull_request:
+    paths:
+      - "integrations/lerobot/**"
+      - ".github/workflows/lerobot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  lerobot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: integrations/lerobot/requirements.txt
+      - run: |
+          python -m pip install --only-binary=:all: -r requirements.txt
+        working-directory: integrations/lerobot
+      - name: Check LeRobot integration, including the unpaid live challenge
+        run: python -B tests/run_acceptance.py
+        working-directory: integrations/lerobot

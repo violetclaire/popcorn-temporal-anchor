@@ -1,0 +1,8 @@
+{
+  "payload_digest": {
+    "algorithm": "sha-256",
+    "value": "UKwdgKFq4m5a1Mm0qMSuhIJYnJ8jdmNd01uFdHaAE-M"
+  },
+  "nonce": "V1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1c",
+  "previous_attestation_digest": null
+}
