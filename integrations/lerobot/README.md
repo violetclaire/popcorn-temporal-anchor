@@ -1,10 +1,16 @@
 # POPCORN witness for LeRobot
 
-Built by Scout in her workshop, November 9, 2026, from the build brief
-she wrote that morning. Status: working reference implementation,
-acceptance tests 12 of 12 passing. Carried for the repo under
-integrations/lerobot on Violet's word, November 9, 2026; lands by its
-own pull request with its own checks.
+Built by Scout, November 9, 2026, from the owner's build brief.
+Status: working reference implementation, acceptance tests 12 of 12
+passing. LeRobot v3.0 datasets (the layout LeRobot v0.7.0 writes) are
+supported since November 12, 2026, in popcorn_lerobot/v3.py, with
+their own acceptance suite passing 15 of 15; see V3-REPORT.md. The
+format is detected from meta/info.json, and record and verify dispatch
+on it automatically. The v3.0 path needs pyarrow; the v2.1 path needs
+nothing beyond the standard library. This package also lives in the
+POPCORN repository under integrations/lerobot, on the branch
+feat/2026-11-09-lerobot-witness with its own pull request (open, not
+merged); this copy and that branch are kept byte-identical.
 
 ## What it does
 
@@ -45,9 +51,6 @@ travel.
 
 ## Tests
 
-Signature checks need the cryptography package: pip install cryptography
-(also declared in requirements.txt).
-
     /path/to/python tests/run_acceptance.py
 
 Covers: clean verify; one flipped byte naming its episode; a deleted
@@ -55,3 +58,9 @@ middle episode; an edited chain link; the real August 31, 2026
 production receipt verifying against the published keys (fixtures/);
 a forged signature rejected; and the live node's 402 challenge
 answering this package's request shape with its price.
+
+For v3.0 datasets: python tests/run_acceptance_v3.py (with pyarrow
+installed) covers the byte-for-byte v2.1 digest reproduction, plus a clean v3.0
+verify, a one-byte change naming episode 1, a deleted middle episode
+with the survivors still passing, a row-block swap naming both
+swapped episodes, and an edited chain link naming its episode.
