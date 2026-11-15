@@ -1,0 +1,42 @@
+{
+  "extractionVersion": "1.0.0",
+  "bodyTextNodes": 7082,
+  "preBlocks": 111,
+  "preCharacters": 307371,
+  "svgElements": 1,
+  "svgPathElements": 53,
+  "svgUseElements": 319,
+  "svgTextElements": 0,
+  "svgTitles": [
+    "leTAIN"
+  ],
+  "ariaLabels": [
+    {
+      "tag": "section",
+      "id": "first-check",
+      "text": "Free October checkpoint with both signed records"
+    }
+  ],
+  "imageAltTexts": [],
+  "explicitlyHiddenElements": [],
+  "omittedElementCounts": {},
+  "canonicalByteLength": 695710,
+  "canonicalSha256": "3185cced81bd0eaaec771be6a02451406bf2d93176cb40d34aeeb34e667845e6",
+  "sourceTextUtf8ByteLength": 534773,
+  "sourceTextCodePoints": 534457,
+  "sourceTextSha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93",
+  "rules": [
+    "Decode canonical bytes as strict UTF-8; canonical digest is calculated before any parsing.",
+    "Normalize HTML CRLF and CR to LF, decode HTML character references, include body character data in document order.",
+    "Omit script, style and template contents, comments, attributes and head metadata.",
+    "Collapse ASCII whitespace outside pre, insert LF at block boundaries and TAB after table cells.",
+    "Preserve all preformatted character data, including source code, payloads, archived documents and whitespace.",
+    "Include actual SVG title, desc and text character data; do not invent text from glyph outlines.",
+    "Record aria-label and image alt attributes separately in this report; do not inject editor prose into source text."
+  ],
+  "limitations": [
+    "This is deterministic text extraction, not a byte-for-byte copy of HTML markup and not a browser accessibility tree.",
+    "CSS-generated labels, graphical layout and words converted to SVG paths are not text nodes and are not transcribed.",
+    "The canonical mirror SVG contains glyph outlines and a title but no selectable SVG text; graphical words have no transcript in this edition."
+  ]
+}

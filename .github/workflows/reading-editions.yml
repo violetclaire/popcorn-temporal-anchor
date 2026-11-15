@@ -1,0 +1,23 @@
+name: Reading editions
+on:
+  pull_request:
+    paths: ['site/editions/**', '.github/workflows/reading-editions.yml']
+  push:
+    branches: [main]
+    paths: ['site/editions/**', '.github/workflows/reading-editions.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python site/editions/extract_test.py
+      - run: node --test site/editions/encoders.test.mjs
+      - run: node --no-warnings --loader ./site/editions/test-loader.mjs ./site/editions/release.test.mjs
