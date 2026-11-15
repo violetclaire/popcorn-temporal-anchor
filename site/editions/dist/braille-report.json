@@ -1,0 +1,98 @@
+{
+  "status": "generated",
+  "canonical_html_sha256": "3185cced81bd0eaaec771be6a02451406bf2d93176cb40d34aeeb34e667845e6",
+  "canonical_url": "https://767-2676.com/evidence/homepage-before-split-2026-11-13.html",
+  "input_includes_prologue": false,
+  "input_text_sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93",
+  "input_bytes": 534773,
+  "input_unicode_codepoints": 534457,
+  "input_lf_count": 8328,
+  "input_cr_count": 0,
+  "line_separator_policy": "CRLF and CR represented as LF in Unicode edition; BRF uses CRLF and FF",
+  "liblouis_version": "3.39.0",
+  "widechar_bytes": 4,
+  "library_sha256": "0f1194748deae4d2fc23888ae0787a5870b29a5a1095ab919b2a851ada020763",
+  "official_release_zip_sha256": "64d669ac30f1411e0023b1cecc81c7a7b5374678ee41302c95ac8c7c8fbc6591",
+  "translation_table": "en-ueb-g1.ctb",
+  "display_tables": [
+    "unicode.dis",
+    "en-us-brf.dis"
+  ],
+  "table_sha256": {
+    "braille-patterns.cti": "5e24558303fa6db1642ee99dde12c43a42938edc7de26e87d09d4acfbeae6bbe",
+    "en-ueb-chardefs.uti": "66b60686cdf901acaa0a6615bf96745883f7e8a5f974eaa355a34c2c417efea0",
+    "en-ueb-g1.ctb": "1f77969efa61620b5af30eda2930068f8a239e18601b235505527601cc3d03ed",
+    "en-ueb-math.ctb": "d4fa2926bdc0e46fedf0f18e755b3c50a904e5e5b16b635eac88eff6a086f75d",
+    "en-us-brf.dis": "47ff9400f4b8a0206b0c1942e13c32b539d17ec099dcd1097873a1b9f5cb8b3c",
+    "latinLetterDef6Dots.uti": "644b8b0c9a49ec88d487d2068933995cfa4d77cabb64ec5db26ae04b3d458f71",
+    "latinUppercaseComp6.uti": "d777e0ab7c0c7a0c3a6a685f1aa74c4c57fea7766f6e16cf25f8ffa1a8be0b5b",
+    "spaces.uti": "8fdd5a9f42caa6f583540b026d7c5af13760b02029cbd08c052b2393cb8829da",
+    "text_nabcc.dis": "f3b10172236afd9921ac385c94a66d0ae23dbbf92afee92ae81ab31933088fbc",
+    "unicode.dis": "eccd0df31bce67a449d73e227ede8a4c2d6de6438b5b6ba520b24d27b11331ab"
+  },
+  "six_dot_only": true,
+  "native_unicode_brf_dot_equivalence": true,
+  "serialized_brf_preface_checked": true,
+  "paginated_unicode_brf_dot_equivalence": true,
+  "all_native_input_consumed": true,
+  "layout_roundtrip_preserves_translated_cells": true,
+  "brf_cells_per_line_max": 40,
+  "brf_lines_per_page_max": 25,
+  "brf_pages": 866,
+  "brf_physical_lines": 21627,
+  "continuation_cells_inserted": 5229,
+  "diagnostics": {
+    "unknown_unique_codepoints": 0,
+    "unknown_occurrences": 0,
+    "unknown_characters": [],
+    "empty_single_character_translations": [],
+    "non_six_dot_single_character_translations": [
+      {
+        "codepoint": "U+0009",
+        "name": "CHARACTER TABULATION",
+        "count": 383
+      }
+    ],
+    "control_and_format_characters": [
+      {
+        "codepoint": "U+0009",
+        "name": "CHARACTER TABULATION",
+        "count": 383
+      }
+    ],
+    "note": "Single-character diagnostics; line-level diagnostic differences are also reported. Contextual combining rules may differ from isolated characters.",
+    "explicit_substitution_occurrences": 383,
+    "explicit_substitution_unique_codepoints": 1,
+    "lines_with_undefined_fallback_after_explicit_substitution": [],
+    "line_level_unknown_check_passed": true
+  },
+  "limitations": [
+    "English uncontracted UEB table; non-English text is not certified as correct foreign-language braille.",
+    "Linear math only as supported by the UEB table. No semantic MathML, spatial math, or tactile artwork transcription.",
+    "Mechanical 40 by 25 layout; long technical strings use dot-5 continuations. Human Braille proofreading and embosser testing have not occurred.",
+    "The source digest identifies the original canonical bytes; translated files necessarily have different bytes.",
+    "A reverse text translation is a diagnostic and cannot prove exact original spelling, punctuation, or formatting."
+  ],
+  "outputs": {
+    "braille-unicode.txt": {
+      "bytes": 1883658,
+      "sha256": "6e33985a525cfec50cddc70826646866f864baa0c8f3645da348b6445223f248"
+    },
+    "braille-paginated-unicode.txt": {
+      "bytes": 1935130,
+      "sha256": "47b29e3bb2b5401f947922b6dfae7145946f35a4d8794cdcbfa2fee01863bd93"
+    },
+    "braille-unwrapped.brf.txt": {
+      "bytes": 633442,
+      "sha256": "1cf3c914aaa262c8bfc263fa2be76e6d6b61e90ebaef7d88803a1386f56efb6c"
+    },
+    "braille.brf": {
+      "bytes": 674456,
+      "sha256": "374fbc44b5b567f94db1d47e9e2fd4688f1ca035b1a9006d9441a824a601b26f"
+    },
+    "braille-source-exact.txt": {
+      "bytes": 534773,
+      "sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93"
+    }
+  }
+}

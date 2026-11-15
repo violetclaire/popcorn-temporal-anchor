@@ -1,0 +1,4 @@
+braille/vendor/
+braille/fixtures/
+braille/output/
+**/__pycache__/

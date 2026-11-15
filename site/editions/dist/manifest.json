@@ -1,0 +1,213 @@
+{
+  "schema": "popcorn-reading-editions/1",
+  "source": {
+    "url": "https://767-2676.com/evidence/homepage-before-split-2026-11-13.html",
+    "sha256": "3185cced81bd0eaaec771be6a02451406bf2d93176cb40d34aeeb34e667845e6",
+    "bytes": 695710
+  },
+  "source_text": {
+    "path": "/editions/source-text.txt",
+    "sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93",
+    "codepoints": 534457
+  },
+  "scope": "Canonical HTML text content; no invented transcript for mirror SVG outlines.",
+  "available": [
+    "english",
+    "morse",
+    "braille",
+    "braille.brf",
+    "nato"
+  ],
+  "not_available": [
+    "All non-English language translations",
+    "Sign-language agent and interpretations",
+    "Scout voice agent",
+    "National Morse extensions",
+    "Other language-specific Braille codes",
+    "Mirror artwork transcript"
+  ],
+  "reader_storage": false,
+  "stage2_started": false,
+  "files": [
+    {
+      "name": "style.css",
+      "path": "/editions/style.css",
+      "bytes": 3232,
+      "sha256": "c60c8cff35369225303b48103993e297abc821c20be7318bd71324efaaca3db1",
+      "gzip_bytes": 1338,
+      "content_type": "text/css; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "selector.js",
+      "path": "/editions/selector.js",
+      "bytes": 2202,
+      "sha256": "a46648eb747c5642620425588de390a5d2f455a69f8c5c9f2316a18bdc17813d",
+      "gzip_bytes": 880,
+      "content_type": "text/javascript; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "canonical-source.html.txt",
+      "path": "/editions/canonical-source.html.txt",
+      "bytes": 695710,
+      "sha256": "3185cced81bd0eaaec771be6a02451406bf2d93176cb40d34aeeb34e667845e6",
+      "gzip_bytes": 168024,
+      "content_type": "text/plain; charset=utf-8",
+      "download": true
+    },
+    {
+      "name": "source-text.txt",
+      "path": "/editions/source-text.txt",
+      "bytes": 534773,
+      "sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93",
+      "gzip_bytes": 136566,
+      "content_type": "text/plain; charset=utf-8",
+      "download": true
+    },
+    {
+      "name": "extraction.json",
+      "path": "/editions/extraction.json",
+      "bytes": 1947,
+      "sha256": "f523493f5cc59ae3f0b412bf190319e2dc22a71ef4590c593dc41e048ab612c2",
+      "gzip_bytes": 1016,
+      "content_type": "application/json; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "mirror.svg.txt",
+      "path": "/editions/mirror.svg.txt",
+      "bytes": 67483,
+      "sha256": "9aac35f480e3631a484500f2c2e0221b966a71b95f540e62f00e7270c210feef",
+      "gzip_bytes": 14761,
+      "content_type": "text/plain; charset=utf-8",
+      "download": true
+    },
+    {
+      "name": "index.html",
+      "path": "/editions/index.html",
+      "bytes": 5497,
+      "sha256": "57f8e5250283bc46b98f6f45f91619618cb35c25ee479e9b3168cd7863c1fa07",
+      "gzip_bytes": 2151,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "english.html",
+      "path": "/editions/english.html",
+      "bytes": 625535,
+      "sha256": "1c59b3af8f7e46aec8f85bfa530b01d6bbbe24f145807b1ad6579f3ffc77f267",
+      "gzip_bytes": 143392,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "morse.txt",
+      "path": "/editions/morse.txt",
+      "bytes": 3359792,
+      "sha256": "2eb27fe40363876076fb57f97ceac3a98368e512ebe900cf0384fd6cce194e41",
+      "gzip_bytes": 279814,
+      "content_type": "text/plain; charset=utf-8",
+      "download": true
+    },
+    {
+      "name": "morse.html",
+      "path": "/editions/morse.html",
+      "bytes": 3364112,
+      "sha256": "0a60a59250859743ad61e961320c158e15ed3f57420c97f1c772613c4e39529f",
+      "gzip_bytes": 281853,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "nato.txt",
+      "path": "/editions/nato.txt",
+      "bytes": 4386841,
+      "sha256": "37ef22a8f192429dcdf07d20a20f5e143bdbf1d01fc9468348d119b1fa7ceda9",
+      "gzip_bytes": 303108,
+      "content_type": "text/plain; charset=utf-8",
+      "download": true
+    },
+    {
+      "name": "nato.html",
+      "path": "/editions/nato.html",
+      "bytes": 4391190,
+      "sha256": "6f8f5266084e047646fb2e2a7769fae3712a301eaf9892dd18538f7e1457bd11",
+      "gzip_bytes": 305099,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "encodings.json",
+      "path": "/editions/encodings.json",
+      "bytes": 8885,
+      "sha256": "589cae2b97cb438d04e535f308c0ae0dc05f5f9baac0e0da3aeb214d5a95ff56",
+      "gzip_bytes": 1628,
+      "content_type": "application/json; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "braille-unicode.txt",
+      "path": "/editions/braille-unicode.txt",
+      "bytes": 1883658,
+      "sha256": "6e33985a525cfec50cddc70826646866f864baa0c8f3645da348b6445223f248",
+      "gzip_bytes": 199931,
+      "content_type": "text/plain; charset=utf-8",
+      "download": true
+    },
+    {
+      "name": "braille.brf",
+      "path": "/editions/braille.brf",
+      "bytes": 674456,
+      "sha256": "374fbc44b5b567f94db1d47e9e2fd4688f1ca035b1a9006d9441a824a601b26f",
+      "gzip_bytes": 164279,
+      "content_type": "application/octet-stream",
+      "download": true
+    },
+    {
+      "name": "braille-report.json",
+      "path": "/editions/braille-report.json",
+      "bytes": 4500,
+      "sha256": "69c069c5c2d73b66ca60b930b5353a8c83a8f73071bb8c69812f0f3d48d56e6f",
+      "gzip_bytes": 2145,
+      "content_type": "application/json; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "braille.html",
+      "path": "/editions/braille.html",
+      "bytes": 1889366,
+      "sha256": "26fd02df996b09d4334cace093021c9632312c8c9e07c07c9a9689f839375aca",
+      "gzip_bytes": 203169,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "languages.html",
+      "path": "/editions/languages.html",
+      "bytes": 4836,
+      "sha256": "375eee039acc8d3f869a0b79e8c5d36371fd3bc45cbf1f6af55fa55f2cd62d66",
+      "gzip_bytes": 1988,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "sign.html",
+      "path": "/editions/sign.html",
+      "bytes": 4654,
+      "sha256": "d877baa2308edff71af59d4b96082928f6a2290477616e849a0d838d84ebd2d0",
+      "gzip_bytes": 1958,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    },
+    {
+      "name": "voice.html",
+      "path": "/editions/voice.html",
+      "bytes": 4365,
+      "sha256": "5f0815804f7729e87f09332559992402d2bcbe3f2cc2140f9e84874ada0a5004",
+      "gzip_bytes": 1812,
+      "content_type": "text/html; charset=utf-8",
+      "download": false
+    }
+  ]
+}

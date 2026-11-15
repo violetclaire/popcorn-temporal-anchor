@@ -1,0 +1,372 @@
+{
+  "source": {
+    "url": "https://767-2676.com/evidence/homepage-before-split-2026-11-13.html",
+    "sha256": "3185cced81bd0eaaec771be6a02451406bf2d93176cb40d34aeeb34e667845e6",
+    "bytes": 695710
+  },
+  "source_text_sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93",
+  "sources": {
+    "morse": "https://www.itu.int/dms_pubrec/itu-r/rec/m/R-REC-M.1677-1-200910-I!!PDF-E.pdf",
+    "nato": "https://www.nato.int/en/about-us/nato-history/history-by-theme/symbols-of-nato/nato-phonetic-alphabet",
+    "natoFigures": "https://www.nato.int/content/dam/nato/webready/news/2010-2019/2017/12/21/20180111_nato-alphabet-sign-signal.pdf"
+  },
+  "notation": {
+    "common": "Character tokens are separated by one space. Each / token represents exactly one original ASCII space. Original LF line breaks remain line breaks. A {lc} prefix marks a lowercase letter, preserving its original case. Unsupported characters, including non-ASCII punctuation, appear as {U+XXXX} Unicode code-point tokens. These prefixes and escape tokens are edition notation, not alphabet signals. Every source text character is accounted for, and decoding this notation restores the exact extracted text.",
+    "morse": "International Morse uses dots and hyphens for letters A–Z, accented É, digits, and the listed punctuation. The source slash / becomes -..-.; a bare / token is a space. Lowercase a–z and é use a {lc} prefix followed by their uppercase signals. No accent stripping, smart punctuation replacement, or other transliteration occurs. × is escaped to distinguish it from X. This is a written encoding, not timed audio or a radio transmission.",
+    "nato": "NATO letters use Alfa, Juliett, and X-ray. Digits use Zero through Nine, each digit separately. All punctuation is represented by Unicode code-point tokens; it is not an invented NATO code word. Lowercase a–z use a {lc} prefix followed by their uppercase letter names."
+  },
+  "encodings": {
+    "morse": {
+      "encoding": "morse",
+      "version": "1.0.0",
+      "inputCodePoints": 534457,
+      "alphabetTokens": 438878,
+      "asciiSpaces": 75861,
+      "lineFeeds": 8328,
+      "unicodeEscapeTokens": 11390,
+      "lowercaseMarkedLetters": 324821,
+      "escapedCodePoints": [
+        {
+          "token": "{U+0009}",
+          "count": 383
+        },
+        {
+          "token": "{U+0021}",
+          "count": 2
+        },
+        {
+          "token": "{U+0023}",
+          "count": 75
+        },
+        {
+          "token": "{U+0024}",
+          "count": 178
+        },
+        {
+          "token": "{U+0025}",
+          "count": 8
+        },
+        {
+          "token": "{U+0026}",
+          "count": 14
+        },
+        {
+          "token": "{U+002A}",
+          "count": 6
+        },
+        {
+          "token": "{U+003B}",
+          "count": 488
+        },
+        {
+          "token": "{U+003C}",
+          "count": 113
+        },
+        {
+          "token": "{U+003E}",
+          "count": 140
+        },
+        {
+          "token": "{U+005B}",
+          "count": 381
+        },
+        {
+          "token": "{U+005C}",
+          "count": 277
+        },
+        {
+          "token": "{U+005D}",
+          "count": 381
+        },
+        {
+          "token": "{U+005E}",
+          "count": 34
+        },
+        {
+          "token": "{U+005F}",
+          "count": 5548
+        },
+        {
+          "token": "{U+0060}",
+          "count": 8
+        },
+        {
+          "token": "{U+007B}",
+          "count": 1547
+        },
+        {
+          "token": "{U+007C}",
+          "count": 19
+        },
+        {
+          "token": "{U+007D}",
+          "count": 1547
+        },
+        {
+          "token": "{U+007E}",
+          "count": 16
+        },
+        {
+          "token": "{U+00A7}",
+          "count": 1
+        },
+        {
+          "token": "{U+00A9}",
+          "count": 1
+        },
+        {
+          "token": "{U+00B1}",
+          "count": 3
+        },
+        {
+          "token": "{U+00B7}",
+          "count": 128
+        },
+        {
+          "token": "{U+00D7}",
+          "count": 1
+        },
+        {
+          "token": "{U+2013}",
+          "count": 6
+        },
+        {
+          "token": "{U+2019}",
+          "count": 37
+        },
+        {
+          "token": "{U+201C}",
+          "count": 2
+        },
+        {
+          "token": "{U+201D}",
+          "count": 2
+        },
+        {
+          "token": "{U+2026}",
+          "count": 2
+        },
+        {
+          "token": "{U+2122}",
+          "count": 2
+        },
+        {
+          "token": "{U+2192}",
+          "count": 14
+        },
+        {
+          "token": "{U+2197}",
+          "count": 2
+        },
+        {
+          "token": "{U+2212}",
+          "count": 24
+        }
+      ],
+      "accountedForCodePoints": 534457,
+      "roundtrip_source_text_sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93"
+    },
+    "nato": {
+      "encoding": "nato",
+      "version": "1.0.0",
+      "inputCodePoints": 534457,
+      "alphabetTokens": 389899,
+      "asciiSpaces": 75861,
+      "lineFeeds": 8328,
+      "unicodeEscapeTokens": 60369,
+      "lowercaseMarkedLetters": 324821,
+      "escapedCodePoints": [
+        {
+          "token": "{U+0009}",
+          "count": 383
+        },
+        {
+          "token": "{U+0021}",
+          "count": 2
+        },
+        {
+          "token": "{U+0022}",
+          "count": 16692
+        },
+        {
+          "token": "{U+0023}",
+          "count": 75
+        },
+        {
+          "token": "{U+0024}",
+          "count": 178
+        },
+        {
+          "token": "{U+0025}",
+          "count": 8
+        },
+        {
+          "token": "{U+0026}",
+          "count": 14
+        },
+        {
+          "token": "{U+0027}",
+          "count": 410
+        },
+        {
+          "token": "{U+0028}",
+          "count": 323
+        },
+        {
+          "token": "{U+0029}",
+          "count": 323
+        },
+        {
+          "token": "{U+002A}",
+          "count": 6
+        },
+        {
+          "token": "{U+002B}",
+          "count": 219
+        },
+        {
+          "token": "{U+002C}",
+          "count": 6524
+        },
+        {
+          "token": "{U+002D}",
+          "count": 4430
+        },
+        {
+          "token": "{U+002E}",
+          "count": 6132
+        },
+        {
+          "token": "{U+002F}",
+          "count": 6106
+        },
+        {
+          "token": "{U+003A}",
+          "count": 7250
+        },
+        {
+          "token": "{U+003B}",
+          "count": 488
+        },
+        {
+          "token": "{U+003C}",
+          "count": 113
+        },
+        {
+          "token": "{U+003D}",
+          "count": 397
+        },
+        {
+          "token": "{U+003E}",
+          "count": 140
+        },
+        {
+          "token": "{U+003F}",
+          "count": 127
+        },
+        {
+          "token": "{U+0040}",
+          "count": 46
+        },
+        {
+          "token": "{U+005B}",
+          "count": 381
+        },
+        {
+          "token": "{U+005C}",
+          "count": 277
+        },
+        {
+          "token": "{U+005D}",
+          "count": 381
+        },
+        {
+          "token": "{U+005E}",
+          "count": 34
+        },
+        {
+          "token": "{U+005F}",
+          "count": 5548
+        },
+        {
+          "token": "{U+0060}",
+          "count": 8
+        },
+        {
+          "token": "{U+007B}",
+          "count": 1547
+        },
+        {
+          "token": "{U+007C}",
+          "count": 19
+        },
+        {
+          "token": "{U+007D}",
+          "count": 1547
+        },
+        {
+          "token": "{U+007E}",
+          "count": 16
+        },
+        {
+          "token": "{U+00A7}",
+          "count": 1
+        },
+        {
+          "token": "{U+00A9}",
+          "count": 1
+        },
+        {
+          "token": "{U+00B1}",
+          "count": 3
+        },
+        {
+          "token": "{U+00B7}",
+          "count": 128
+        },
+        {
+          "token": "{U+00D7}",
+          "count": 1
+        },
+        {
+          "token": "{U+2013}",
+          "count": 6
+        },
+        {
+          "token": "{U+2019}",
+          "count": 37
+        },
+        {
+          "token": "{U+201C}",
+          "count": 2
+        },
+        {
+          "token": "{U+201D}",
+          "count": 2
+        },
+        {
+          "token": "{U+2026}",
+          "count": 2
+        },
+        {
+          "token": "{U+2122}",
+          "count": 2
+        },
+        {
+          "token": "{U+2192}",
+          "count": 14
+        },
+        {
+          "token": "{U+2197}",
+          "count": 2
+        },
+        {
+          "token": "{U+2212}",
+          "count": 24
+        }
+      ],
+      "accountedForCodePoints": 534457,
+      "roundtrip_source_text_sha256": "13f601e285de4ad1e785302d7be60fdce1486d13ef2f3c587472aecbf5faae93"
+    }
+  }
+}
