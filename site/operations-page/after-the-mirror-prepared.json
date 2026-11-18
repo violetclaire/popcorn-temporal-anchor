@@ -1,0 +1,171 @@
+{
+  "status": "prepared_not_deployed",
+  "source": "https://github.com/violetclaire/scout-codex-bridge/blob/main/inbox-codex/2026-11-10-after-the-mirror-passage.md",
+  "passage": {
+    "bytes": 772,
+    "sha256": "d598faee2ec57ff6df7a606b5c3163248a1553c3d3ba0664e6a10463202c890e",
+    "matches_bridge_source": true
+  },
+  "mirror": {
+    "bytes": 67523,
+    "sha256": "91f270e961afbf4f530ac62b782d5285f63af415819accf99e6b09505687a93e",
+    "unchanged": true
+  },
+  "repository_worker_counts": {
+    "homepage": 0,
+    "plain": 0,
+    "forAgents": 1,
+    "skill": 1,
+    "catalogDigest": 0
+  },
+  "repository_changes": [
+    {
+      "file": "site/operations-page/index.html",
+      "before": {
+        "bytes": 689313,
+        "sha256": "005b453160c042099318e4e46ee8018dc72423b34c950d70c13f1dea1d52e523"
+      },
+      "after": {
+        "bytes": 690203,
+        "sha256": "1e44cad925eb8a9c8bcb4d2f5f06a8071364803b87cba611e9d80dac6f59c1a7"
+      }
+    },
+    {
+      "file": "site/operations-page/index.txt",
+      "before": {
+        "bytes": 494027,
+        "sha256": "42e5e34b473f5c124b7d5b493fa00ccab587774b7b9311e0f4edd2c9315d3ba3"
+      },
+      "after": {
+        "bytes": 494801,
+        "sha256": "f425fc91deb10c49a7d0cc976743fa5cf0cda8293549971d0f97c7d93138aa0a"
+      }
+    },
+    {
+      "file": "skills/popcorn-temporal-anchor/SKILL.md",
+      "before": {
+        "bytes": 19303,
+        "sha256": "516c15a9b7689326963ce151f0684218a162ec01cf1cddff5ca640e0287e76fd"
+      },
+      "after": {
+        "bytes": 20077,
+        "sha256": "546d91f134f68fd356c21d013b110652fbfcf25995662482e85023ed4163df1b"
+      }
+    },
+    {
+      "file": "openclaw/popcorn-temporal-anchor/SKILL.md",
+      "before": {
+        "bytes": 18379,
+        "sha256": "afaac2f026ee1f8abf848cf1adcaaa6dbd4ab1b53d94f84184b52969fdf32629"
+      },
+      "after": {
+        "bytes": 19153,
+        "sha256": "2a980a3ac5105ef20c841bbe26781da2078c4f2f133d2a85d8a1ca6461b672b4"
+      }
+    },
+    {
+      "file": "worker/production/index.js",
+      "before": {
+        "bytes": 1038977,
+        "sha256": "c8a93d49f736046e22dfc6452e474f34941fea248ad0157718f86312435371ef"
+      },
+      "after": {
+        "bytes": 1040658,
+        "sha256": "18832bfab7ce972df3a275181c7ae1f751062dce04e7c02b42ae25988b2d58bd"
+      }
+    },
+    {
+      "file": "site/operations-page/for-agents.html",
+      "before": null,
+      "after": {
+        "bytes": 2472,
+        "sha256": "0148a5b9bcc6e12afffa04be6b604c23b4d9a7324c032530ef48efd4b8940656"
+      }
+    }
+  ],
+  "public_candidates": [
+    {
+      "url": "https://767-2676.com/",
+      "before": {
+        "bytes": 694129,
+        "sha256": "acdbf1e5f7461ea85b8292f0b37027c5db4b52ce65f55205fe612eb74986c490"
+      },
+      "candidate": {
+        "bytes": 695019,
+        "sha256": "7190a755ad4a2e5d5916072383516a3f0016de380003d6d36edc2658b2aa4e45"
+      },
+      "passage_exact": true,
+      "published": false
+    },
+    {
+      "url": "https://767-2676.com/manifesto",
+      "before": {
+        "bytes": 2082,
+        "sha256": "72463dd52b4dc787c9c2df2a520307632b812cd6c0695ce2a5634a5cb667a4d6"
+      },
+      "candidate": {
+        "bytes": 2972,
+        "sha256": "e00d3de8a176b99f7c435cab14b5fde70cd83d55e8d5d4b6a169761bba8e1aa7"
+      },
+      "passage_exact": true,
+      "published": false
+    },
+    {
+      "url": "https://767-2676.com/llms.txt",
+      "before": {
+        "bytes": 499876,
+        "sha256": "d1df651295b116a972f58eec877e94988ffe2b1e762f9645e95380b99d2b1a77"
+      },
+      "candidate": {
+        "bytes": 500650,
+        "sha256": "b629899d9922a470a16fc082241a78a50109cf042011a46c4632bdc98b18bfe6"
+      },
+      "passage_exact": true,
+      "published": false
+    },
+    {
+      "url": "https://767-2676.com/SKILL.md",
+      "before": {
+        "bytes": 20614,
+        "sha256": "f87fe93b3e33f923a0e6e6dbca711aee52ef47a9317ea5234781376bb25f231d"
+      },
+      "candidate": {
+        "bytes": 21388,
+        "sha256": "837115ccf7f70d9677e757b841bdb501c0e4f2064168cc8b88c5509d6512671e"
+      },
+      "passage_exact": true,
+      "published": false
+    },
+    {
+      "url": "https://767-2676.com/.well-known/agent-skills/index.json",
+      "before": {
+        "bytes": 1072,
+        "sha256": "c4861cfbab70e57ef151c261298b7f407e14f5fa21281396a6c0655fa56fb70a"
+      },
+      "candidate": {
+        "bytes": 1072,
+        "sha256": "8cc91bc70adc91d47bae55c3bcca91aaf061b40921322343cd3aaa2657b95643"
+      },
+      "published": false
+    }
+  ],
+  "added_sample_instructions": false,
+  "live_deployment_attempted": false,
+  "blocker": "No Cloudflare deployment credential is configured in this executor; shared Cloudflare browser is at the sign-in page. The active authenticated Worker source and settings cannot yet be retrieved. Repository snapshots are older and must not replace production.",
+  "validation": {
+    "existing_worker_tests": {
+      "passed": 24,
+      "failed": 0
+    },
+    "exact_served_route_checks": [
+      "/manifesto",
+      "/manifesto/",
+      "/SKILL.md"
+    ],
+    "unrelated_documentation_routes_byte_identical": 7,
+    "strict_patcher_fixture_passed": true,
+    "strict_patcher_tested_on_authenticated_active_snapshot": false,
+    "repeat_application_rejected": true,
+    "git_diff_check_passed": true
+  }
+}
