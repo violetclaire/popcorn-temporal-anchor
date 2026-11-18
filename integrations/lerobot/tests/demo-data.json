@@ -1,0 +1,42 @@
+{
+ "episodes": [
+  {
+   "index": 0,
+   "files": [
+    "data/chunk-000/episode_000000.parquet",
+    "videos/chunk-000/observation.images.top/episode_000000.mp4"
+   ],
+   "digest": "1HloHbYEsDTqPpPzBLsVvU5hwrO3aofeC38dYqFhgsc",
+   "previous": null
+  },
+  {
+   "index": 1,
+   "files": [
+    "data/chunk-000/episode_000001.parquet",
+    "videos/chunk-000/observation.images.top/episode_000001.mp4"
+   ],
+   "digest": "viMf9y8_M0vTxfA2w1b7Zfko0AZStv4PCvHfd9eDhxs",
+   "previous": "GV4XjS4QBRiCYoJOL6vT2_nF9iDp9k6_cMWm3vEnEl0"
+  },
+  {
+   "index": 2,
+   "files": [
+    "data/chunk-000/episode_000002.parquet",
+    "videos/chunk-000/observation.images.top/episode_000002.mp4"
+   ],
+   "digest": "1IlxHqRAbjjp3QnmiNtf4nCpNb1WhayLoxi1S2UFHlA",
+   "previous": "ikbi-DYpGfbLIBjdtTqc1CgFxouv8_Fd-IGP6Yod3Ac"
+  }
+ ],
+ "clean_problems": [],
+ "tampered_problems": [
+  "episode 1: bytes changed after recording (digest 13pQG5RlaBVs9TaEpu9QahtYI0-vv4MGZEbInXfQnw8 != recorded viMf9y8_M0vTxfA2w1b7Zfko0AZStv4PCvHfd9eDhxs)"
+ ],
+ "production": {
+  "receipt_id": "pwr_24a140e0651c67375cdfb34bc1c38b47",
+  "witnessed_at": "2026-08-31T05:02:16.007Z",
+  "payment_transaction": "0x8dfce272b223179adc3b68256ebf03a27721fb7b708c0e50f47753e6c33bab0c",
+  "verified": true,
+  "reason": "ok"
+ }
+}
