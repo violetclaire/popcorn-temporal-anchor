@@ -2,6 +2,98 @@
 
 [![POPCORN MCP server](https://mcprush.com/badge/popcorn-mcp/card.svg)](https://mcprush.com/to/popcorn-mcp?ref=badge)
 
+## POPCORN MCP server
+
+POPCORN MCP is the MCP server for the witness service at
+[767-2676.com](https://767-2676.com). It gives agents signed time and SHA-256
+digest witness receipts, and it verifies receipts locally and offline. The
+server is published in the official MCP Registry as
+`io.github.violetclaire/popcorn-mcp`.
+
+Full connector guide: **[packages/mcp/README.md](packages/mcp/README.md)**
+
+The witness issues evidence only. A receipt proves that the node received a
+fingerprint within a stated time interval. It grants no permission, proves no
+identity, and authorizes nothing.
+
+### Tools
+
+Free tools (no wallet, no payment):
+
+| Tool | What it does |
+| --- | --- |
+| `popcorn_sample` | Runs the bundled evaluation: historical receipts verified, one-byte tamper controls rejected |
+| `popcorn_hash` | Hashes exact bytes locally and returns the SHA-256 digest |
+| `popcorn_verify` | Verifies a temporal or witness receipt locally against caller-supplied keys |
+| `popcorn_verify_v2` | Verifies a POPCORN-WITNESS/2.0 (TAIN 2.0) receipt locally |
+| `popcorn_catalog` | Fetches the live service catalog, published keys, and public schemas; sends no payment |
+
+Paid tools (x402, dry run by default):
+
+| Tool | What it does | Price |
+| --- | --- | --- |
+| `popcorn_time` | Requests a fresh signed time receipt from `GET https://767-2676.com/v1/time` | $0.001 USDC on Base |
+| `popcorn_witness` | Requests a fresh signed witness receipt from `POST https://767-2676.com/v2/receipt` | $0.001 USDC on Base |
+
+### Configure it in an MCP client
+
+Hosted HTTP endpoint: `https://767-2676.com/mcp`
+
+Local stdio server (Node.js 20 or newer):
+
+```bash
+npx -y @violetclaire/popcorn-mcp
+```
+
+Claude Desktop, in the `mcpServers` object of its configuration:
+
+```json
+{
+  "mcpServers": {
+    "popcorn": {
+      "command": "npx",
+      "args": ["-y", "@violetclaire/popcorn-mcp"]
+    }
+  }
+}
+```
+
+Claude Code:
+
+```bash
+claude mcp add --transport stdio popcorn -- npx -y @violetclaire/popcorn-mcp
+```
+
+### Payment and wallet requirements
+
+The free tools and all dry runs need no wallet. The two paid tools cannot
+spend unless the individual tool call contains `approve_payment: true`.
+Payment is locked to exactly $0.001 USDC on Base mainnet through x402 v2, to
+the published USDC contract and the published payTo address; a changed
+challenge fails closed. A wallet key is read only from `EVM_PRIVATE_KEY` in
+the server process environment. It is never accepted as a tool parameter.
+Use a dedicated payer wallet with a small balance, and never commit the key.
+
+### What is free and offline, and what depends on the paid service
+
+Free and offline: the sample evaluation, local hashing, and all receipt
+verification (`popcorn_sample`, `popcorn_hash`, `popcorn_verify`,
+`popcorn_verify_v2`). Verification runs entirely on your machine against
+published keys and needs no account, no wallet, and no network call.
+
+Paid: fresh evidence. A new signed time receipt (`popcorn_time`) and a new
+signed witness receipt (`popcorn_witness`) are issued by the live paid
+service at 767-2676.com at $0.001 each, only when a caller approves that
+specific payment.
+
+### Licensing
+
+The licensing for this repository and the MCP package is stated in the
+package's own files: [component boundaries and earlier grants](LICENSING.md) ·
+[evaluation terms](LICENSE.md) · [receipt carry-and-use
+permission](docs/RECEIPT_USE.md). The paid service is separate from code
+permissions.
+
 Looking for **RFC 3161**, **FreeTSA**, **OpenTimestamps**, a **trusted timestamp**, **proof of existence**, **authorization expiry**, a **signed execution receipt**, or **independent verification**? Start with [Proving an action happened before an authorization expired](https://767-2676.com/prove-action-before-authorization-expired).
 
 **Licensing:** [component boundaries and earlier grants](LICENSING.md) · [evaluation terms](LICENSE.md) · [receipt carry-and-use permission](docs/RECEIPT_USE.md). The paid service is separate from code permissions.
