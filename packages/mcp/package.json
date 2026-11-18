@@ -57,7 +57,7 @@
     "trusted-timestamp",
     "authorization"
   ],
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "LicenseRef-POPCORN-Read-and-Use-Terms",
   "publishConfig": {
     "access": "public"
   },
